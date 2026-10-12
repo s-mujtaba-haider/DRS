@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { Badge, Button, Empty, ErrorBox, KV, Panel, fmt, type Tone } from "@/components/ui";
-import { api, urls, type Calibration, type JobResults, type LbwAnalysis, type LbwFacts, type LbwResult, type Verdict } from "@/lib/api";
+import { api, urls, type AutoCalibration, type Calibration, type JobResults, type LbwAnalysis, type LbwFacts, type LbwResult, type Verdict } from "@/lib/api";
 
 const VERDICT: Record<Verdict, { tone: Tone; label: string }> = {
   PROJECTED_TO_HIT: { tone: "bad", label: "Projected to hit wicket" },
@@ -44,6 +44,7 @@ export default function LbwWorkspace({
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const selected: LbwAnalysis | null = analyses.find((a) => a.id === selectedId) ?? analyses[0] ?? null;
   const [busy, setBusy] = useState(false);
+  const [auto, setAuto] = useState<AutoCalibration | null>(null);
   const [error, setError] = useState<unknown>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imgRef = useRef<HTMLImageElement | null>(null);
@@ -131,6 +132,21 @@ export default function LbwWorkspace({
     setPoints((ps) => [...ps.filter((p) => p.name !== selLm), { name: selLm, image: [x, y] }]);
     const next = landmarks[(landmarks.indexOf(selLm) + 1) % landmarks.length];
     if (next) setSelLm(next);
+  }
+
+  async function autoDetect(thisFrameOnly: boolean) {
+    setError(null);
+    setBusy(true);
+    try {
+      const a = await api.autoCalibration({ video_id: videoId, ...(thisFrameOnly ? { frame_index: frame } : {}) });
+      setAuto(a);
+      if (a.frame_index >= 0 && a.frame_index !== frame) setFrame(a.frame_index);
+      if (a.points.length) setPoints(a.points);
+    } catch (e) {
+      setError(e);
+    } finally {
+      setBusy(false);
+    }
   }
 
   async function computeCalibration() {
@@ -231,7 +247,27 @@ export default function LbwWorkspace({
                 </div>
               )}
               <div className="border-t border-line pt-3">
-                <div className="mb-1 text-xs text-muted">New calibration: pick a landmark, then click it on the frame. At least 6 points (including stump tops) are needed without known intrinsics.</div>
+                <div className="mb-2 space-y-1.5">
+                  <div className="flex flex-wrap gap-2">
+                    <Button disabled={busy} onClick={() => autoDetect(false)}>Auto-detect (scan clip)</Button>
+                    <Button variant="ghost" disabled={busy} onClick={() => autoDetect(true)}>Auto-detect (this frame)</Button>
+                  </div>
+                  {auto && (
+                    <div className="space-y-0.5 rounded border border-line bg-panel-2 p-2 text-xs">
+                      <div>
+                        <Badge tone={auto.method === "seeds_only" ? "warn" : "neutral"}>
+                          {auto.method === "two_wicket_stumps" ? "both wickets found" : auto.method === "crease_registration" ? "stumps + creases" : "seed points only"}
+                        </Badge>{" "}
+                        frame {auto.frame_index}, {auto.points.length} points placed{auto.focal_px ? `, focal ${fmt(auto.focal_px, 0)} px` : ""}
+                      </div>
+                      <div className="text-warn">! {auto.note}</div>
+                      {auto.warnings.map((w) => (
+                        <div key={w} className="text-warn">! {w}</div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <div className="mb-1 text-xs text-muted">New calibration: pick a landmark, then click it on the frame (clicking replaces an auto-placed point). At least 6 points (including stump tops) are needed without known intrinsics.</div>
                 <select className="w-full rounded border border-line bg-panel-2 px-2 py-1.5" value={selLm} onChange={(e) => setSelLm(e.target.value)}>
                   {landmarks.map((l) => (
                     <option key={l} value={l}>{l}{points.some((p) => p.name === l) ? " (placed)" : ""}</option>

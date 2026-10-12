@@ -10,8 +10,8 @@ Ordered by expected impact on real-footage usefulness.
 2. **Tracking evaluation on real labelled sequences.** Measure continuity, fragmentation, false associations and position error with the metrics already used for detection.
 3. **Automatic pitch and stump localisation.** A first version exists: a stumps detector (one match of training data) seeds calibration through `calibrate_cameras.py auto` and succeeds on 3 of 40 clips from other matches (`EVALUATION.md` §4f).
    - Add stumps labels from more matches (licence-checked Roboflow sets or own labels); recall and box-edge accuracy are the limits.
-   - Detect creases (white lines on the pitch) so one wicket plus the creases can calibrate when the near wicket is hidden.
-   - Load the seeds into the web calibration screen, so manual clicks become corrections rather than the only input.
+   - Crease registration from one wicket is implemented and works on synthetic frames, but hand-crafted line extraction fails on real broadcast creases (`EVALUATION.md` §4f). Next: a learned crease/keypoint detector (heatmaps for crease corners), trained on labelled frames.
+   - Done: *Auto-detect* in the web calibration panel places the landmarks for correction.
 4. **Delivery segmentation for broadcast.**
    - Filter by shot type (pitch view vs. replay or crowd); `suksham-cricket-frames` provides labels for this.
    - Detect bowl release using the DeepSportradar set, which is non-commercial.

@@ -203,6 +203,22 @@ def test_calibration_errors(client):
     assert r.status_code == 422
 
 
+def test_auto_calibration_endpoint(client, video_path):
+    assert client.post("/api/calibration/auto", json={"video_id": "missing"}).status_code == 404
+    with open(video_path, "rb") as fh:
+        vid = client.post("/api/videos", files={"file": ("auto.mp4", fh, "video/mp4")}).json()["id"]
+    r = client.post("/api/calibration/auto", json={"video_id": vid, "frame_index": 0})
+    if r.status_code == 503:  # stumps weights are not distributed with the repository
+        assert "cricket_stumps_best.pt" in r.json()["detail"]
+        return
+    assert r.status_code == 200
+    body = r.json()
+    assert body["method"] in ("two_wicket_stumps", "crease_registration", "seeds_only")
+    assert "never validated" in body["note"]
+    for p in body["points"]:
+        assert set(p) == {"name", "image"}
+
+
 def test_triangulation_endpoint(client):
     from ml.calibration.camera import look_at_camera
 

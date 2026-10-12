@@ -92,6 +92,45 @@ def create_calibration(body: CalibrationCreate, s: Session = Depends(db)):
     return to_dict(c)
 
 
+class AutoCalibrationRequest(BaseModel):
+    video_id: str
+    frame_index: int | None = Field(None, ge=0, description="calibrate this frame only; default: scan the clip")
+    scan_step: int = Field(5, ge=1, le=100)
+
+
+_STUMPS_MODEL: dict = {}
+
+
+@router.post("/calibration/auto")
+def auto_calibration(body: AutoCalibrationRequest, s: Session = Depends(db), cfg: Settings = Depends(settings)):
+    """Automatic landmark placement from the stumps detector (a seed for manual correction).
+
+    Nothing is stored: the response lists named landmark points for the calibration form, plus
+    the method, evidence and warnings. The user reviews the points and computes the calibration
+    through POST /api/calibration as usual.
+    """
+    from pathlib import Path
+
+    from ml.calibration.auto import auto_calibrate_video, landmark_points
+
+    v = get_or_404(s, Video, body.video_id)
+    weights = Path(__file__).resolve().parents[3] / "models" / "checkpoints" / "cricket_stumps_best.pt"
+    if not weights.is_file():
+        raise HTTPException(503, "Stumps detector weights (models/checkpoints/cricket_stumps_best.pt) are not installed")
+    if "model" not in _STUMPS_MODEL:
+        from ultralytics import YOLO
+
+        _STUMPS_MODEL["model"] = YOLO(str(weights))
+    path = cfg.videos_dir / v.stored_name
+    res = auto_calibrate_video(str(path), _STUMPS_MODEL["model"],
+                               frames=[body.frame_index] if body.frame_index is not None else None, scan_step=body.scan_step)
+    size = (v.meta["width"], v.meta["height"])
+    return {"method": res.method, "frame_index": res.frame_index, "points": landmark_points(res, size),
+            "evidence": res.evidence, "warnings": res.warnings, "stumps_boxes": res.stumps_boxes,
+            "focal_px": res.camera.K[0][0] if res.camera else None,
+            "note": "Automatic seed, never validated: check every point on the frame before computing."}
+
+
 @router.post("/calibration/import", status_code=201)
 def import_calibration(camera: CameraModel, video_id: str | None = None, s: Session = Depends(db)):
     camera.calibration_type = "imported"

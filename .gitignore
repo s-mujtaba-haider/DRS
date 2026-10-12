@@ -71,3 +71,4 @@ kaggle.json
 !models/checkpoints/cricket_stumps_best.json
 !outputs/reports/stumps_detector_eval_y11s_1280.json
 !outputs/reports/stumps_calibration_synth.json
+!outputs/reports/pitch_registration_synth.json

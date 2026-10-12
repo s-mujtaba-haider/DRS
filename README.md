@@ -13,7 +13,7 @@ An independent, locally-run research system for cricket ball tracking and **expe
 | Ball tracking (Kalman CA, gated Hungarian, RTS smoothing, fragment merge, camera-cut handling, reliability flag) | Implemented and tested on synthetic data. Real-footage quality limited by detection. |
 | 2D trajectory (robust polynomial + change point, BIC/LOO, prediction intervals) | Implemented and tested |
 | Camera calibration (chessboard intrinsics, PnP from pitch landmarks, approximate mode) | Implemented and tested |
-| Automatic calibration seed from detected stumps | **Experimental.** Stumps detector trained on one match (held-out P 0.58 / R 0.58). On 40 clips from other matches, 3 calibrated, all visually correct; 37 refused. Never marked validated. See `docs/EVALUATION.md` §4f. |
+| Automatic calibration seed from detected stumps (CLI `calibrate_cameras.py auto`, *Auto-detect* in the web calibration panel) | **Experimental.** Stumps detector trained on one match (held-out P 0.58 / R 0.58). On 40 clips from other matches, 3 calibrated, all visually correct; 37 refused. Never marked validated. See `docs/EVALUATION.md` §4f. |
 | Multi-view triangulation (sync association, consensus, covariance) | Implemented and tested on synthetic geometry. No real multi-view data processed. |
 | 3D flight model (gravity, drag, lift, bounce; monocular and multi-view fits) | Implemented. Benchmarked on synthetic deliveries. |
 | Experimental LBW engine (Monte Carlo, Law 36 rules layer, unknowns stay unknown) | Implemented. Benchmarked on synthetic data only. |

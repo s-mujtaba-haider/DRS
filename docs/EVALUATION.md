@@ -4,7 +4,7 @@ Every number here was measured in this repository on 2026-10-12. The raw outputs
 
 ## 1. Automated tests
 
-- `pytest`: 81 tests, all passing. They cover:
+- `pytest`: 84 tests, all passing. They cover:
   - video metadata, frame extraction, and empty or invalid files;
   - the detection schema, NMS, tiling, the motion detector and missing-weights errors;
   - Kalman initialisation, missing frames, outlier rejection, static clutter and camera cuts;
@@ -226,6 +226,33 @@ With both checks:
 - Automatic calibration works when both wickets are cleanly visible, and it now refuses rather than guesses otherwise.
 - Its coverage (3 of 40) is too low to replace manual clicks.
 - More stumps training data (better recall and edges) and crease detection (to calibrate from one wicket) are the next steps.
+
+**Crease registration from one wicket (experimental, off by default).**
+
+`ml/calibration/pitch_registration.py` fits the full pitch model (stumps plus every crease at both ends) to a white-line mask. It works like this:
+- A stumps box is axis-aligned, so it carries no perspective lean. One wicket therefore leaves both the focal length and the camera height free.
+- For each (focal, height) cell, the level camera is fitted to the stumps corners, and its pose is then refined against the creases with a chamfer distance.
+- The best candidates are re-ranked with a reverse (recall) term. Without that term, a far-away, long-lens camera can collapse both ends of the pitch onto one set of creases and still score well.
+- The final step refines focal length and pose together.
+
+Synthetic frames (`scripts/evaluate_pitch_registration.py`, `pitch_registration_synth.json`):
+- Setup: 40 random cameras, the near stumps hidden by an "umpire", and 1 px of noise on the far box edges.
+
+| | Cameras | Ground error near striker, median / p90 / max | Focal error median |
+|---|---|---|---|
+| All | 40 (0 failures) | 14 / 48 / 54 cm | 16% |
+| Accepted (crease inlier ratio ≥ 0.85, ≥ 40 bowler-end inliers) | 6 | 7.3 / 10.5 / 12 cm | 8% |
+
+**Real footage: negative result.** Even the visually correct two-wicket cameras (video061, video085, video223) matched only 13–33% of crease points within 2 px.
+- On these broadcasts the creases are often only 5–15 grey levels brighter than the pitch, about the same as the pitch texture. Players and worn ends hide much of the rest.
+- Three masks were tried: round top-hat, pitch-area statistics, and directional top-hat with shape filtering. None separated the creases reliably.
+- The registration is therefore **not used** by `calibrate_cameras.py auto` or the API unless `--creases` is passed.
+- A learned crease or keypoint detector would be needed to make it work on real footage.
+
+**In the web console:** *Auto-detect* on the calibration panel (`POST /api/calibration/auto`) places the standard landmarks on the frame.
+- With a two-wicket calibration, every landmark that projects inside the frame is placed.
+- Otherwise the four stumps corners are placed.
+- Nothing is stored. The user checks and corrects the points, then computes the calibration as before.
 
 ## 4c. Experiments that did not help (kept for the record)
 

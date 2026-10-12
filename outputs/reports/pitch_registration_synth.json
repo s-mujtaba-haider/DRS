@@ -1,0 +1,38 @@
+{
+ "benchmark": "crease registration from one wicket, synthetic frames",
+ "cameras": 40,
+ "failures": 0,
+ "acceptance_rule": {
+  "min_inlier_ratio": 0.85,
+  "min_bowler_end_inliers": 40
+ },
+ "all": {
+  "ground_err_m": {
+   "n": 40,
+   "median": 0.1377467320237172,
+   "p90": 0.47567904379928044,
+   "max": 0.5435833603837026
+  },
+  "abs_focal_rel_err": {
+   "n": 40,
+   "median": 0.16446044600990306,
+   "p90": 0.45134397038190266,
+   "max": 1.1990694926885666
+  }
+ },
+ "accepted": {
+  "ground_err_m": {
+   "n": 6,
+   "median": 0.07337726088281643,
+   "p90": 0.10549688278020923,
+   "max": 0.12033364941891705
+  },
+  "abs_focal_rel_err": {
+   "n": 6,
+   "median": 0.08225603628079803,
+   "p90": 0.15005268071515587,
+   "max": 0.16349768860239333
+  }
+ },
+ "caveat": "Clean synthetic frames; real footage adds clutter, worn and occluded creases, and detector error."
+}

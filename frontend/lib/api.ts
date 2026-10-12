@@ -170,6 +170,15 @@ export interface Calibration {
   correspondences: { points?: { name?: string; image: [number, number] }[]; per_point_error_px?: number[] };
   created_at: string;
 }
+export interface AutoCalibration {
+  method: "two_wicket_stumps" | "crease_registration" | "seeds_only";
+  frame_index: number;
+  points: { name: string; image: [number, number] }[];
+  evidence: Record<string, number>;
+  warnings: string[];
+  focal_px: number | null;
+  note: string;
+}
 export interface PointEstimate {
   mean: number[];
   std: number[];
@@ -325,6 +334,7 @@ export const api = {
   landmarks: () => request<{ frame: string; landmarks: Record<string, [number, number, number]> }>("/api/calibration/landmarks"),
   calibrations: (videoId: string) => request<Calibration[]>(`/api/calibration?video_id=${videoId}`),
   createCalibration: (body: Record<string, unknown>) => request<Calibration>("/api/calibration", json(body)),
+  autoCalibration: (body: { video_id: string; frame_index?: number }) => request<AutoCalibration>("/api/calibration/auto", json(body)),
   lbwList: (jobId: string) => request<LbwAnalysis[]>(`/api/lbw?job_id=${jobId}`),
   lbwAnalyze: (body: Record<string, unknown>) => request<LbwAnalysis>("/api/lbw/analyze", json(body)),
   contact: (jobId: string) => request<Record<string, unknown>>("/api/contact/analyze", json({ job_id: jobId })),

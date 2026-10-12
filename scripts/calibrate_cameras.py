@@ -8,7 +8,7 @@ Pose from pitch landmarks (JSON list of {"name": landmark, "image": [u, v]}):
 
 Without --intrinsics the focal length is estimated under stated assumptions (approximate mode).
 
-Automatic seed from detected stumps (behind-the-bowler view, both wickets visible):
+Automatic seed from detected stumps (behind-the-bowler view):
     python scripts/calibrate_cameras.py auto --video clip.mp4 [--frame 40] --out camera.json --overlay check.jpg
 
 The automatic result is approximate and never validated; check the overlay and correct the
@@ -56,6 +56,7 @@ def main() -> int:
     au.add_argument("--imgsz", type=int, default=1280)
     au.add_argument("--conf", type=float, default=0.25)
     au.add_argument("--max-rms", type=float, default=3.0, help="reject calibrations above this reprojection RMS (px)")
+    au.add_argument("--creases", action="store_true", help="also try the experimental crease registration (one wicket)")
     au.add_argument("--camera-id", default="main")
     au.add_argument("--out", required=True)
     au.add_argument("--overlay", help="write the frame with projected pitch markings for visual checking")
@@ -94,11 +95,6 @@ def main() -> int:
     return 0
 
 
-def _stumps_boxes(model, frame, imgsz: int, conf: float) -> list[list[float]]:
-    r = model.predict(frame, imgsz=imgsz, conf=conf, verbose=False)[0]
-    return [[*map(float, b), float(s)] for b, s in zip(r.boxes.xyxy.cpu().numpy(), r.boxes.conf.cpu().numpy())]
-
-
 def draw_pitch_overlay(frame: np.ndarray, cam, boxes) -> np.ndarray:
     """Projected stumps, creases and pitch edges (green) over the detected stumps boxes (red)."""
     from ml.calibration.pitch_geometry import PitchSpec, WicketSpec
@@ -127,53 +123,27 @@ def draw_pitch_overlay(frame: np.ndarray, cam, boxes) -> np.ndarray:
 def auto_calibrate(a) -> int:
     from ultralytics import YOLO
 
-    from ml.calibration.camera import CalibrationError
-    from ml.calibration.stumps_landmarks import calibrate_from_stumps, landmarks_from_stumps
+    from ml.calibration.auto import auto_calibrate_video
 
-    model = YOLO(a.weights)
-    cap = cv2.VideoCapture(a.video)
-    n = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-    frames = [a.frame] if a.frame is not None else list(range(0, n, a.scan_step))
-    # Calibrate every frame with a consistent wicket pair and keep the lowest reprojection error;
-    # without any, keep the best-scoring detections as manual-click seeds.
-    best, seeds = None, None  # (rms, idx, frame, boxes, cam, lm), (score, idx, frame, boxes)
-    for i in frames:
-        cap.set(cv2.CAP_PROP_POS_FRAMES, i)
-        ok, frame = cap.read()
-        if not ok:
-            continue
-        boxes = _stumps_boxes(model, frame, a.imgsz, a.conf)
-        h, w = frame.shape[:2]
-        try:
-            cam, lm = calibrate_from_stumps(boxes, (w, h), camera_id=a.camera_id, min_score=a.conf)
-        except CalibrationError:
-            cam = None
-        if cam is not None and cam.reprojection_rms_px <= a.max_rms and (best is None or cam.reprojection_rms_px < best[0]):
-            best = (cam.reprojection_rms_px, i, frame, boxes, cam, lm)
-        score = max((b[4] for b in boxes), default=-1.0)
-        if seeds is None or score > seeds[0]:
-            seeds = (score, i, frame, boxes)
-    if best is None and seeds is None:
-        print("ERROR: no readable frame")
-        return 2
-    if best:
-        _, idx, frame, boxes, cam, lm = best
-    else:
-        _, idx, frame, boxes = seeds
-        cam, lm = None, landmarks_from_stumps(boxes, min_score=a.conf)
-        lm.warnings.append(f"No frame gave a two-wicket calibration with reprojection RMS <= {a.max_rms} px")
-    report = {"video": a.video, "frame": idx, "stumps_boxes": boxes, "wickets_used": lm.wickets_used,
-              "landmark_seeds": lm.points, "assumptions": lm.assumptions, "warnings": lm.warnings,
-              "camera": cam.model_dump(mode="json") if cam else None}
-    if cam:
-        cam.save(a.out)
+    res = auto_calibrate_video(a.video, YOLO(a.weights), frames=[a.frame] if a.frame is not None else None,
+                               scan_step=a.scan_step, imgsz=a.imgsz, conf=a.conf, max_rms=a.max_rms, camera_id=a.camera_id,
+                               use_crease_registration=a.creases)
+    report = {"video": a.video, **res.report()}
+    if res.camera:
+        res.camera.save(a.out)
         report["camera_file"] = a.out
-    Path(a.out).with_suffix(".auto.json").write_text(json.dumps(report, indent=1))
-    if a.overlay:
-        cv2.imwrite(a.overlay, draw_pitch_overlay(frame, cam, boxes) if cam else frame)
-    print(json.dumps({k: v for k, v in report.items() if k not in ("landmark_seeds", "camera")}
-                     | ({"focal_px": cam.K[0][0], "reprojection_rms_px": cam.reprojection_rms_px} if cam else {}), indent=1))
-    return 0 if cam else 1
+    Path(a.out).with_suffix(".auto.json").write_text(json.dumps(report, indent=1, default=float))
+    if a.overlay and res.frame_index >= 0:
+        cap = cv2.VideoCapture(a.video)
+        cap.set(cv2.CAP_PROP_POS_FRAMES, res.frame_index)
+        ok, frame = cap.read()
+        if ok:
+            cv2.imwrite(a.overlay, draw_pitch_overlay(frame, res.camera, res.stumps_boxes) if res.camera else frame)
+    summary = {k: v for k, v in report.items() if k not in ("landmark_seeds", "camera")}
+    if res.camera:
+        summary |= {"focal_px": res.camera.K[0][0], "camera_centre_m": [round(float(c), 2) for c in res.camera.center_world]}
+    print(json.dumps(summary, indent=1, default=float))
+    return 0 if res.camera else 1
 
 
 if __name__ == "__main__":
