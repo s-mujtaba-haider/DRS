@@ -60,3 +60,7 @@ kaggle.json
 !outputs/reports/detector_eval_broadcast_bcv1_1280.json
 !outputs/reports/detector_eval_broadcast_bcv1_1920.json
 !outputs/reports/detector_eval_broadcast_y11s_1280_infer1920.json
+!outputs/reports/detector_eval_broadcast_mixv2_1280.json
+!outputs/reports/detector_eval_broadcast_mixv2_1920.json
+!outputs/reports/detector_eval_broadcast_mixv2_960.json
+!outputs/reports/detector_eval_kaggle_test_mixv2_1280.json

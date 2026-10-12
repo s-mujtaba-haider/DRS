@@ -9,7 +9,7 @@ An independent, locally-run research system for cricket ball tracking and **expe
 | Area | Status |
 |---|---|
 | Video ingestion (metadata, PTS timestamps, VFR detection, frame extraction) | Implemented and tested |
-| Ball detection | **Cricket-trained YOLO11s** (trained here on the CC0 Kaggle set with a leak-free re-split). Held-out test: P 0.91 / R 0.98. **On independent broadcast frames: P 0.64 / R 0.37**, so most tiny broadcast balls are still missed. Fallbacks: generic COCO and a motion heuristic. See `docs/MODEL_CARD.md`. |
+| Ball detection | **Cricket-trained YOLO11s v2**: trained on the CC0 Kaggle set, then self-trained on real broadcast clips using track-verified pseudo-labels. **Independent broadcast frames: P 0.62 / R 0.53 / AP 0.49** (v1: 0.64 / 0.37 / 0.38). About half of tiny broadcast balls are still missed. See `docs/EVALUATION.md` §4. |
 | Ball tracking (Kalman CA, gated Hungarian, RTS smoothing, fragment merge, camera-cut handling, reliability flag) | Implemented and tested on synthetic data. Real-footage quality limited by detection. |
 | 2D trajectory (robust polynomial + change point, BIC/LOO, prediction intervals) | Implemented and tested |
 | Camera calibration (chessboard intrinsics, PnP from pitch landmarks, approximate mode) | Implemented and tested |

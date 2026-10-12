@@ -49,7 +49,8 @@ def main() -> int:
 
     rng = np.random.default_rng(a.seed)
     clips = ROOT / "data" / "raw" / "hf-cricket-delivery-videos"
-    work = ROOT / "outputs" / "pseudo_tracking"
+    # Cache per model so a new round never reuses detections from older weights.
+    work = ROOT / "outputs" / "pseudo_tracking" / Path(a.weights).stem
     dst = ROOT / "data" / "processed" / a.name
     if dst.exists():
         shutil.rmtree(dst)

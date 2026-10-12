@@ -1,0 +1,31 @@
+{
+  "summary": {
+    "num_gt": 213,
+    "num_predictions": 928,
+    "score_threshold": 0.25,
+    "precision": 0.4659090909090909,
+    "recall": 0.5774647887323944,
+    "f1": 0.5157232704402516,
+    "ap_centre_match": 0.5282916821426571,
+    "true_positives": 123,
+    "false_positives": 141,
+    "false_negatives": 90,
+    "centre_error_px": {
+      "median": 0.9998001152230882,
+      "mean": 1.0234695081326561,
+      "p90": 1.9609684006186732
+    },
+    "gt_size_px": {
+      "median": 12.96149991320449,
+      "frac_lt_16px": 0.6948356807511737
+    },
+    "weights": "models/runs/ball_mix_v2_ft960/weights/best.pt",
+    "data": "data/processed/broadcast_seg_test/data.yaml",
+    "split": "test",
+    "images": 298,
+    "model_id": "yolo:best.pt",
+    "imgsz": 1920,
+    "tile": null,
+    "caveat": "Metrics apply only to this split's distribution; they do not establish accuracy on other footage."
+  }
+}

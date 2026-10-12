@@ -7,11 +7,12 @@
 | `yolo11s.pt` (COCO) | Ultralytics release, **AGPL-3.0** | COCO 2017. Uses class 32, "sports ball". | Used as a *generic fallback*. **Not cricket-trained.** On real broadcast clips it detects the ball in some close-ups (up to 0.90 confidence, observed), but it also fires on TV logos and misses the tiny ball in wide shots. |
 | Motion candidate heuristic `motion:3frame-diff-v1` | This repository | Not learned | A candidate generator only. Produces many false positives on real footage. |
 | `models/runs/smoke_synth` | `train_detector.py --smoke` | 46 synthetic frames, 2 epochs | **Pipeline smoke test only.** Test-split precision and recall are 0 (`outputs/reports/detector_eval_synth_smoke_test.json`). Never promoted. |
-| **`cricket_ball_best.pt`** (= `models/runs/ball_kaggle_y11s_1280/weights/best.pt`) | YOLO11s fine-tuned in this repo (AGPL-3.0 base) | Kaggle `kushagra3204/cricket-ball-dataset-for-yolo` (CC0): 1,440 train / 181 val / 179 test images after the leak-free re-split. 60 epochs at 1280 px, batch 8, AMP. Took 28.5 min on the RTX 3080 Ti. | **Active detector** (`auto` selects it). See the measured results below. Weights are not committed: reproduce with the commands below. |
+| `cricket_ball_v1_kaggle.pt` (v1, = `models/runs/ball_kaggle_y11s_1280/weights/best.pt`) | YOLO11s fine-tuned in this repo (AGPL-3.0 base) | Kaggle `kushagra3204/cricket-ball-dataset-for-yolo` (CC0): 1,440 train / 181 val / 179 test after the leak-free re-split; 60 epochs at 1280 px, batch 8, AMP; 28.5 min on the RTX 3080 Ti | Superseded by v2. Kept for comparison. Results below. |
+| **`cricket_ball_best.pt` = v2** (`models/runs/ball_mix_v2_ft960`) | v1 fine-tuned in this repo | Kaggle + 1,018 track-verified broadcast pseudo-label crops, 960 px, 50 epochs | **Active detector.** Broadcast test at 1280: P 0.62 / R 0.53 / AP 0.49 (v1: 0.64 / 0.37 / 0.38). Details in `docs/EVALUATION.md` §4d |
 
 The app chooses the detector at runtime and reports the choice in `/api/system/status`, in every job summary and in the UI. When no cricket-trained detector is installed, the UI says so.
 
-## `cricket_ball_best.pt`: measured results
+## v1 (`cricket_ball_v1_kaggle.pt`): measured results
 
 All results use a score threshold of 0.25 and centre-distance matching (≤ max(6 px, half the ball size)). Full numbers are in `outputs/reports/detector_eval_*.json` and `models/checkpoints/cricket_ball_best.json`.
 

@@ -121,6 +121,27 @@ On the same 5 unlabelled broadcast clips as in section 3:
 
 **Conclusion:** the in-domain detector is good, but detection of the small ball in broadcast footage remains weak (recall 0.37). The fix is broadcast-domain training data.
 
+## 4d. Self-training on real broadcast footage (v2, the current detector)
+
+**Method** (`scripts/pseudo_label_broadcast.py`):
+1. The v1 detector and the tracker are run over the 214 allowed broadcast clips. Zimbabwe series are excluded because they could overlap the test match.
+2. Detections that belong to **consistently moving tracks** become labels. A track qualifies with ≥ 8 observations, mean Kalman innovation ≤ 9 px and mean confidence ≥ 0.25.
+3. The result is 1,968 labels on 1,727 native-resolution crops, split by series: New Zealand v Pakistan for validation, the rest for training. A random sample of 48 crops was inspected and all showed a real ball.
+4. v1 was fine-tuned on Kaggle plus these labels at 960 px for 50 epochs.
+
+**Independent human-labelled broadcast test** (298 frames, 213 balls, IND v ZIM 2022; never used for training):
+
+| Model | Inference | P | R | F1 | AP |
+|---|---|---|---|---|---|
+| v1 (Kaggle only) | 1280 | 0.64 | 0.37 | 0.47 | 0.38 |
+| **v2 (Kaggle + track-verified broadcast)** | **1280** | **0.62** | **0.53** | **0.57** | **0.49** |
+| v2 | 1920 | 0.47 | 0.58 | 0.52 | 0.53 |
+| v2 | 960 | 0.62 | 0.42 | 0.50 | 0.42 |
+
+- In-domain Kaggle test for v2 at 1280: P 0.88, R 0.98, AP 0.93 (v1: 0.91 / 0.98 / 0.99).
+- Self-training gives a real-domain gain of **+42% recall and +29% AP** at about the same precision.
+- **Caveat:** pseudo-labels favour balls the previous model could already detect (self-training bias), and the test set is a single match.
+
 ## 4c. Experiments that did not help (kept for the record)
 
 **Copy-paste compositing (`scripts/build_broadcast_training_set.py`, `ml/datasets/composite.py`).**
