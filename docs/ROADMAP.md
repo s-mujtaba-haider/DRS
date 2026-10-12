@@ -2,12 +2,11 @@
 
 Ordered by expected impact on real-footage usefulness.
 
-1. **A cricket ball detector.** This is the biggest blocker.
-   - Add a Kaggle token and download `kushagra3204/cricket-ball-dataset-for-yolo` (CC0, 1,778 images).
-   - Optionally add licence-checked Roboflow exports.
-   - Label 300–500 frames from your own target footage with `annotate_video.py` and UI corrections, keeping whole videos as separate splits.
-   - Fine-tune YOLO11s at 1280 px and evaluate on held-out *videos*, then promote the model.
-   - Consider a temporal heatmap model (TrackNet-style, using three stacked frames) for blurred, tiny balls.
+1. **Broadcast-domain ball detection.** A baseline exists (in-domain R 0.98, broadcast R 0.37).
+   - Label 300–500 small-ball frames from your own broadcast footage (`annotate_video.py` plus UI corrections; split by video).
+   - Optionally add licence-checked Roboflow broadcast sets.
+   - Retrain and re-evaluate on `broadcast_seg_test`, keeping it test-only.
+   - Consider a temporal heatmap model (TrackNet-style, three stacked frames) for blurred, tiny balls.
 2. **Tracking evaluation on real labelled sequences.** Measure continuity, fragmentation, false associations and position error with the metrics already used for detection.
 3. **Automatic pitch and stump localisation.**
    - Train stumps and crease detection, using the Kaggle segmentation set or Roboflow stumps sets.

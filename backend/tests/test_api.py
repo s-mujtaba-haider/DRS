@@ -184,7 +184,10 @@ def test_cancel_and_status_transitions(client, video_path):
     assert client.post(f"/api/analysis/jobs/{job['id']}/cancel").status_code == 409
 
 
-def test_cricket_detector_missing_weights_fails_clearly(client, video_path):
+def test_cricket_detector_missing_weights_fails_clearly(client, video_path, monkeypatch, tmp_path):
+    import ml.pipeline
+
+    monkeypatch.setattr(ml.pipeline, "CRICKET_WEIGHTS", tmp_path / "absent.pt")
     v = _upload(client, video_path).json()
     job = client.post("/api/analysis/jobs", json={"video_id": v["id"], "detector": "cricket"}).json()
     j = _wait(client, job["id"])

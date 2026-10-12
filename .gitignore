@@ -28,6 +28,11 @@ outputs/reports/*
 !outputs/reports/inference_benchmark_docker_rtx3080ti.json
 !outputs/reports/inference_benchmark_native_rtx3080ti.json
 !outputs/reports/detector_eval_synth_smoke_test.json
+!outputs/reports/detector_eval_kaggle_test_y11s_1280.json
+!outputs/reports/detector_eval_broadcast_y11s_1280.json
+!outputs/reports/detector_eval_broadcast_y11s_tile640.json
+!outputs/reports/detector_eval_broadcast_y11s_tile960.json
+!models/checkpoints/cricket_ball_best.json
 storage/
 storage-docker/
 *.mp4

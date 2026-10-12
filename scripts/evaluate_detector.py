@@ -27,6 +27,7 @@ def main() -> int:
     ap.add_argument("--conf", type=float, default=0.01)
     ap.add_argument("--threshold", type=float, default=0.25, help="score threshold for P/R/F1")
     ap.add_argument("--match-px", type=float, default=6.0)
+    ap.add_argument("--tile", type=int, default=None, help="tiled native-resolution inference (tile size px)")
     ap.add_argument("--name", default="eval")
     a = ap.parse_args()
 
@@ -44,7 +45,7 @@ def main() -> int:
     if not imgs:
         print(f"No images in {img_dir}")
         return 1
-    det = YoloBallDetector(a.weights, conf=a.conf, imgsz=a.imgsz, batch_size=1)
+    det = YoloBallDetector(a.weights, conf=a.conf, imgsz=a.imgsz, batch_size=8 if a.tile else 1, tile_size=a.tile)
     per_frame, sizes = [], []
     for i, p in enumerate(imgs):
         im = cv2.imread(str(p))
@@ -62,6 +63,7 @@ def main() -> int:
         per_frame.append(match_frame(preds, gts, a.match_px))
     summary = summarize(per_frame, a.threshold, sizes)
     summary.update(weights=a.weights, data=a.data, split=a.split, images=len(imgs), model_id=det.model_id,
+                   imgsz=a.imgsz, tile=a.tile,
                    caveat="Metrics apply only to this split's distribution; they do not establish accuracy on other footage.")
     out = ROOT / "outputs" / "reports" / f"detector_eval_{a.name}.json"
     out.parent.mkdir(parents=True, exist_ok=True)

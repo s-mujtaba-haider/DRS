@@ -9,7 +9,7 @@ An independent, locally-run research system for cricket ball tracking and **expe
 | Area | Status |
 |---|---|
 | Video ingestion (metadata, PTS timestamps, VFR detection, frame extraction) | Implemented and tested |
-| Ball detection | Pipeline implemented and tested. **No cricket-trained detector yet** (training data needs a Kaggle/Roboflow key, see below). Available now: generic COCO "sports ball" YOLO11 and a motion heuristic. Neither tracks the ball reliably in broadcast footage (measured, see `docs/EVALUATION.md`). |
+| Ball detection | **Cricket-trained YOLO11s** (trained here on the CC0 Kaggle set with a leak-free re-split). Held-out test: P 0.91 / R 0.98. **On independent broadcast frames: P 0.64 / R 0.37**, so most tiny broadcast balls are still missed. Fallbacks: generic COCO and a motion heuristic. See `docs/MODEL_CARD.md`. |
 | Ball tracking (Kalman CA, gated Hungarian, RTS smoothing, fragment merge, camera-cut handling, reliability flag) | Implemented and tested on synthetic data. Real-footage quality limited by detection. |
 | 2D trajectory (robust polynomial + change point, BIC/LOO, prediction intervals) | Implemented and tested |
 | Camera calibration (chessboard intrinsics, PnP from pitch landmarks, approximate mode) | Implemented and tested |
@@ -101,16 +101,15 @@ python scripts\evaluate_trajectory_synth.py --limit 120 [--offset 120]
 python scripts\benchmark_inference.py VIDEO
 ```
 
-## Getting a real cricket ball detector (the main open item)
+## The cricket ball detector
 
-The most useful verified dataset, **Cricket Ball Dataset for YOLO**, has 1,778 images under CC0 and needs a Kaggle API token:
+Weights are not committed. Reproduce them (about 30 min on an RTX 3080 Ti) with the commands in [`docs/MODEL_CARD.md`](docs/MODEL_CARD.md).
 
-1. Go to kaggle.com, then Settings, then API, and click *Create New Token*. Save the downloaded `kaggle.json` to `%USERPROFILE%\.kaggle\kaggle.json`.
-2. `python scripts\download_datasets.py --only kaggle-kushagra-ball-yolo`
-3. `python scripts\prepare_datasets.py yolo-dir data\raw\kaggle-kushagra-ball-yolo --name ball_kaggle --origin human`
-4. `python scripts\train_detector.py --data data\processed\ball_kaggle\data.yaml --smoke` (pipeline check), then a baseline run without `--smoke`
-5. `python scripts\evaluate_detector.py ...` on the test split, **and** on frames you label from your own target footage (`annotate_video.py`).
-6. Use `--promote` only after that evaluation. It copies the model to `models/checkpoints/cricket_ball_best.pt`, which the app then uses automatically.
+Kaggle downloads need an API token. Set `KAGGLE_API_TOKEN`, or save the token to `%USERPROFILE%\.kaggle\access_token`. **Never commit it.**
+
+The biggest remaining gain is **broadcast-domain training data**:
+1. Label frames from your own footage with `annotate_video.py`, plus UI corrections.
+2. Build a dataset split by video, retrain, and re-evaluate on `broadcast_seg_test`, which must stay test-only.
 
 ## Tests
 

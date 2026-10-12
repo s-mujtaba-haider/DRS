@@ -1,0 +1,91 @@
+{
+  "name": "ball_kaggle_y11s_1280",
+  "base_model": "yolo11s.pt",
+  "classes": [
+    "ball"
+  ],
+  "imgsz": 1280,
+  "epochs": 60,
+  "train_time_s": 1713.1,
+  "smoke_test": false,
+  "purpose": "baseline cricket-ball detector, Kaggle CC0 set with leak-free re-split",
+  "val_metrics": {
+    "metrics/precision(B)": 0.897209477731527,
+    "metrics/recall(B)": 0.9062440672939827,
+    "metrics/mAP50(B)": 0.9380184132384192,
+    "metrics/mAP50-95(B)": 0.5877541519565928,
+    "fitness": 0.5877541519565928
+  },
+  "dataset": "data\\processed\\ball_kaggle\\data.yaml",
+  "dataset_label_origins": "see provenance.csv",
+  "warning": "Validation metrics only; evaluate on a held-out test split (scripts/evaluate_detector.py) and on real target footage before use.",
+  "evaluations": {
+    "kaggle_heldout_test (in-domain, leak-free re-split)": {
+      "num_gt": 188,
+      "precision": 0.9064039408866995,
+      "recall": 0.9787234042553191,
+      "f1": 0.9411764705882353,
+      "ap_centre_match": 0.9905128670714668,
+      "false_positives": 19,
+      "false_negatives": 4,
+      "centre_error_px": {
+        "median": 2.5341413844079526,
+        "mean": 5.224171519591311,
+        "p90": 10.720913750289082
+      },
+      "gt_size_px": {
+        "median": 69.49810585923257,
+        "frac_lt_16px": 0.0425531914893617
+      },
+      "imgsz": null,
+      "tile": null
+    },
+    "broadcast_seg_test full-frame 1280 (independent domain)": {
+      "num_gt": 213,
+      "precision": 0.639344262295082,
+      "recall": 0.36619718309859156,
+      "f1": 0.4656716417910448,
+      "ap_centre_match": 0.3797667754717921,
+      "false_positives": 44,
+      "false_negatives": 135,
+      "centre_error_px": {
+        "median": 1.3466440955766112,
+        "mean": 1.407680167347374,
+        "p90": 2.083657888167709
+      },
+      "gt_size_px": {
+        "median": 12.96149991320449,
+        "frac_lt_16px": 0.6948356807511737
+      },
+      "imgsz": null,
+      "tile": null
+    },
+    "broadcast_seg_test tiled 640": {
+      "num_gt": 213,
+      "precision": 0.4557522123893805,
+      "recall": 0.4835680751173709,
+      "f1": 0.46924829157175396,
+      "ap_centre_match": 0.36567627765544564,
+      "false_positives": 123,
+      "false_negatives": 110,
+      "centre_error_px": {
+        "median": 0.789873716488921,
+        "mean": 0.9257625641202649,
+        "p90": 1.59695638101848
+      },
+      "gt_size_px": {
+        "median": 12.96149991320449,
+        "frac_lt_16px": 0.6948356807511737
+      },
+      "imgsz": 640,
+      "tile": 640
+    }
+  },
+  "promoted": "2026-10-12",
+  "license_note": "Fine-tuned from Ultralytics YOLO11s (AGPL-3.0); training data CC0-1.0 (Kaggle kushagra3204).",
+  "known_limitations": [
+    "Training images are mostly close-ups (median ball 66 px); broadcast balls are ~7-13 px",
+    "Independent broadcast recall 0.37 at score 0.25 (precision 0.64): most balls in wide shots are missed",
+    "Broadcast test set is one match (IND v ZIM 2022); other broadcasters/lighting untested"
+  ]
+}

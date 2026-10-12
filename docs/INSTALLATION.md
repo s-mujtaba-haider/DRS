@@ -33,7 +33,14 @@ On Windows 11 with Smart App Control enforced, the first import of PyTorch can f
 .\.venv\Scripts\python -c "from ultralytics import YOLO; YOLO('models/checkpoints/yolo11s.pt')"   # generic COCO weights
 ```
 
-Kaggle datasets need `%USERPROFILE%\.kaggle\kaggle.json` (from Kaggle, Settings, API, Create New Token). Never paste keys into chat or commit them.
+Kaggle datasets need an API token (from Kaggle, Settings, API, Create New Token). Supply it in one of three ways:
+- set `KAGGLE_API_TOKEN` in the shell that runs the script;
+- save it to `%USERPROFILE%\.kaggle\access_token`;
+- for legacy keys, use `kaggle.json`.
+
+Never commit it. Revoke and recreate it if it is ever exposed.
+
+To rebuild the cricket-ball detector, run the commands in `docs/MODEL_CARD.md`. It takes about 30 minutes on an RTX 3080 Ti.
 
 ## 3. Run
 

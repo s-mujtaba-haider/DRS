@@ -87,6 +87,25 @@ Test-split results (`detector_eval_synth_smoke_test.json`): precision 0.00, reca
 
 This verifies that training, checkpointing, model cards and evaluation run end to end. **The model is not usable** and was not promoted.
 
+## 4b. Cricket-ball detector (YOLO11s fine-tuned on the Kaggle CC0 set)
+
+- **Leakage found and fixed.** The dataset's own splits share 112 identical files between train and val/test, so scores on its official test split would be inflated. All splits were rebuilt with `--resplit`, which groups images by filename and dHash before splitting.
+- **Training:** 60 epochs at 1280 px took 28.5 min. Validation precision 0.90, recall 0.91, mAP50 0.94.
+
+| Test set | P | R | F1 | AP |
+|---|---|---|---|---|
+| Kaggle held-out test (179 images, 188 balls, median 69 px) | 0.91 | 0.98 | 0.94 | 0.99 |
+| Independent broadcast set (298 frames, 213 balls, median 13 px), full frame | 0.64 | 0.37 | 0.47 | 0.38 |
+| Same, tiled 640 | 0.46 | 0.48 | 0.47 | 0.37 |
+| Same, tiled 960 | 0.43 | 0.50 | 0.46 | 0.36 |
+
+On the same 5 unlabelled broadcast clips as in section 3:
+- Candidate tracks fell from 80–130 per clip to 3–8.
+- **2 of 5** primary tracks pass the consistency checks. video003 was visually confirmed to be the real ball (17 of 18 frames).
+- 3 of 5 are still unreliable.
+
+**Conclusion:** the in-domain detector is good, but detection of the small ball in broadcast footage remains weak (recall 0.37). The fix is broadcast-domain training data.
+
 ## 5. GPU inference throughput (YOLO11s, 1080p input, RTX 3080 Ti)
 
 | imgsz | batch | precision | Docker (Linux) fps | Native Windows fps | Peak VRAM |

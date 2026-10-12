@@ -7,8 +7,9 @@ These limitations are measured or known. They are not hypothetical.
 - The **real-world accuracy of every decision output is unknown.** No dataset with independent LBW or ball-tracking ground truth on real footage was available.
 
 ## Detection (the weakest component)
-- **No cricket-trained ball detector is installed.** The training data needs a Kaggle or Roboflow key (see the README).
-- **Generic COCO "sports ball" plus the motion heuristic, on 5 real broadcast clips** (1080p, 25 fps): every primary track was flagged *unreliable*, with mean innovation of 47–616 px. These are not ball tracks. The COCO model does detect the ball in some close-ups, but it also fires on static TV logos.
+- **The cricket-trained detector is weak on broadcast footage.** On independent broadcast frames it reaches recall 0.37 and precision 0.64, against 0.98 / 0.91 in-domain. The training images are mostly close-ups.
+- With it, 2 of 5 real broadcast clips produced a consistent ball track, and 3 of 5 did not.
+- Generic COCO plus motion failed on all 5 clips (mean innovation 47–616 px).
 - **The motion heuristic** is confused by players, the bat, fielders and camera motion. It works on simple synthetic scenes.
 - **Broadcast footage** cuts between cameras, zooms and overlays graphics:
   - Cuts are detected heuristically and tracks are never joined across them.
