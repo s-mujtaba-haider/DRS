@@ -7,7 +7,8 @@ gate_chi2: 9.21              # 99% gate, 2 dof
 max_speed_px_s: 6000.0
 max_consecutive_misses: 5
 min_hits_to_confirm: 3
-spawn_min_confidence: 0.05
+spawn_min_confidence: 0.05   # hysteresis (spawn > extend) is available but measured worse on broadcast clips
+extend_min_confidence: 0.05
 max_tracks: 40
 min_displacement_px: 20.0    # drops static clutter (logos, stumps)
 merge_max_gap_frames: 6

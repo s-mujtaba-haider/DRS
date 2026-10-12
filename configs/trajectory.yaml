@@ -3,5 +3,6 @@ gravity_mps2: 9.80665
 drag_coefficient_cd: 0.4          # fixed; c = rho*Cd*A/(2m) ~ 0.0062 1/m for a men's ball
 air_density_kg_m3: 1.225
 lift_prior_sigma_mps2: 3.0        # extra vertical acceleration (Magnus/seam), fitted with prior N(0, 3^2)
+swing_prior_sigma_mps2: 2.0       # lateral swing/drift acceleration, fitted with prior N(0, 2^2)
 bounce_speed_retention_prior: [0.8, 0.15]   # along-pitch speed after/before bounce ~ N(0.8, 0.15^2)
 apparent_radius_sigma_px: 1.0     # ball-size depth cue noise for real detections

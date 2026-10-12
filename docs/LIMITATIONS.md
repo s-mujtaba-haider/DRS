@@ -35,13 +35,13 @@ These limitations are measured or known. They are not hypothetical.
 - Post-bounce depth along a behind-the-bowler camera's line of sight is poorly observable, and the covariance shows it.
 - **Approximate calibration** (focal length estimated from landmarks) assumes the principal point at the image centre, square pixels and no lens distortion. With unvalidated calibration the engine will not give a definite verdict by default.
 - **On the cricket-synth benchmark** (known camera, 1 px noise, 120 held-out clips; see `EVALUATION.md`):
-  - Median stump-plane error is about 8 cm, with p90 about 38 cm and outliers of metres.
-  - About half the deliveries come out `INCONCLUSIVE`.
-  - **No delivery that would hit the stumps received a definite `PROJECTED_TO_HIT`.** In this setup the engine is conservative to the point of not confirming hits.
+  - Median stump-plane error is about 6 cm, with p90 about 26 cm and occasional outliers of metres.
+  - About 40% of deliveries come out `INCONCLUSIVE`. There are no confident errors.
+  - **Only 1 of 20 deliveries that would hit the stumps received a definite `PROJECTED_TO_HIT`.** The engine remains conservative on hits.
 - These are synthetic results with an exactly known camera. Real calibration error, detector noise and motion blur will make results worse.
 
 ## Uncertainty calibration
-- The covariance inflation factor (×6) was tuned to reach about 90% interval coverage on one set of 120 synthetic clips, then checked on a separate 120 clips.
+- The covariance inflation factor (×2, with the swing model) was tuned to reach about 90% interval coverage on one set of 120 synthetic clips. On a separate 120 clips coverage was 0.87.
 - It has not been validated on real deliveries.
 
 ## Rules layer

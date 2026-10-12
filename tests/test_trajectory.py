@@ -74,7 +74,7 @@ def test_monocular_fit_reprojects_and_reports_uncertainty():
     uv = d.uv + rng.normal(0, 0.7, d.uv.shape)
     # The generating model has no drag or lift, so fit with matching physics.
     fit = fit_to_pixels(d.camera, d.times, uv, sigma_px=1.0, ball_radius=d.model.ball_radius, drag_c=0.0,
-                        lift_prior_sigma=None)
+                        lift_prior_sigma=None, swing_prior_sigma=None)
     assert fit.mode == "monocular_approximate"
     assert fit.residual_rms < 1.5
     assert any("Monocular" in r for r in fit.reasons)
@@ -98,10 +98,10 @@ def test_monocular_radius_cue_and_lift_are_reported():
     radius = d.camera.K_np[0, 0] * d.model.ball_radius / depth
     fit = fit_to_pixels(d.camera, d.times, d.uv, sigma_px=1.0, ball_radius=d.model.ball_radius, radius_px=radius,
                         radius_sigma_px=0.5)
-    assert len(fit.model.theta) == 10  # p0, v0, v1, a_lift
+    assert len(fit.model.theta) == 11  # p0, v0, v1, a_swing, a_lift
     assert any("radius" in r for r in fit.reasons)
-    assert any("lift" in r for r in fit.reasons)
-    assert abs(fit.model.a_lift) < 3.0
+    assert any("lift" in r for r in fit.reasons) and any("swing" in r for r in fit.reasons)
+    assert abs(fit.model.a_lift) < 3.0 and abs(fit.model.a_swing) < 2.0
 
 
 def test_unobservable_parameters_are_uncertain_not_certain():

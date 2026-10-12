@@ -8,6 +8,6 @@ n_samples: 2000
 require_validated_calibration_for_definite: true
 max_projection_distance_m: 3.5
 alternative_drag_scale: 1.5
-covariance_inflation: 6.0          # calibrated for ~90% interval coverage on cricket-synth (docs/EVALUATION.md)
+covariance_inflation: 2.0          # calibrated for ~90% interval coverage on cricket-synth (docs/EVALUATION.md)
 rules:
   in_line_any_part_of_ball: true

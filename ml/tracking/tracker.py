@@ -38,7 +38,11 @@ class TrackerConfig:
     max_speed_px_s: float = 6000.0
     max_consecutive_misses: int = 5
     min_hits_to_confirm: int = 3
+    # Optional hysteresis: only detections >= spawn_min_confidence may start a track; weaker ones
+    # (>= extend_min_confidence) may only extend an established track. Off by default: on real
+    # broadcast clips spawn=0.25 lost low-confidence ball tracks (2 -> 1 of 5 reliable; docs/EVALUATION.md).
     spawn_min_confidence: float = 0.05
+    extend_min_confidence: float = 0.05
     max_tracks: int = 40
     min_displacement_px: float = 20.0
     merge_max_gap_frames: int = 6
@@ -90,6 +94,10 @@ class BallTracker:
             cost = np.full((len(active), len(dets)), 1e6)
             for i, h in enumerate(active):
                 for j, d in enumerate(dets):
+                    if d.confidence < cfg.extend_min_confidence:
+                        continue
+                    if d.confidence < cfg.spawn_min_confidence and h.hits < 2:
+                        continue  # weak detections only extend established tracks
                     z = np.asarray(d.center)
                     d2 = mahalanobis2(h.kf, z, self._R(d))
                     if d2 > cfg.gate_chi2 and h.hits > 1:

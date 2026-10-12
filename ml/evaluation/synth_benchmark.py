@@ -84,7 +84,7 @@ def true_crossing(times: np.ndarray, X: np.ndarray) -> tuple[float, np.ndarray] 
 
 def evaluate_clip(d: dict, impact_y: float = 1.5, pixel_noise: float = 1.0, seed: int = 0,
                   lbw_cfg: LbwConfig | None = None, use_radius: bool = True, radius_noise: float = 0.5,
-                  use_prior: bool = True) -> ClipResult:
+                  use_prior: bool = True, swing_sigma: float | None = None) -> ClipResult:
     rig = d["camera"]["rig"]
     res = ClipResult(d["clip_id"], rig, "ok")
     frames = [f for f in d["frames"] if f["ball_in_scene"] and f["world_m"] is not None]
@@ -128,7 +128,8 @@ def evaluate_clip(d: dict, impact_y: float = 1.5, pixel_noise: float = 1.0, seed
     try:
         fit = fit_to_pixels(cam, t[before], uv, sigma_px=max(pixel_noise, 0.5), ball_radius=r, radius_px=radius,
                             radius_sigma_px=max(radius_noise, 0.25),
-                            bounce_retention_prior=(0.8, 0.15) if use_prior else None)
+                            bounce_retention_prior=(0.8, 0.15) if use_prior else None,
+                            swing_prior_sigma=swing_sigma)
     except InsufficientObservations as exc:
         res.status = "insufficient_observations"
         res.notes.append(str(exc))

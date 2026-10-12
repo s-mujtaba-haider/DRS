@@ -106,3 +106,19 @@ def test_shot_cut_detector():
     green[:] = (40, 140, 40)
     crowd = np.random.default_rng(0).integers(0, 255, (90, 160, 3), dtype=np.uint8)
     assert [d.is_cut(green), d.is_cut(green), d.is_cut(crowd), d.is_cut(crowd)] == [False, False, True, False]
+
+
+def test_hysteresis_weak_detections_extend_but_do_not_spawn():
+    from ml.tracking.tracker import TrackerConfig
+
+    cfg = TrackerConfig(spawn_min_confidence=0.25, extend_min_confidence=0.05)
+    t, x, y = _ball_path()
+    frames, dets = _dets(t, x, y, conf=0.6)
+    # Frames 10-20 have only weak detections of the ball: they should still extend the track.
+    weak = [d.model_copy(update={"confidence": 0.1}) if 10 <= d.frame_index <= 20 else d for d in dets]
+    res = BallTracker(cfg).run(frames, weak)
+    obs = {p.frame_index for p in res.tracks[0].points if p.kind == "observed"}
+    assert set(range(10, 21)) <= obs
+    # Weak detections alone never create a track.
+    _, only_weak = _dets(t, x, y, conf=0.1)
+    assert BallTracker(cfg).run(frames, only_weak).tracks == []

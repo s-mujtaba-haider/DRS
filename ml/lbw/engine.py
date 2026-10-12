@@ -48,7 +48,7 @@ class LbwConfig(BaseModel):
     # Multiplies the fitted parameter covariance before Monte Carlo sampling, to account for model
     # discrepancy (spin, seam, drag variation) that the measurement covariance does not capture.
     # Calibrated against empirical interval coverage on the cricket-synth benchmark (docs/EVALUATION.md).
-    covariance_inflation: float = 6.0
+    covariance_inflation: float = 2.0
     rules: RulesConfig = Field(default_factory=RulesConfig)
 
 

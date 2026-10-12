@@ -2,28 +2,30 @@
   "summary": {
     "num_clips": 120,
     "status_counts": {
-      "ok": 99,
-      "no_projection": 21
+      "ok": 107,
+      "no_projection": 13
     },
-    "num_with_projection": 99,
+    "num_with_projection": 107,
     "stump_plane_error_m": {
-      "median": 0.068421530087089,
-      "mean": 0.2888317080194862,
-      "p90": 0.24611486136505814,
-      "max": 12.361730630805027
+      "median": 0.06359839223874063,
+      "mean": 0.10648535582484832,
+      "p90": 0.16433906191594733,
+      "max": 0.9483702478985383
     },
-    "interval_90_empirical_coverage": 0.9090909090909091,
+    "interval_90_empirical_coverage": 0.9252336448598131,
     "verdict_confusion": {
       "true_hit": {
-        "INCONCLUSIVE": 15
+        "INCONCLUSIVE": 14,
+        "PROJECTED_TO_HIT": 1
       },
       "true_miss": {
-        "PROJECTED_TO_MISS": 56,
-        "INCONCLUSIVE": 49
+        "PROJECTED_TO_MISS": 81,
+        "INSUFFICIENT_DATA": 1,
+        "INCONCLUSIVE": 23
       }
     },
-    "inconclusive_rate": 0.5333333333333333,
-    "definite_verdicts": 56,
+    "inconclusive_rate": 0.30833333333333335,
+    "definite_verdicts": 82,
     "definite_verdict_accuracy": 1.0,
     "false_hit": 0,
     "false_miss": 0,
@@ -37,9 +39,10 @@
     "radius_cue": true,
     "radius_noise_px": 0.5,
     "bounce_prior": true,
-    "covariance_inflation": 6.0,
+    "covariance_inflation": 2.0,
+    "swing_sigma": 2.0,
     "clip_offset": 0,
-    "runtime_s": 538.7373565999987,
+    "runtime_s": 531.0275143999988,
     "caveat": "Synthetic data with a known camera. Measures trajectory/projection layers only; not evidence of real-world accuracy."
   },
   "clips": [
@@ -53,15 +56,15 @@
         0.7706236095460657
       ],
       "pred_crossing_xz": [
-        0.6076979841155896,
-        0.7634077541800701
+        0.6071278243884776,
+        0.7645767970225521
       ],
-      "crossing_error_m": 0.03520529968999205,
+      "crossing_error_m": 0.03554611873084967,
       "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 0.8366472755897111,
+      "projection_distance_m": 0.8482515257964933,
       "notes": []
     },
     {
@@ -74,15 +77,15 @@
         0.35800582355304295
       ],
       "pred_crossing_xz": [
-        0.2133396336954465,
-        0.30371765729285816
+        0.21621984757384483,
+        0.26434940701189324
       ],
-      "crossing_error_m": 0.06835003948178628,
+      "crossing_error_m": 0.10365113765928471,
       "within_90pct_interval": true,
       "true_hit": false,
-      "verdict": "INCONCLUSIVE",
-      "p_hit": 0.156,
-      "projection_distance_m": 1.8936348276047954,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.024,
+      "projection_distance_m": 2.1669817363145683,
       "notes": []
     },
     {
@@ -95,15 +98,15 @@
         0.5398923586559068
       ],
       "pred_crossing_xz": [
-        -0.9064500368626404,
-        0.5271992006397314
+        -0.9146062224501158,
+        0.535788625874158
       ],
-      "crossing_error_m": 0.01295270448366559,
+      "crossing_error_m": 0.006923488981269404,
       "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 0.9826330124236862,
+      "projection_distance_m": 1.1637342357540186,
       "notes": []
     },
     {
@@ -116,15 +119,15 @@
         0.5298373608904494
       ],
       "pred_crossing_xz": [
-        -0.7397721069035194,
-        0.5793988673763573
+        -0.7313481893902615,
+        0.5835111953141698
       ],
-      "crossing_error_m": 0.068421530087089,
-      "within_90pct_interval": true,
+      "crossing_error_m": 0.07727707042960125,
+      "within_90pct_interval": false,
       "true_hit": false,
       "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 0.5566007229892062,
+      "projection_distance_m": 0.5252383529416734,
       "notes": []
     },
     {
@@ -137,15 +140,15 @@
         1.1620478653785666
       ],
       "pred_crossing_xz": [
-        2.139695889455127,
-        1.175509339698735
+        2.062937675192969,
+        1.1938148130186168
       ],
-      "crossing_error_m": 0.026017338880084017,
+      "crossing_error_m": 0.06307730392201573,
       "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 1.7989238379921364,
+      "projection_distance_m": 0.8473474927910736,
       "notes": []
     },
     {
@@ -158,15 +161,15 @@
         0.38375965944887935
       ],
       "pred_crossing_xz": [
-        -0.2953387642830243,
-        0.38257343453505066
+        -0.25493193158318783,
+        0.5001671767322102
       ],
-      "crossing_error_m": 0.047427908940634526,
+      "crossing_error_m": 0.14581853715988852,
       "within_90pct_interval": true,
       "true_hit": false,
-      "verdict": "INCONCLUSIVE",
-      "p_hit": 0.004,
-      "projection_distance_m": 1.5856915891560484,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": 0.5430542539148749,
       "notes": []
     },
     {
@@ -179,15 +182,15 @@
         0.6439132523460736
       ],
       "pred_crossing_xz": [
-        -0.7619039461125328,
-        0.6906288817209898
+        -0.7638737737571846,
+        0.6900974969531799
       ],
-      "crossing_error_m": 0.04902885563434131,
+      "crossing_error_m": 0.04795532036512084,
       "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 1.1266503360158715,
+      "projection_distance_m": 1.1340866309787807,
       "notes": []
     },
     {
@@ -200,36 +203,33 @@
         0.7214551873153985
       ],
       "pred_crossing_xz": [
-        2.267617122958841,
-        0.7424471045034615
+        2.356285191952855,
+        0.7099198114296155
       ],
-      "crossing_error_m": 0.06501631836339075,
+      "crossing_error_m": 0.029484068405331708,
       "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 1.2228172826755583,
+      "projection_distance_m": 1.5889635923219243,
       "notes": []
     },
     {
       "clip_id": "extra_200_000008",
       "rig": "front_on_stump",
-      "status": "ok",
+      "status": "no_projection",
       "n_obs": 32,
       "true_crossing_xz": [
         1.0010274317532895,
         0.8092803849907425
       ],
-      "pred_crossing_xz": [
-        0.935872804784739,
-        0.871317134054782
-      ],
-      "crossing_error_m": 0.08996490232221431,
-      "within_90pct_interval": true,
+      "pred_crossing_xz": null,
+      "crossing_error_m": null,
+      "within_90pct_interval": null,
       "true_hit": false,
       "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 1.047490162121099,
+      "projection_distance_m": null,
       "notes": []
     },
     {
@@ -242,15 +242,15 @@
         0.3754316384006804
       ],
       "pred_crossing_xz": [
-        -0.7659564067325927,
-        0.47049126276113973
+        -0.8235452543248156,
+        0.34109493495455256
       ],
-      "crossing_error_m": 0.10249814782308321,
-      "within_90pct_interval": false,
+      "crossing_error_m": 0.03936669885137923,
+      "within_90pct_interval": true,
       "true_hit": false,
-      "verdict": "INCONCLUSIVE",
+      "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 0.8496569443835746,
+      "projection_distance_m": 1.8938278677763902,
       "notes": []
     },
     {
@@ -266,8 +266,8 @@
       "crossing_error_m": null,
       "within_90pct_interval": null,
       "true_hit": false,
-      "verdict": "PROJECTED_TO_MISS",
-      "p_hit": 0.0,
+      "verdict": "INSUFFICIENT_DATA",
+      "p_hit": null,
       "projection_distance_m": null,
       "notes": []
     },
@@ -281,15 +281,15 @@
         0.312540942722372
       ],
       "pred_crossing_xz": [
-        1.1574071678911564,
-        0.44728162691195444
+        1.1713404872200566,
+        0.4473807376765056
       ],
-      "crossing_error_m": 0.15829855111964064,
+      "crossing_error_m": 0.15153858709044157,
       "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 1.2486882108591026,
+      "projection_distance_m": 1.3667581001503726,
       "notes": []
     },
     {
@@ -302,15 +302,15 @@
         0.15417677596439872
       ],
       "pred_crossing_xz": [
-        0.0569168747032045,
-        0.24506392012165246
+        0.051114613642850415,
+        0.11183928387186604
       ],
-      "crossing_error_m": 0.09099446013331519,
+      "crossing_error_m": 0.043553612399162264,
       "within_90pct_interval": true,
       "true_hit": true,
       "verdict": "INCONCLUSIVE",
-      "p_hit": 0.628,
-      "projection_distance_m": 0.9128761969126182,
+      "p_hit": 0.978,
+      "projection_distance_m": 2.090364124888589,
       "notes": []
     },
     {
@@ -323,15 +323,15 @@
         0.39990840172566994
       ],
       "pred_crossing_xz": [
-        -0.9392285175548922,
-        0.412091686657779
+        -0.9841872464674054,
+        0.41816576357729585
       ],
-      "crossing_error_m": 0.052286278700072256,
+      "crossing_error_m": 0.019183419630807608,
       "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 0.9764938005731264,
+      "projection_distance_m": 1.3104836503680133,
       "notes": []
     },
     {
@@ -347,7 +347,7 @@
       "crossing_error_m": null,
       "within_90pct_interval": null,
       "true_hit": false,
-      "verdict": "INCONCLUSIVE",
+      "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
       "projection_distance_m": null,
       "notes": []
@@ -362,15 +362,15 @@
         0.2772800559917934
       ],
       "pred_crossing_xz": [
-        0.45867704065831333,
-        -0.5747782405596631
+        -0.06111688066761092,
+        1.016470559083522
       ],
-      "crossing_error_m": 0.8552957551333308,
-      "within_90pct_interval": false,
+      "crossing_error_m": 0.9483702478985383,
+      "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "INCONCLUSIVE",
-      "p_hit": 0.0,
-      "projection_distance_m": 1.4212213555823698,
+      "p_hit": 0.038,
+      "projection_distance_m": 2.171608062405057,
       "notes": []
     },
     {
@@ -383,15 +383,15 @@
         0.3806067607021625
       ],
       "pred_crossing_xz": [
-        0.7202200346627101,
-        -1.0419906110201982
+        0.4154489209900097,
+        0.6233449499141206
       ],
-      "crossing_error_m": 1.4429511856383814,
-      "within_90pct_interval": false,
+      "crossing_error_m": 0.25084733056716,
+      "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "INCONCLUSIVE",
       "p_hit": 0.0,
-      "projection_distance_m": 4.238910864417663,
+      "projection_distance_m": 1.0607217462741478,
       "notes": []
     },
     {
@@ -404,15 +404,15 @@
         0.6305839103981127
       ],
       "pred_crossing_xz": [
-        0.7512085172006624,
-        0.5249847890101536
+        0.7616452341304784,
+        0.598476496538439
       ],
-      "crossing_error_m": 0.12428568077002365,
-      "within_90pct_interval": false,
+      "crossing_error_m": 0.0637767993275158,
+      "within_90pct_interval": true,
       "true_hit": false,
-      "verdict": "INCONCLUSIVE",
+      "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 0.5109671973263697,
+      "projection_distance_m": 0.7871240752338639,
       "notes": []
     },
     {
@@ -425,33 +425,36 @@
         0.72614482331705
       ],
       "pred_crossing_xz": [
-        -1.1824590888014983,
-        0.6263212985802236
+        -0.9491060613826282,
+        0.7428846701203441
       ],
-      "crossing_error_m": 0.1645070967372935,
+      "crossing_error_m": 0.10395099678706103,
       "within_90pct_interval": true,
       "true_hit": false,
-      "verdict": "INCONCLUSIVE",
+      "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 2.169921591509952,
+      "projection_distance_m": 1.0715087448169731,
       "notes": []
     },
     {
       "clip_id": "extra_200_000019",
       "rig": "front_on_stump",
-      "status": "no_projection",
+      "status": "ok",
       "n_obs": 20,
       "true_crossing_xz": [
         0.5611322418137341,
         0.3801005914421378
       ],
-      "pred_crossing_xz": null,
-      "crossing_error_m": null,
-      "within_90pct_interval": null,
+      "pred_crossing_xz": [
+        0.5385071179040093,
+        0.28769301476128906
+      ],
+      "crossing_error_m": 0.09513704042042376,
+      "within_90pct_interval": true,
       "true_hit": false,
-      "verdict": "PROJECTED_TO_MISS",
+      "verdict": "INCONCLUSIVE",
       "p_hit": 0.0,
-      "projection_distance_m": null,
+      "projection_distance_m": 1.8607558187581512,
       "notes": []
     },
     {
@@ -464,15 +467,15 @@
         0.2683273056782017
       ],
       "pred_crossing_xz": [
-        0.1412440080969537,
-        0.26493023282685346
+        0.13386033633944924,
+        0.15070943073264065
       ],
-      "crossing_error_m": 0.03121668305572452,
+      "crossing_error_m": 0.12373226777258185,
       "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "INCONCLUSIVE",
-      "p_hit": 0.526,
-      "projection_distance_m": 1.4904911815037738,
+      "p_hit": 0.708,
+      "projection_distance_m": 2.2801110348580176,
       "notes": []
     },
     {
@@ -485,15 +488,15 @@
         0.40729995880716285
       ],
       "pred_crossing_xz": [
-        0.270152615652797,
-        0.15200568178724883
+        0.3322633314226429,
+        0.4074666746622506
       ],
-      "crossing_error_m": 0.26343597085992815,
+      "crossing_error_m": 0.0028813629172033495,
       "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "INCONCLUSIVE",
-      "p_hit": 0.01,
-      "projection_distance_m": 2.0468730670834847,
+      "p_hit": 0.016,
+      "projection_distance_m": 1.4930200246909908,
       "notes": []
     },
     {
@@ -542,15 +545,15 @@
         0.6784837718541266
       ],
       "pred_crossing_xz": [
-        0.21772605232699876,
-        0.6729924540146168
+        0.23110517774164324,
+        0.672688442423828
       ],
-      "crossing_error_m": 0.0055514032147527875,
+      "crossing_error_m": 0.013836696767141086,
       "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "PROJECTED_TO_MISS",
-      "p_hit": 0.032,
-      "projection_distance_m": 1.068873268138657,
+      "p_hit": 0.014,
+      "projection_distance_m": 1.1427224156817937,
       "notes": []
     },
     {
@@ -563,15 +566,15 @@
         0.4038307371736362
       ],
       "pred_crossing_xz": [
-        0.06796599334344,
-        0.3970061597675455
+        0.02636897175451891,
+        0.5936170821658231
       ],
-      "crossing_error_m": 0.02817148896319703,
-      "within_90pct_interval": true,
+      "crossing_error_m": 0.20191611245402633,
+      "within_90pct_interval": false,
       "true_hit": true,
       "verdict": "INCONCLUSIVE",
-      "p_hit": 0.764,
-      "projection_distance_m": 1.6323458663895536,
+      "p_hit": 0.588,
+      "projection_distance_m": 0.08902536501903933,
       "notes": []
     },
     {
@@ -584,15 +587,15 @@
         1.0214904986245128
       ],
       "pred_crossing_xz": [
-        0.3641078324687213,
-        1.5519322750855862
+        0.43987650495889885,
+        0.45797405334075547
       ],
-      "crossing_error_m": 0.534274202477584,
-      "within_90pct_interval": false,
+      "crossing_error_m": 0.563641875283209,
+      "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "INCONCLUSIVE",
       "p_hit": 0.0,
-      "projection_distance_m": 0.5325027616919942,
+      "projection_distance_m": 2.6923133747167762,
       "notes": []
     },
     {
@@ -623,15 +626,15 @@
         0.3552274730475097
       ],
       "pred_crossing_xz": [
-        0.4830343006936079,
-        0.3206287431537985
+        0.47630248487267396,
+        0.33089986531340465
       ],
-      "crossing_error_m": 0.05048007985798322,
+      "crossing_error_m": 0.03864475554593001,
       "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "PROJECTED_TO_MISS",
-      "p_hit": 0.012,
-      "projection_distance_m": 1.1316290452778315,
+      "p_hit": 0.004,
+      "projection_distance_m": 1.1726342969885961,
       "notes": []
     },
     {
@@ -644,15 +647,15 @@
         0.3511166972724788
       ],
       "pred_crossing_xz": [
-        0.6363983162136754,
-        0.368909341464809
+        0.6753725030445663,
+        0.3774472228065652
       ],
-      "crossing_error_m": 0.039890195451756025,
+      "crossing_error_m": 0.026533040738838314,
       "within_90pct_interval": true,
       "true_hit": false,
-      "verdict": "INCONCLUSIVE",
+      "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 0.9677292654052392,
+      "projection_distance_m": 1.4236174340085472,
       "notes": []
     },
     {
@@ -665,15 +668,15 @@
         0.6520661735834525
       ],
       "pred_crossing_xz": [
-        0.9482251184760533,
-        0.6464063252971901
+        1.0098943584088482,
+        0.6465461457892367
       ],
-      "crossing_error_m": 0.1333601029806796,
+      "crossing_error_m": 0.07178326169803227,
       "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 0.6320021260734067,
+      "projection_distance_m": 0.9552332564006782,
       "notes": []
     },
     {
@@ -686,15 +689,15 @@
         0.4892075623350719
       ],
       "pred_crossing_xz": [
-        -0.7577585753018595,
-        0.5152764005754922
+        -0.7861341441724645,
+        0.5199923469389846
       ],
-      "crossing_error_m": 0.02935289597205761,
+      "crossing_error_m": 0.034194329162245594,
       "within_90pct_interval": true,
       "true_hit": false,
-      "verdict": "INCONCLUSIVE",
+      "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 1.6385783602542776,
+      "projection_distance_m": 1.1637726055759317,
       "notes": []
     },
     {
@@ -707,36 +710,33 @@
         0.2947873964447038
       ],
       "pred_crossing_xz": [
-        -0.3582415879343084,
-        0.152520133555074
+        -0.3274620411653362,
+        0.27990025509030425
       ],
-      "crossing_error_m": 0.15828294561309292,
+      "crossing_error_m": 0.04137129859246353,
       "within_90pct_interval": true,
       "true_hit": false,
-      "verdict": "INCONCLUSIVE",
-      "p_hit": 0.008,
-      "projection_distance_m": 2.81526357704917,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": 1.5589592789181062,
       "notes": []
     },
     {
       "clip_id": "extra_200_000033",
       "rig": "front_on_stump",
-      "status": "ok",
+      "status": "no_projection",
       "n_obs": 21,
       "true_crossing_xz": [
         -1.1962831812113788,
         0.6323467568995541
       ],
-      "pred_crossing_xz": [
-        -1.1017750912068496,
-        0.6852691598768132
-      ],
-      "crossing_error_m": 0.10831694148743122,
-      "within_90pct_interval": true,
+      "pred_crossing_xz": null,
+      "crossing_error_m": null,
+      "within_90pct_interval": null,
       "true_hit": false,
       "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 0.5757787802914782,
+      "projection_distance_m": null,
       "notes": []
     },
     {
@@ -749,15 +749,15 @@
         0.5046698867496588
       ],
       "pred_crossing_xz": [
-        -0.2717265077991047,
-        0.4279644841655581
+        -0.3094837490462211,
+        0.5215246534629612
       ],
-      "crossing_error_m": 0.11101408514570686,
+      "crossing_error_m": 0.04571543306532242,
       "within_90pct_interval": true,
       "true_hit": false,
-      "verdict": "INCONCLUSIVE",
-      "p_hit": 0.016,
-      "projection_distance_m": 2.0510413708898754,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.048,
+      "projection_distance_m": 1.2173159400525044,
       "notes": []
     },
     {
@@ -770,15 +770,15 @@
         0.46454660644984747
       ],
       "pred_crossing_xz": [
-        -0.3737384746607665,
-        0.43105742451775875
+        -0.35312753067122454,
+        0.43931536234673013
       ],
-      "crossing_error_m": 0.03460348536140416,
+      "crossing_error_m": 0.038682982468635364,
       "within_90pct_interval": true,
       "true_hit": false,
-      "verdict": "INCONCLUSIVE",
+      "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 1.5273241297202733,
+      "projection_distance_m": 1.166847813395552,
       "notes": []
     },
     {
@@ -791,33 +791,36 @@
         0.5343501018855132
       ],
       "pred_crossing_xz": [
-        -0.7690206682690862,
-        0.5166333843239496
+        -0.7941786152000327,
+        0.5221115832186072
       ],
-      "crossing_error_m": 0.027422374732838768,
+      "crossing_error_m": 0.012947928986868409,
       "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 0.8490672447595543,
+      "projection_distance_m": 1.0600948449854448,
       "notes": []
     },
     {
       "clip_id": "extra_200_000037",
       "rig": "front_on_stump",
-      "status": "no_projection",
+      "status": "ok",
       "n_obs": 41,
       "true_crossing_xz": [
         0.7673930853178502,
         0.447185085850294
       ],
-      "pred_crossing_xz": null,
-      "crossing_error_m": null,
-      "within_90pct_interval": null,
+      "pred_crossing_xz": [
+        0.7570417823379624,
+        0.3347629315510394
+      ],
+      "crossing_error_m": 0.11289769816372182,
+      "within_90pct_interval": true,
       "true_hit": false,
-      "verdict": "PROJECTED_TO_MISS",
+      "verdict": "INCONCLUSIVE",
       "p_hit": 0.0,
-      "projection_distance_m": null,
+      "projection_distance_m": 1.9310944570066717,
       "notes": []
     },
     {
@@ -830,15 +833,15 @@
         0.28875390251879773
       ],
       "pred_crossing_xz": [
-        -0.11577532726866763,
-        0.11597567983788004
+        -0.11093006133551644,
+        0.19441573633653308
       ],
-      "crossing_error_m": 0.17287885173624684,
+      "crossing_error_m": 0.09494788794352368,
       "within_90pct_interval": true,
       "true_hit": true,
       "verdict": "INCONCLUSIVE",
-      "p_hit": 0.666,
-      "projection_distance_m": 2.693715230521956,
+      "p_hit": 0.926,
+      "projection_distance_m": 2.117832943285712,
       "notes": []
     },
     {
@@ -851,15 +854,15 @@
         0.3570306590956112
       ],
       "pred_crossing_xz": [
-        -0.19509253190678125,
-        0.4081523695695919
+        -0.2284348521862222,
+        0.32959136363407204
       ],
-      "crossing_error_m": 0.053907604802427934,
+      "crossing_error_m": 0.031883333401842046,
       "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "PROJECTED_TO_MISS",
-      "p_hit": 0.022,
-      "projection_distance_m": 0.8438155298230788,
+      "p_hit": 0.0,
+      "projection_distance_m": 1.5518454453931512,
       "notes": []
     },
     {
@@ -872,15 +875,15 @@
         0.40787850592326325
       ],
       "pred_crossing_xz": [
-        0.598918191364977,
-        0.47494273998806785
+        0.6023306196757359,
+        0.43405373426291705
       ],
-      "crossing_error_m": 0.06709520187642053,
+      "crossing_error_m": 0.02673673322279752,
       "within_90pct_interval": true,
       "true_hit": false,
-      "verdict": "INCONCLUSIVE",
+      "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 1.1499633831447422,
+      "projection_distance_m": 1.1290257936037824,
       "notes": []
     },
     {
@@ -893,15 +896,15 @@
         0.35035641244805577
       ],
       "pred_crossing_xz": [
-        0.20164989484797255,
-        0.35318042238480507
+        0.18275535808866789,
+        0.41058498943479826
       ],
-      "crossing_error_m": 0.025739789726537076,
+      "crossing_error_m": 0.06059897535000483,
       "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "INCONCLUSIVE",
-      "p_hit": 0.13,
-      "projection_distance_m": 1.428048417082019,
+      "p_hit": 0.11,
+      "projection_distance_m": 1.584092422445317,
       "notes": []
     },
     {
@@ -914,15 +917,15 @@
         0.27380394181797985
       ],
       "pred_crossing_xz": [
-        -0.8156411647262081,
-        0.3120359713078342
+        -0.8114443767939918,
+        0.3324101867234335
       ],
-      "crossing_error_m": 0.04338257520065652,
+      "crossing_error_m": 0.06359839223874063,
       "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "INCONCLUSIVE",
       "p_hit": 0.0,
-      "projection_distance_m": 1.4658704995009086,
+      "projection_distance_m": 1.2207822295963189,
       "notes": []
     },
     {
@@ -935,15 +938,15 @@
         0.4670628807310797
       ],
       "pred_crossing_xz": [
-        1.2609645700879129,
-        0.31190930289500873
+        1.3080173840223266,
+        0.39986856774760354
       ],
-      "crossing_error_m": 0.1694757951441189,
+      "crossing_error_m": 0.07043942512745753,
       "within_90pct_interval": true,
       "true_hit": false,
-      "verdict": "INCONCLUSIVE",
+      "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 0.5546041814348696,
+      "projection_distance_m": 1.0500006765648617,
       "notes": []
     },
     {
@@ -956,15 +959,15 @@
         0.801100752916943
       ],
       "pred_crossing_xz": [
-        1.3448506991352784,
-        0.7237053164694436
+        1.3744980015076174,
+        0.7184287668648873
       ],
-      "crossing_error_m": 0.1796366366634063,
-      "within_90pct_interval": true,
+      "crossing_error_m": 0.15614323360171176,
+      "within_90pct_interval": false,
       "true_hit": false,
       "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 0.5390817247630252,
+      "projection_distance_m": 0.7217008471281118,
       "notes": []
     },
     {
@@ -977,15 +980,15 @@
         0.5594374950703014
       ],
       "pred_crossing_xz": [
-        -1.438263343078334,
-        -11.744338928232049
+        -0.16975005655566708,
+        0.5734540455316137
       ],
-      "crossing_error_m": 12.361730630805027,
+      "crossing_error_m": 0.07424397233700965,
       "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "INCONCLUSIVE",
-      "p_hit": 0.084,
-      "projection_distance_m": 13.193424129813893,
+      "p_hit": 0.272,
+      "projection_distance_m": 1.2900142081910995,
       "notes": []
     },
     {
@@ -998,15 +1001,15 @@
         0.38012491823674216
       ],
       "pred_crossing_xz": [
-        1.2386078125233775,
-        0.42204236648066784
+        1.329685928549605,
+        0.39417767987508656
       ],
-      "crossing_error_m": 0.14732717133169912,
+      "crossing_error_m": 0.05209138061309068,
       "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 0.40510634667012074,
+      "projection_distance_m": 0.9886482667528403,
       "notes": []
     },
     {
@@ -1019,15 +1022,15 @@
         0.7102432908380947
       ],
       "pred_crossing_xz": [
-        0.890628221270798,
-        -0.875344991767856
+        0.5915966865479183,
+        0.9591185147433396
       ],
-      "crossing_error_m": 1.6027066200839573,
-      "within_90pct_interval": false,
+      "crossing_error_m": 0.257327699453631,
+      "within_90pct_interval": true,
       "true_hit": false,
-      "verdict": "INCONCLUSIVE",
+      "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 4.573136841488297,
+      "projection_distance_m": 0.9173073603977432,
       "notes": []
     },
     {
@@ -1040,15 +1043,15 @@
         0.4324569158334388
       ],
       "pred_crossing_xz": [
-        0.8755122118893901,
-        0.46180068982383315
+        0.8784199930316096,
+        0.4616898641583656
       ],
-      "crossing_error_m": 0.0299353736249364,
+      "crossing_error_m": 0.030537345413999627,
       "within_90pct_interval": true,
       "true_hit": false,
-      "verdict": "INCONCLUSIVE",
+      "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 1.2713065084038382,
+      "projection_distance_m": 1.2200631665749537,
       "notes": []
     },
     {
@@ -1061,15 +1064,15 @@
         0.6095636165227821
       ],
       "pred_crossing_xz": [
-        0.7024823370641361,
-        0.5671971706626536
+        0.6948435566706586,
+        0.5715012716569624
       ],
-      "crossing_error_m": 0.08134931500295789,
+      "crossing_error_m": 0.08597010637127148,
       "within_90pct_interval": true,
       "true_hit": false,
-      "verdict": "INCONCLUSIVE",
+      "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 0.3353770315504282,
+      "projection_distance_m": 0.1745813740568906,
       "notes": []
     },
     {
@@ -1082,15 +1085,15 @@
         0.6370489624280244
       ],
       "pred_crossing_xz": [
-        0.028547403761592934,
-        0.713494347698483
+        0.028603495548403784,
+        0.7159084239858037
       ],
-      "crossing_error_m": 0.0770031495926022,
+      "crossing_error_m": 0.07940682461158344,
       "within_90pct_interval": true,
       "true_hit": true,
       "verdict": "INCONCLUSIVE",
-      "p_hit": 0.418,
-      "projection_distance_m": 1.6817215427914936,
+      "p_hit": 0.572,
+      "projection_distance_m": 1.6579919377754526,
       "notes": []
     },
     {
@@ -1103,15 +1106,15 @@
         0.4879092961140079
       ],
       "pred_crossing_xz": [
-        -0.2036117864913537,
-        0.6265794508344542
+        -0.1898626003246569,
+        0.4389915195289409
       ],
-      "crossing_error_m": 0.13882939520901105,
+      "crossing_error_m": 0.04943058679693045,
       "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "INCONCLUSIVE",
-      "p_hit": 0.258,
-      "projection_distance_m": 0.41321245706660104,
+      "p_hit": 0.06,
+      "projection_distance_m": 1.707552582678909,
       "notes": []
     },
     {
@@ -1124,15 +1127,15 @@
         0.8480844079127124
       ],
       "pred_crossing_xz": [
-        -0.16510104329913455,
-        0.8301086922125898
+        -0.15844556637157103,
+        0.830773755110253
       ],
-      "crossing_error_m": 0.026542441249995607,
+      "crossing_error_m": 0.021572706756470793,
       "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "PROJECTED_TO_MISS",
-      "p_hit": 0.018,
-      "projection_distance_m": 0.7510987255318379,
+      "p_hit": 0.0,
+      "projection_distance_m": 0.8081227414260268,
       "notes": []
     },
     {
@@ -1145,15 +1148,15 @@
         0.5070520522493265
       ],
       "pred_crossing_xz": [
-        -0.7985234736284553,
-        0.5960414872022107
+        -0.8093970155727077,
+        0.5693382069976866
       ],
-      "crossing_error_m": 0.09537081252081286,
+      "crossing_error_m": 0.07694277559802276,
       "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 1.7695307854610796,
+      "projection_distance_m": 1.8189218995527345,
       "notes": []
     },
     {
@@ -1166,33 +1169,36 @@
         0.516437795399199
       ],
       "pred_crossing_xz": [
-        0.1874737585364235,
-        0.5881953748970514
+        0.22697896687895536,
+        0.5745035554213831
       ],
-      "crossing_error_m": 0.07302386786751117,
+      "crossing_error_m": 0.07864756945804606,
       "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "INCONCLUSIVE",
-      "p_hit": 0.134,
-      "projection_distance_m": 1.8328499004947314,
+      "p_hit": 0.072,
+      "projection_distance_m": 1.6504180798997188,
       "notes": []
     },
     {
       "clip_id": "extra_200_000055",
       "rig": "front_on_stump",
-      "status": "no_projection",
+      "status": "ok",
       "n_obs": 24,
       "true_crossing_xz": [
         1.21346404954688,
         0.39802057459510126
       ],
-      "pred_crossing_xz": null,
-      "crossing_error_m": null,
-      "within_90pct_interval": null,
+      "pred_crossing_xz": [
+        1.155963454490515,
+        0.4132517119118636
+      ],
+      "crossing_error_m": 0.05948366141889832,
+      "within_90pct_interval": true,
       "true_hit": false,
-      "verdict": "INCONCLUSIVE",
+      "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": null,
+      "projection_distance_m": 0.6358603270334902,
       "notes": []
     },
     {
@@ -1205,33 +1211,36 @@
         0.11731477112060901
       ],
       "pred_crossing_xz": [
-        0.14461146044812978,
-        -0.004257497596704907
+        0.12844671157460463,
+        0.052255183797214166
       ],
-      "crossing_error_m": 0.1217293434998429,
+      "crossing_error_m": 0.06582101570300888,
       "within_90pct_interval": true,
       "true_hit": true,
       "verdict": "INCONCLUSIVE",
-      "p_hit": 0.176,
-      "projection_distance_m": 2.5454334802468215,
+      "p_hit": 0.584,
+      "projection_distance_m": 1.9703687371435514,
       "notes": []
     },
     {
       "clip_id": "extra_200_000057",
       "rig": "front_on_stump",
-      "status": "no_projection",
+      "status": "ok",
       "n_obs": 19,
       "true_crossing_xz": [
         0.38537161574557904,
         0.4211001491977622
       ],
-      "pred_crossing_xz": null,
-      "crossing_error_m": null,
-      "within_90pct_interval": null,
+      "pred_crossing_xz": [
+        0.42127745750854645,
+        0.08677317718596456
+      ],
+      "crossing_error_m": 0.33624954079862257,
+      "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "INCONCLUSIVE",
-      "p_hit": 0.008,
-      "projection_distance_m": null,
+      "p_hit": 0.0,
+      "projection_distance_m": 2.619877041796276,
       "notes": []
     },
     {
@@ -1244,15 +1253,15 @@
         0.41252955506846006
       ],
       "pred_crossing_xz": [
-        -0.12926116808986798,
-        0.44685299602860984
+        -0.16148118410307363,
+        0.2665001710323567
       ],
-      "crossing_error_m": 0.049148487331434655,
+      "crossing_error_m": 0.14605933481241243,
       "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "INCONCLUSIVE",
-      "p_hit": 0.632,
-      "projection_distance_m": 1.192891950293029,
+      "p_hit": 0.278,
+      "projection_distance_m": 2.4854287731508586,
       "notes": []
     },
     {
@@ -1265,15 +1274,15 @@
         0.48206500102957917
       ],
       "pred_crossing_xz": [
-        -0.2969536391651662,
-        0.46080921467960206
+        -0.2993596346259969,
+        0.4602846381713991
       ],
-      "crossing_error_m": 0.02225095652504931,
+      "crossing_error_m": 0.022176714256054317,
       "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 0.8885958143555155,
+      "projection_distance_m": 1.0790258802476864,
       "notes": []
     },
     {
@@ -1286,15 +1295,15 @@
         0.5862784058976693
       ],
       "pred_crossing_xz": [
-        0.6789781758669251,
-        0.5957050112883259
+        0.6791361445510823,
+        0.5953741928972159
       ],
-      "crossing_error_m": 0.04872503190469445,
+      "crossing_error_m": 0.048506936824481685,
       "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 0.28180848202181014,
+      "projection_distance_m": 0.27665202999545657,
       "notes": []
     },
     {
@@ -1307,15 +1316,15 @@
         0.7940529948240895
       ],
       "pred_crossing_xz": [
-        0.2870096113209982,
-        0.8046680577189842
+        0.43404576953749263,
+        0.8171456511151413
       ],
-      "crossing_error_m": 0.06628605655199923,
+      "crossing_error_m": 0.08481002302771778,
       "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 0.9405808496798638,
+      "projection_distance_m": 1.7182262327010627,
       "notes": []
     },
     {
@@ -1328,15 +1337,15 @@
         0.633959737720817
       ],
       "pred_crossing_xz": [
-        0.9036488767481203,
-        0.677024624940249
+        0.8843630485080209,
+        0.6834663717347395
       ],
-      "crossing_error_m": 0.04615961244323088,
+      "crossing_error_m": 0.06115489537303921,
       "within_90pct_interval": true,
       "true_hit": false,
-      "verdict": "INCONCLUSIVE",
+      "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 1.5906140934775257,
+      "projection_distance_m": 0.36353156362141287,
       "notes": []
     },
     {
@@ -1349,15 +1358,15 @@
         0.681929150597997
       ],
       "pred_crossing_xz": [
-        -0.05537997069308917,
-        0.7270093949389916
+        -0.07862087132898296,
+        0.7057716936466142
       ],
-      "crossing_error_m": 0.04611169061275198,
+      "crossing_error_m": 0.027420162626852214,
       "within_90pct_interval": true,
       "true_hit": true,
       "verdict": "INCONCLUSIVE",
-      "p_hit": 0.414,
-      "projection_distance_m": 1.475356336286849,
+      "p_hit": 0.572,
+      "projection_distance_m": 1.0439883474044238,
       "notes": []
     },
     {
@@ -1370,15 +1379,15 @@
         0.40321433726427663
       ],
       "pred_crossing_xz": [
-        0.7623436411918525,
-        0.36988155669671585
+        0.7892794901352534,
+        0.4396110869276764
       ],
-      "crossing_error_m": 0.056844344852925034,
+      "crossing_error_m": 0.0815538347290473,
       "within_90pct_interval": true,
       "true_hit": false,
-      "verdict": "INCONCLUSIVE",
+      "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 1.6439723318004578,
+      "projection_distance_m": 1.2770734578748542,
       "notes": []
     },
     {
@@ -1409,15 +1418,15 @@
         0.4872852177050109
       ],
       "pred_crossing_xz": [
-        0.43045480850534146,
-        0.32250142701082274
+        0.438992500126134,
+        0.4305047771767947
       ],
-      "crossing_error_m": 0.16597770566489928,
+      "crossing_error_m": 0.06349122577108801,
       "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 2.8141365072995908,
+      "projection_distance_m": 1.9550438120046576,
       "notes": []
     },
     {
@@ -1430,15 +1439,15 @@
         0.49133068589227386
       ],
       "pred_crossing_xz": [
-        0.48537903584280295,
-        0.5350967932726821
+        0.4965673472872265,
+        0.49987683114816006
       ],
-      "crossing_error_m": 0.04484647936918135,
+      "crossing_error_m": 0.022647105355988066,
       "within_90pct_interval": true,
       "true_hit": false,
-      "verdict": "INCONCLUSIVE",
+      "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 0.3927084589819493,
+      "projection_distance_m": 0.9470947893345362,
       "notes": []
     },
     {
@@ -1451,15 +1460,15 @@
         0.4209011260282251
       ],
       "pred_crossing_xz": [
-        -0.2996444284844514,
-        0.554534622470843
+        -0.2878826779017915,
+        0.40238633884381636
       ],
-      "crossing_error_m": 0.13883447817752292,
+      "crossing_error_m": 0.031823088467201076,
       "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "PROJECTED_TO_MISS",
-      "p_hit": 0.018,
-      "projection_distance_m": 0.15615274709699578,
+      "p_hit": 0.0,
+      "projection_distance_m": 1.5533006801594313,
       "notes": []
     },
     {
@@ -1472,69 +1481,78 @@
         0.4310199412589742
       ],
       "pred_crossing_xz": [
-        0.7071912422733475,
-        0.4631611403769862
+        0.6960184067028165,
+        0.46523252351547617
       ],
-      "crossing_error_m": 0.032146068370610646,
+      "crossing_error_m": 0.035820997377449114,
       "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 2.1300475856712833,
+      "projection_distance_m": 2.002529099613246,
       "notes": []
     },
     {
       "clip_id": "extra_200_000070",
       "rig": "front_on_stump",
-      "status": "no_projection",
+      "status": "ok",
       "n_obs": 50,
       "true_crossing_xz": [
         -0.2843329006588988,
         0.44011314645809546
       ],
-      "pred_crossing_xz": null,
-      "crossing_error_m": null,
-      "within_90pct_interval": null,
+      "pred_crossing_xz": [
+        -0.21943746115717758,
+        0.4883999741601479
+      ],
+      "crossing_error_m": 0.08088903385286081,
+      "within_90pct_interval": false,
       "true_hit": false,
       "verdict": "PROJECTED_TO_MISS",
-      "p_hit": 0.004,
-      "projection_distance_m": null,
+      "p_hit": 0.044,
+      "projection_distance_m": 0.8794204567061462,
       "notes": []
     },
     {
       "clip_id": "extra_200_000071",
       "rig": "front_on_stump",
-      "status": "no_projection",
+      "status": "ok",
       "n_obs": 46,
       "true_crossing_xz": [
         0.6410649389399078,
         0.2595691321228518
       ],
-      "pred_crossing_xz": null,
-      "crossing_error_m": null,
-      "within_90pct_interval": null,
+      "pred_crossing_xz": [
+        0.7595837750922068,
+        -0.4146613536402186
+      ],
+      "crossing_error_m": 0.6845680846016716,
+      "within_90pct_interval": false,
       "true_hit": false,
       "verdict": "INCONCLUSIVE",
       "p_hit": 0.0,
-      "projection_distance_m": null,
+      "projection_distance_m": 2.002529813227907,
       "notes": []
     },
     {
       "clip_id": "extra_200_000072",
       "rig": "front_on_stump",
-      "status": "no_projection",
+      "status": "ok",
       "n_obs": 17,
       "true_crossing_xz": [
         1.2737972293648048,
         0.704900489761638
       ],
-      "pred_crossing_xz": null,
-      "crossing_error_m": null,
-      "within_90pct_interval": null,
+      "pred_crossing_xz": [
+        1.2210128417870827,
+        0.7317766603884551
+      ],
+      "crossing_error_m": 0.05923276221414099,
+      "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": null,
+      "projection_distance_m": 0.2911003235075853,
       "notes": []
     },
     {
@@ -1547,15 +1565,15 @@
         0.6667873626885169
       ],
       "pred_crossing_xz": [
-        1.206623784766378,
-        -0.9003737189335759
+        1.0636214254645526,
+        0.44140393758774055
       ],
-      "crossing_error_m": 1.5752821922319324,
-      "within_90pct_interval": false,
+      "crossing_error_m": 0.2260048202892757,
+      "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "INCONCLUSIVE",
       "p_hit": 0.0,
-      "projection_distance_m": 3.985678625637737,
+      "projection_distance_m": 2.0910004696854765,
       "notes": []
     },
     {
@@ -1568,15 +1586,15 @@
         0.3153707599445718
       ],
       "pred_crossing_xz": [
-        -0.036238189873728566,
-        0.3096426574892572
+        -0.002679455204244993,
+        0.36765030898409135
       ],
-      "crossing_error_m": 0.010249153771839582,
+      "crossing_error_m": 0.0579753276640076,
       "within_90pct_interval": true,
       "true_hit": true,
-      "verdict": "INCONCLUSIVE",
-      "p_hit": 0.474,
-      "projection_distance_m": 1.3683368924516401,
+      "verdict": "PROJECTED_TO_HIT",
+      "p_hit": 0.966,
+      "projection_distance_m": 1.491099307967177,
       "notes": []
     },
     {
@@ -1589,15 +1607,15 @@
         0.3670977659961347
       ],
       "pred_crossing_xz": [
-        0.3744618426463572,
-        0.370546903893871
+        0.36872837251278734,
+        0.3693104153097392
       ],
-      "crossing_error_m": 0.03631995829002948,
+      "crossing_error_m": 0.04194768007132177,
       "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 0.9776654900030061,
+      "projection_distance_m": 0.8921627400155874,
       "notes": []
     },
     {
@@ -1610,15 +1628,15 @@
         0.2800602863482526
       ],
       "pred_crossing_xz": [
-        -0.37459515173562424,
-        0.21007022480451282
+        -0.3746667734889703,
+        0.20991467705415834
       ],
-      "crossing_error_m": 0.07081966554589965,
+      "crossing_error_m": 0.0709843373197817,
       "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "PROJECTED_TO_MISS",
-      "p_hit": 0.022,
-      "projection_distance_m": 1.128809347085575,
+      "p_hit": 0.008,
+      "projection_distance_m": 1.1279889246079147,
       "notes": []
     },
     {
@@ -1631,15 +1649,15 @@
         0.46254341023237
       ],
       "pred_crossing_xz": [
-        -0.06662619320869345,
-        0.4832996792945003
+        -0.06647768768184634,
+        0.48310806593287275
       ],
-      "crossing_error_m": 0.061728475848502454,
-      "within_90pct_interval": true,
+      "crossing_error_m": 0.06152432568755553,
+      "within_90pct_interval": false,
       "true_hit": true,
       "verdict": "INCONCLUSIVE",
-      "p_hit": 0.426,
-      "projection_distance_m": 1.4113586925604327,
+      "p_hit": 0.684,
+      "projection_distance_m": 1.4079585619083337,
       "notes": []
     },
     {
@@ -1652,15 +1670,15 @@
         0.45407672478910044
       ],
       "pred_crossing_xz": [
-        0.22982680818926735,
-        0.48324391360799235
+        0.2277557553997839,
+        0.4874687315606271
       ],
-      "crossing_error_m": 0.04104746308144404,
+      "crossing_error_m": 0.042823503447998804,
       "within_90pct_interval": true,
       "true_hit": false,
-      "verdict": "INCONCLUSIVE",
-      "p_hit": 0.08,
-      "projection_distance_m": 1.7831461712465888,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.026,
+      "projection_distance_m": 1.7640305653498138,
       "notes": []
     },
     {
@@ -1673,33 +1691,36 @@
         0.24368437887279676
       ],
       "pred_crossing_xz": [
-        0.45107791630831573,
-        0.36437900811224244
+        0.456383470315677,
+        0.22631298077154693
       ],
-      "crossing_error_m": 0.12104336414312836,
+      "crossing_error_m": 0.017798581372928227,
       "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 0.5980667900328539,
+      "projection_distance_m": 1.7002334367092413,
       "notes": []
     },
     {
       "clip_id": "extra_200_000080",
       "rig": "front_on_stump",
-      "status": "no_projection",
+      "status": "ok",
       "n_obs": 45,
       "true_crossing_xz": [
         1.060062304048433,
         0.4549473341532722
       ],
-      "pred_crossing_xz": null,
-      "crossing_error_m": null,
-      "within_90pct_interval": null,
+      "pred_crossing_xz": [
+        1.1007897030437392,
+        0.4342607748643611
+      ],
+      "crossing_error_m": 0.045679916419981675,
+      "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": null,
+      "projection_distance_m": 1.482441884499007,
       "notes": []
     },
     {
@@ -1712,33 +1733,36 @@
         0.5641926158310703
       ],
       "pred_crossing_xz": [
-        0.4722215635307938,
-        0.6038161617417857
+        0.467389508899181,
+        0.6041125110241268
       ],
-      "crossing_error_m": 0.04010948062123053,
+      "crossing_error_m": 0.03994417455150348,
       "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 1.6308581478235085,
+      "projection_distance_m": 1.5440730451799178,
       "notes": []
     },
     {
       "clip_id": "extra_200_000082",
       "rig": "front_on_stump",
-      "status": "no_projection",
+      "status": "ok",
       "n_obs": 12,
       "true_crossing_xz": [
         0.18562543683363536,
         0.44373808113497437
       ],
-      "pred_crossing_xz": null,
-      "crossing_error_m": null,
-      "within_90pct_interval": null,
+      "pred_crossing_xz": [
+        0.1832167977161739,
+        0.5251779090486788
+      ],
+      "crossing_error_m": 0.08147543871015334,
+      "within_90pct_interval": true,
       "true_hit": false,
-      "verdict": "INCONCLUSIVE",
-      "p_hit": 0.422,
-      "projection_distance_m": null,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.034,
+      "projection_distance_m": 0.7791376793496972,
       "notes": []
     },
     {
@@ -1751,15 +1775,15 @@
         0.5207370465445026
       ],
       "pred_crossing_xz": [
-        0.4174124724497926,
-        0.5121556196089598
+        0.4113785198314039,
+        0.5078177687508952
       ],
-      "crossing_error_m": 0.021451964146688565,
+      "crossing_error_m": 0.02875980719351311,
       "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 1.182390382114966,
+      "projection_distance_m": 1.0488337308912195,
       "notes": []
     },
     {
@@ -1772,15 +1796,15 @@
         0.512835137117857
       ],
       "pred_crossing_xz": [
-        0.5094551719007736,
-        0.5257077587746084
+        0.5056811925166016,
+        0.5383728320049161
       ],
-      "crossing_error_m": 0.03833228902613604,
+      "crossing_error_m": 0.04735615192433921,
       "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 1.6001563065547164,
+      "projection_distance_m": 1.5161634426702268,
       "notes": []
     },
     {
@@ -1811,15 +1835,15 @@
         0.41600646109067435
       ],
       "pred_crossing_xz": [
-        0.05017888226884515,
-        0.43309714077881045
+        0.03548359796033085,
+        0.5455730341896501
       ],
-      "crossing_error_m": 0.03173599528001783,
+      "crossing_error_m": 0.13603111425491557,
       "within_90pct_interval": true,
       "true_hit": true,
       "verdict": "INCONCLUSIVE",
-      "p_hit": 0.656,
-      "projection_distance_m": 1.0754470486913537,
+      "p_hit": 0.598,
+      "projection_distance_m": 0.14639742442307543,
       "notes": []
     },
     {
@@ -1832,36 +1856,33 @@
         0.5503571039029534
       ],
       "pred_crossing_xz": [
-        1.402088703691913,
-        0.6038895399181771
+        1.4144680698657435,
+        0.6540948019414163
       ],
-      "crossing_error_m": 0.12257867049344148,
+      "crossing_error_m": 0.1426337419242078,
       "within_90pct_interval": true,
       "true_hit": false,
-      "verdict": "INCONCLUSIVE",
+      "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 0.5648244941979792,
+      "projection_distance_m": 0.6556283836147847,
       "notes": []
     },
     {
       "clip_id": "extra_200_000088",
       "rig": "front_on_stump",
-      "status": "ok",
+      "status": "no_projection",
       "n_obs": 17,
       "true_crossing_xz": [
         1.676453988483676,
         0.8083399243257681
       ],
-      "pred_crossing_xz": [
-        1.6847784006743947,
-        0.8793883785365536
-      ],
-      "crossing_error_m": 0.0715344580189371,
-      "within_90pct_interval": true,
+      "pred_crossing_xz": null,
+      "crossing_error_m": null,
+      "within_90pct_interval": null,
       "true_hit": false,
-      "verdict": "INCONCLUSIVE",
+      "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 1.6464210990209276,
+      "projection_distance_m": null,
       "notes": []
     },
     {
@@ -1874,33 +1895,36 @@
         0.6195474758282273
       ],
       "pred_crossing_xz": [
-        -0.01234454940705726,
-        0.6345343139239088
+        0.07583461217256224,
+        0.6411892163730819
       ],
-      "crossing_error_m": 0.07213629783670822,
+      "crossing_error_m": 0.027905523724532203,
       "within_90pct_interval": true,
       "true_hit": true,
       "verdict": "INCONCLUSIVE",
-      "p_hit": 0.378,
-      "projection_distance_m": 2.119219179515344,
+      "p_hit": 0.87,
+      "projection_distance_m": 1.413961828653523,
       "notes": []
     },
     {
       "clip_id": "extra_200_000090",
       "rig": "front_on_stump",
-      "status": "no_projection",
+      "status": "ok",
       "n_obs": 18,
       "true_crossing_xz": [
         0.6015903773682706,
         0.7839243539089867
       ],
-      "pred_crossing_xz": null,
-      "crossing_error_m": null,
-      "within_90pct_interval": null,
+      "pred_crossing_xz": [
+        0.6172158602425837,
+        0.13895382404950984
+      ],
+      "crossing_error_m": 0.6451597787387786,
+      "within_90pct_interval": true,
       "true_hit": false,
-      "verdict": "PROJECTED_TO_MISS",
+      "verdict": "INCONCLUSIVE",
       "p_hit": 0.0,
-      "projection_distance_m": null,
+      "projection_distance_m": 3.2159057679996135,
       "notes": []
     },
     {
@@ -1913,15 +1937,15 @@
         0.3570321313877575
       ],
       "pred_crossing_xz": [
-        0.83011678426761,
-        -1.707297916048594
+        0.7030095198466874,
+        -0.5652021345574214
       ],
-      "crossing_error_m": 2.0849516395116696,
+      "crossing_error_m": 0.9369501746212323,
       "within_90pct_interval": false,
       "true_hit": false,
       "verdict": "INCONCLUSIVE",
       "p_hit": 0.0,
-      "projection_distance_m": 4.618368575999204,
+      "projection_distance_m": 1.6311605861513625,
       "notes": []
     },
     {
@@ -1934,15 +1958,15 @@
         0.5873372866709121
       ],
       "pred_crossing_xz": [
-        -0.03923557190701327,
-        0.6668198456300494
+        -0.01763610767768785,
+        0.6554178431129372
       ],
-      "crossing_error_m": 0.0796194616781261,
+      "crossing_error_m": 0.0729718626797477,
       "within_90pct_interval": true,
       "true_hit": true,
       "verdict": "INCONCLUSIVE",
-      "p_hit": 0.448,
-      "projection_distance_m": 1.6343840834887744,
+      "p_hit": 0.74,
+      "projection_distance_m": 1.3161340568707518,
       "notes": []
     },
     {
@@ -1973,15 +1997,15 @@
         0.6588891442688777
       ],
       "pred_crossing_xz": [
-        0.12334471479390297,
-        0.6852064918578196
+        0.12776473670320562,
+        0.6900326234261377
       ],
-      "crossing_error_m": 0.02823039076720208,
+      "crossing_error_m": 0.03441088040435505,
       "within_90pct_interval": true,
       "true_hit": true,
       "verdict": "INCONCLUSIVE",
-      "p_hit": 0.508,
-      "projection_distance_m": 0.9305093828830547,
+      "p_hit": 0.626,
+      "projection_distance_m": 1.3004630352702014,
       "notes": []
     },
     {
@@ -1994,15 +2018,15 @@
         0.3954544518157213
       ],
       "pred_crossing_xz": [
-        0.6391809212377829,
-        0.44698870308755334
+        0.6662498725475274,
+        0.4563960209602599
       ],
-      "crossing_error_m": 0.052208359739079446,
+      "crossing_error_m": 0.07049306786703086,
       "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 1.3099440773280782,
+      "projection_distance_m": 1.49402706960732,
       "notes": []
     },
     {
@@ -2015,15 +2039,15 @@
         0.49657491010816385
       ],
       "pred_crossing_xz": [
-        0.5440044798314903,
-        0.3540881099366251
+        0.4729314605738042,
+        0.4451524055342338
       ],
-      "crossing_error_m": 0.18006217460133692,
+      "crossing_error_m": 0.06454944462441706,
       "within_90pct_interval": true,
       "true_hit": false,
-      "verdict": "INCONCLUSIVE",
-      "p_hit": 0.014,
-      "projection_distance_m": 0.652480522346971,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": 0.9863182152774079,
       "notes": []
     },
     {
@@ -2036,15 +2060,15 @@
         0.3707323582480411
       ],
       "pred_crossing_xz": [
-        -0.0570356593214823,
-        0.30939148065873434
+        -0.05096285326407987,
+        0.4553819311874102
       ],
-      "crossing_error_m": 0.06378719965674041,
+      "crossing_error_m": 0.08541683296862239,
       "within_90pct_interval": true,
       "true_hit": true,
       "verdict": "INCONCLUSIVE",
-      "p_hit": 0.83,
-      "projection_distance_m": 1.9568413807669351,
+      "p_hit": 0.758,
+      "projection_distance_m": 0.7190196308109154,
       "notes": []
     },
     {
@@ -2057,15 +2081,15 @@
         0.4440512155898325
       ],
       "pred_crossing_xz": [
-        0.9401555427297386,
-        0.7918518593685069
+        0.845674424083744,
+        0.5918752521384558
       ],
-      "crossing_error_m": 0.36883751332073084,
+      "crossing_error_m": 0.15050906539401737,
       "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 2.531145059443668,
+      "projection_distance_m": 2.0613742446760126,
       "notes": []
     },
     {
@@ -2078,15 +2102,15 @@
         0.5247580247633612
       ],
       "pred_crossing_xz": [
-        1.6112797417726632,
-        0.5715164968089409
+        1.6468774243966326,
+        0.5547518877237069
       ],
-      "crossing_error_m": 0.1348505797644558,
+      "crossing_error_m": 0.09570810881572785,
       "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 0.939061189170477,
+      "projection_distance_m": 1.1183191636682555,
       "notes": []
     },
     {
@@ -2099,15 +2123,15 @@
         0.9641975776677872
       ],
       "pred_crossing_xz": [
-        2.2793787374656795,
-        1.020008966667673
+        2.2675226765289827,
+        0.9852599172835348
       ],
-      "crossing_error_m": 0.08214393636719128,
+      "crossing_error_m": 0.07514040662475958,
       "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 0.8275809693725934,
+      "projection_distance_m": 0.44084236033229324,
       "notes": []
     },
     {
@@ -2120,33 +2144,36 @@
         0.5965240234907635
       ],
       "pred_crossing_xz": [
-        1.20654676747884,
-        0.6152882327391274
+        1.17279634290187,
+        0.6445696169522553
       ],
-      "crossing_error_m": 0.07937079078742762,
+      "crossing_error_m": 0.1208338551759953,
       "within_90pct_interval": true,
       "true_hit": false,
-      "verdict": "INCONCLUSIVE",
+      "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 0.4915489767982048,
+      "projection_distance_m": 0.17933753901416175,
       "notes": []
     },
     {
       "clip_id": "extra_200_000102",
       "rig": "front_on_stump",
-      "status": "no_projection",
+      "status": "ok",
       "n_obs": 10,
       "true_crossing_xz": [
         0.383449404099895,
         0.6411069439391472
       ],
-      "pred_crossing_xz": null,
-      "crossing_error_m": null,
-      "within_90pct_interval": null,
+      "pred_crossing_xz": [
+        0.34426789354351917,
+        0.6341176567226345
+      ],
+      "crossing_error_m": 0.03980001137279105,
+      "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": null,
+      "projection_distance_m": 0.024189583803897075,
       "notes": []
     },
     {
@@ -2163,7 +2190,7 @@
       "within_90pct_interval": null,
       "true_hit": false,
       "verdict": "PROJECTED_TO_MISS",
-      "p_hit": 0.002,
+      "p_hit": 0.0,
       "projection_distance_m": null,
       "notes": []
     },
@@ -2177,15 +2204,15 @@
         0.12283227356305061
       ],
       "pred_crossing_xz": [
-        0.9698347435023594,
-        -0.11415600407745086
+        0.9612270214332937,
+        0.005096061968440813
       ],
-      "crossing_error_m": 0.24178458399134056,
+      "crossing_error_m": 0.12412607684995014,
       "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "INCONCLUSIVE",
       "p_hit": 0.0,
-      "projection_distance_m": 3.337792091664943,
+      "projection_distance_m": 2.52673573231323,
       "notes": []
     },
     {
@@ -2198,15 +2225,15 @@
         0.3928393082248561
       ],
       "pred_crossing_xz": [
-        0.58424435179574,
-        0.436001998263962
+        0.5454737780305248,
+        0.4095807138083769
       ],
-      "crossing_error_m": 0.044990238004401044,
+      "crossing_error_m": 0.030989225058605817,
       "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 1.5652293062694087,
+      "projection_distance_m": 1.537636771626739,
       "notes": []
     },
     {
@@ -2219,15 +2246,15 @@
         0.626338589723051
       ],
       "pred_crossing_xz": [
-        0.8691993834268005,
-        0.5631644534549876
+        0.9004921652787727,
+        0.5741782632796011
       ],
-      "crossing_error_m": 0.06688140516417997,
+      "crossing_error_m": 0.07454085046814368,
       "within_90pct_interval": true,
       "true_hit": false,
-      "verdict": "INCONCLUSIVE",
+      "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 1.5660593725582175,
+      "projection_distance_m": 0.7337102189241861,
       "notes": []
     },
     {
@@ -2240,15 +2267,15 @@
         1.0601632325924646
       ],
       "pred_crossing_xz": [
-        -0.9452524903946041,
-        1.0353684190356012
+        -0.9391923199175196,
+        1.0274645569601204
       ],
-      "crossing_error_m": 0.03893138030166912,
-      "within_90pct_interval": true,
+      "crossing_error_m": 0.048688648534435074,
+      "within_90pct_interval": false,
       "true_hit": false,
       "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 0.8696820263922465,
+      "projection_distance_m": 0.0972139789728059,
       "notes": []
     },
     {
@@ -2261,15 +2288,15 @@
         0.38532468892033594
       ],
       "pred_crossing_xz": [
-        -0.01642645992686559,
-        0.3737443030115429
+        0.009242878742344508,
+        0.38385459796968396
       ],
-      "crossing_error_m": 0.021417305659812962,
+      "crossing_error_m": 0.043710605047721146,
       "within_90pct_interval": true,
       "true_hit": true,
       "verdict": "INCONCLUSIVE",
-      "p_hit": 0.52,
-      "projection_distance_m": 1.384709334864754,
+      "p_hit": 0.87,
+      "projection_distance_m": 0.8298466735074831,
       "notes": []
     },
     {
@@ -2282,15 +2309,15 @@
         0.7863182085968018
       ],
       "pred_crossing_xz": [
-        0.04907082499766635,
-        0.7634999459868244
+        0.04772791223114276,
+        0.7556100697442514
       ],
-      "crossing_error_m": 0.04438463393630274,
+      "crossing_error_m": 0.047873442846234494,
       "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "INCONCLUSIVE",
-      "p_hit": 0.174,
-      "projection_distance_m": 0.5507277799458735,
+      "p_hit": 0.3,
+      "projection_distance_m": 0.46043310482908445,
       "notes": []
     },
     {
@@ -2303,15 +2330,15 @@
         0.40996144021708913
       ],
       "pred_crossing_xz": [
-        0.1749360237757235,
-        0.49629284541130736
+        0.18221355255394542,
+        0.506210087948787
       ],
-      "crossing_error_m": 0.0863401273584813,
+      "crossing_error_m": 0.09643862516554132,
       "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "INCONCLUSIVE",
-      "p_hit": 0.296,
-      "projection_distance_m": 1.5451535242267642,
+      "p_hit": 0.322,
+      "projection_distance_m": 1.5625732440215205,
       "notes": []
     },
     {
@@ -2324,15 +2351,15 @@
         0.4992644555323411
       ],
       "pred_crossing_xz": [
-        0.9489235562466685,
-        0.622657718903738
+        0.9572156487026278,
+        0.6103935820308546
       ],
-      "crossing_error_m": 0.12340937831287485,
+      "crossing_error_m": 0.11130743468771533,
       "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 1.4680328490262,
+      "projection_distance_m": 1.5106091453872195,
       "notes": []
     },
     {
@@ -2345,15 +2372,15 @@
         0.39284935409456717
       ],
       "pred_crossing_xz": [
-        -0.30802283776481065,
-        0.29699006867321387
+        -0.40218243998167147,
+        0.3788847298341218
       ],
-      "crossing_error_m": 0.22134627051443068,
+      "crossing_error_m": 0.10627420890751178,
       "within_90pct_interval": true,
       "true_hit": false,
-      "verdict": "INCONCLUSIVE",
+      "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 0.7410663546381724,
+      "projection_distance_m": 1.0955054743513895,
       "notes": []
     },
     {
@@ -2366,15 +2393,15 @@
         0.5170241089109591
       ],
       "pred_crossing_xz": [
-        0.5706464321722486,
-        0.004497180462635697
+        0.6484448507866617,
+        0.3405553545863693
       ],
-      "crossing_error_m": 0.5173104824271706,
-      "within_90pct_interval": false,
+      "crossing_error_m": 0.1766328043873004,
+      "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "INCONCLUSIVE",
       "p_hit": 0.0,
-      "projection_distance_m": 2.7323550448248985,
+      "projection_distance_m": 2.1291627160717717,
       "notes": []
     },
     {
@@ -2387,15 +2414,15 @@
         0.4760841649225781
       ],
       "pred_crossing_xz": [
-        -0.13389071897665017,
-        0.2897215850041689
+        -0.07988971086113344,
+        0.5665572501225171
       ],
-      "crossing_error_m": 0.186414610362094,
+      "crossing_error_m": 0.10768719221664443,
       "within_90pct_interval": true,
       "true_hit": true,
       "verdict": "INCONCLUSIVE",
-      "p_hit": 0.482,
-      "projection_distance_m": 2.8436841293435653,
+      "p_hit": 0.624,
+      "projection_distance_m": 0.7094465673285605,
       "notes": []
     },
     {
@@ -2408,15 +2435,15 @@
         0.20248701040926936
       ],
       "pred_crossing_xz": [
-        0.24182871943895334,
-        0.18588836689244226
+        0.237922448241361,
+        0.2653461186070811
       ],
-      "crossing_error_m": 0.04716189304991209,
+      "crossing_error_m": 0.07912101948764348,
       "within_90pct_interval": true,
       "true_hit": false,
-      "verdict": "INCONCLUSIVE",
-      "p_hit": 0.038,
-      "projection_distance_m": 1.8611151131463401,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": 1.1945932892303854,
       "notes": []
     },
     {
@@ -2429,15 +2456,15 @@
         0.2804913119804876
       ],
       "pred_crossing_xz": [
-        0.6587061503714865,
-        0.3155058357701662
+        0.6588559721783306,
+        0.30141764420484635
       ],
-      "crossing_error_m": 0.03653277870037736,
+      "crossing_error_m": 0.02331175359676191,
       "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 1.5010408528383086,
+      "projection_distance_m": 1.544706011221938,
       "notes": []
     },
     {
@@ -2450,15 +2477,15 @@
         0.4538627021826924
       ],
       "pred_crossing_xz": [
-        -0.5568853992640862,
-        0.5873147480177952
+        -0.5788739251912476,
+        0.4089806434450066
       ],
-      "crossing_error_m": 0.13406405098126423,
+      "crossing_error_m": 0.04581390076377016,
       "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "PROJECTED_TO_MISS",
       "p_hit": 0.0,
-      "projection_distance_m": 0.3771892861662162,
+      "projection_distance_m": 1.9217561637271159,
       "notes": []
     },
     {
@@ -2489,15 +2516,15 @@
         0.5941983795493935
       ],
       "pred_crossing_xz": [
-        0.27997048677807573,
-        0.5077771611444973
+        0.23281628924955608,
+        0.5801625569742451
       ],
-      "crossing_error_m": 0.12106808377998167,
+      "crossing_error_m": 0.04016516364856305,
       "within_90pct_interval": true,
       "true_hit": false,
       "verdict": "INCONCLUSIVE",
-      "p_hit": 0.046,
-      "projection_distance_m": 0.9395217756487696,
+      "p_hit": 0.06,
+      "projection_distance_m": 1.124997777973126,
       "notes": []
     }
   ]

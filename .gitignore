@@ -57,3 +57,6 @@ kaggle.json
 # Ultralytics side artefacts
 /runs/
 /weights/
+!outputs/reports/detector_eval_broadcast_bcv1_1280.json
+!outputs/reports/detector_eval_broadcast_bcv1_1920.json
+!outputs/reports/detector_eval_broadcast_y11s_1280_infer1920.json

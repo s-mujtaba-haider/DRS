@@ -40,9 +40,10 @@ DEFAULT_DRAG_C = 1.225 * 0.4 * np.pi * 0.036**2 / (2 * 0.16)
 class FlightModel:
     """Piecewise flight model.
 
-    theta = [p0(3), v0(3)] (+ [v1(3)] when bounce) (+ [a_lift] when lift).
+    theta = [p0(3), v0(3)] (+ [v1(3)] when bounce) (+ [a_swing] when swing) (+ [a_lift] when lift).
     Drag is approximated per segment as linear drag with k = drag_k + drag_c * |v_segment_start|.
-    ``a_lift`` is an extra constant vertical acceleration (Magnus/seam effects), fitted with a prior.
+    ``a_lift`` / ``a_swing`` are extra constant vertical / lateral (x) accelerations (Magnus, seam swing,
+    drift), each fitted with a zero-mean prior.
     """
 
     theta: np.ndarray
@@ -52,17 +53,26 @@ class FlightModel:
     drag_k: float = 0.0  # 1/s, constant linear drag
     drag_c: float = 0.0  # 1/m, quadratic-drag coefficient (linearised per segment)
     lift: bool = False
+    swing: bool = False
+
+    @property
+    def _n_base(self) -> int:
+        return 9 if self.bounce else 6
+
+    @property
+    def a_swing(self) -> float:
+        return float(self.theta[self._n_base]) if self.swing else 0.0
 
     @property
     def a_lift(self) -> float:
-        return float(self.theta[-1]) if self.lift else 0.0
+        return float(self.theta[self._n_base + int(self.swing)]) if self.lift else 0.0
 
     def _k(self, v) -> float:
         return self.drag_k + self.drag_c * float(np.linalg.norm(v))
 
     def _free(self, p, v, tau):
         tau = np.asarray(tau, dtype=float)[..., None]
-        g = np.array([0.0, 0.0, -G + self.a_lift])
+        g = np.array([self.a_swing, 0.0, -G + self.a_lift])
         k = self._k(v)
         if k <= 1e-9:
             return p + v * tau + 0.5 * g * tau**2, v + g * tau
@@ -110,7 +120,8 @@ class FlightModel:
         return self._segments(t)[1]
 
     def with_theta(self, theta) -> FlightModel:
-        return FlightModel(np.asarray(theta, float), self.t0, self.bounce, self.ball_radius, self.drag_k, self.drag_c, self.lift)
+        return FlightModel(np.asarray(theta, float), self.t0, self.bounce, self.ball_radius, self.drag_k, self.drag_c, self.lift,
+                           self.swing)
 
 
 @dataclass
@@ -145,7 +156,7 @@ class FlightFit:
             "status": self.status, "mode": self.mode, "bounce": self.model.bounce,
             "bounce_time_s": tb, "residual_rms": self.residual_rms, "residual_unit": self.residual_unit,
             "condition_number": self.condition_number, "num_observations": self.num_observations,
-            "drag_k": self.model.drag_k, "drag_c": self.model.drag_c, "a_lift": self.model.a_lift, "reasons": self.reasons, "alternatives_bic": self.alternatives,
+            "drag_k": self.model.drag_k, "drag_c": self.model.drag_c, "a_lift": self.model.a_lift, "a_swing": self.model.a_swing, "reasons": self.reasons, "alternatives_bic": self.alternatives,
             "theta": self.model.theta.tolist(), "theta_sigma": np.sqrt(np.clip(np.diag(self.cov), 0, None)).tolist(),
         }
 
@@ -242,7 +253,8 @@ def fit_to_pixels(cam: CameraModel, t: np.ndarray, uv: np.ndarray, sigma_px: flo
                   drag_k: float = 0.0, allow_bounce: bool = True, min_points: int = 8,
                   max_rms_px: float = 4.0, radius_px: np.ndarray | None = None, radius_sigma_px: float = 0.75,
                   bounce_retention_prior: tuple[float, float] | None = DEFAULT_BOUNCE_RETENTION,
-                  drag_c: float = DEFAULT_DRAG_C, lift_prior_sigma: float | None = 3.0) -> FlightFit:
+                  drag_c: float = DEFAULT_DRAG_C, lift_prior_sigma: float | None = 3.0,
+                  swing_prior_sigma: float | None = 2.0) -> FlightFit:
     """Monocular, physics-constrained reconstruction (APPROXIMATE).
 
     Depth information comes from (a) gravity, (b) the ground-contact constraint at the
@@ -268,9 +280,10 @@ def fit_to_pixels(cam: CameraModel, t: np.ndarray, uv: np.ndarray, sigma_px: flo
     depth_obs = None if rad is None else f_px * ball_radius / rad
 
     lift = lift_prior_sigma is not None
+    swing = swing_prior_sigma is not None
 
     def resid_parts(th, bounce):
-        m = FlightModel(th, t0, bounce, ball_radius, drag_k, drag_c, lift)
+        m = FlightModel(th, t0, bounce, ball_radius, drag_k, drag_c, lift, swing)
         if bounce and m.bounce_time() is None:
             return None
         X = m.position(t)
@@ -286,14 +299,16 @@ def fit_to_pixels(cam: CameraModel, t: np.ndarray, uv: np.ndarray, sigma_px: flo
             vb = m._free(th[:3], th[3:6], tb - t0)[1]
             mu, sd = bounce_retention_prior
             parts.append(np.array([(th[7] / vb[1] - mu) / sd]) if abs(vb[1]) > 1e-3 else np.zeros(1))
+        if swing:
+            parts.append(np.array([m.a_swing / swing_prior_sigma]))
         if lift:
-            parts.append(np.array([th[-1] / lift_prior_sigma]))
+            parts.append(np.array([m.a_lift / lift_prior_sigma]))
         return parts
 
     n_extra = n if rad is not None else 0
     fits = {}
     for bounce in ([False, True] if allow_bounce else [False]):
-        n_res = 2 * n + n_extra + (1 if bounce and bounce_retention_prior else 0) + (1 if lift else 0)
+        n_res = 2 * n + n_extra + (1 if bounce and bounce_retention_prior else 0) + (1 if lift else 0) + (1 if swing else 0)
 
         def resid(th, bounce=bounce, n_res=n_res):
             parts = resid_parts(th, bounce)
@@ -313,7 +328,7 @@ def fit_to_pixels(cam: CameraModel, t: np.ndarray, uv: np.ndarray, sigma_px: flo
             dt = max(t[k_end] - t0, 1e-3)
             v0 = (b - a) / dt
             v0[2] += 0.5 * G * dt  # undo gravity drop over the interval
-            theta0 = np.concatenate([a, v0] + ([v0 * np.array([1, 0.8, -0.5])] if bounce else []) + ([[0.0]] if lift else []))
+            theta0 = np.concatenate([a, v0] + ([v0 * np.array([1, 0.8, -0.5])] if bounce else []) + ([[0.0]] if swing else []) + ([[0.0]] if lift else []))
             try:
                 res = least_squares(resid, theta0, method="trf", x_scale="jac", max_nfev=3000)
             except (ValueError, np.linalg.LinAlgError):
@@ -322,7 +337,7 @@ def fit_to_pixels(cam: CameraModel, t: np.ndarray, uv: np.ndarray, sigma_px: flo
                 best = res
         if best is None:
             continue
-        model = FlightModel(best.x, t0, bounce, ball_radius, drag_k, drag_c, lift)
+        model = FlightModel(best.x, t0, bounce, ball_radius, drag_k, drag_c, lift, swing)
         if bounce and model.bounce_time() is None:
             continue
         fits["bounce" if bounce else "no_bounce"] = (best, model)
@@ -351,6 +366,8 @@ def fit_to_pixels(cam: CameraModel, t: np.ndarray, uv: np.ndarray, sigma_px: flo
         out.reasons.append("Assumption: along-pitch speed retention through bounce ~ N({:.2f}, {:.2f})".format(*bounce_retention_prior))
     if drag_c:
         out.reasons.append(f"Aerodynamic drag modelled with fixed coefficient c={drag_c:.4f}/m (Cd~0.4 assumed)")
+    if swing:
+        out.reasons.append(f"Lateral swing/drift acceleration fitted: {model.a_swing:.2f} m/s^2 (prior 0 +/- {swing_prior_sigma})")
     if lift:
         out.reasons.append(f"Vertical lift acceleration fitted: {model.a_lift:.2f} m/s^2 (prior 0 +/- {lift_prior_sigma})")
     if not cam.validated:

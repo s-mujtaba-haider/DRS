@@ -1,0 +1,31 @@
+{
+  "summary": {
+    "num_gt": 213,
+    "num_predictions": 1054,
+    "score_threshold": 0.25,
+    "precision": 0.47115384615384615,
+    "recall": 0.460093896713615,
+    "f1": 0.4655581947743468,
+    "ap_centre_match": 0.3678215936683715,
+    "true_positives": 98,
+    "false_positives": 110,
+    "false_negatives": 115,
+    "centre_error_px": {
+      "median": 0.7498003604263941,
+      "mean": 0.9749841922226821,
+      "p90": 1.581530997328888
+    },
+    "gt_size_px": {
+      "median": 12.96149991320449,
+      "frac_lt_16px": 0.6948356807511737
+    },
+    "weights": "models/checkpoints/cricket_ball_best.pt",
+    "data": "data/processed/broadcast_seg_test/data.yaml",
+    "split": "test",
+    "images": 298,
+    "model_id": "yolo:cricket_ball_best.pt",
+    "imgsz": 1920,
+    "tile": null,
+    "caveat": "Metrics apply only to this split's distribution; they do not establish accuracy on other footage."
+  }
+}
