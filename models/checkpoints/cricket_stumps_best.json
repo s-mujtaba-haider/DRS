@@ -1,0 +1,74 @@
+{
+ "name": "stumps_y11s_1280",
+ "base_model": "yolo11s.pt",
+ "classes": [
+  "stumps"
+ ],
+ "imgsz": 1280,
+ "epochs": 100,
+ "train_time_s": 420.2,
+ "smoke_test": false,
+ "purpose": "stumps detector for calibration seeding (Acme IND v ZIM, split by match time)",
+ "val_metrics": {
+  "metrics/precision(B)": 0.662902502272702,
+  "metrics/recall(B)": 0.5555555555555556,
+  "metrics/mAP50(B)": 0.548738589564909,
+  "metrics/mAP50-95(B)": 0.2882972430907026,
+  "fitness": 0.2882972430907026
+ },
+ "dataset": "data\\processed\\stumps_seg\\data.yaml",
+ "dataset_label_origins": "see provenance.csv",
+ "warning": "Validation metrics only; evaluate on a held-out test split (scripts/evaluate_detector.py) and on real target footage before use.",
+ "version": "v1",
+ "promoted": "2026-10-12",
+ "license_note": "Fine-tuned from Ultralytics YOLO11s (AGPL-3.0); labels from Acme AI Cricket Semantic Segmentation (CC BY 4.0).",
+ "training_data": "Acme AI stumps masks -> boxes, IND v ZIM 2022, one match. Split by match time: frames <=175 train (130 boxes), 176-260 val (81), >=261 test (73).",
+ "recommended_inference": {
+  "imgsz": 1280,
+  "conf": 0.25
+ },
+ "evaluations": {
+  "held_out_test (later frames, same match)": {
+   "gt": 73,
+   "precision": 0.5833333333333334,
+   "recall": 0.5753424657534246,
+   "recall_by_height_px": {
+    "<40": "5/13",
+    "40-100": "21/26",
+    ">100": "16/34"
+   },
+   "two_wicket_frames_both_found": "7/18",
+   "edge_err_px_median": 1.4117283398436484,
+   "edge_err_px_p90": 7.124784488281273,
+   "worst_edge_err_rel_to_height_median": 0.052126209336151794
+  },
+  "val": {
+   "gt": 81,
+   "precision": 0.575,
+   "recall": 0.5679012345679012,
+   "recall_by_height_px": {
+    "<40": "8/21",
+    "40-100": "21/31",
+    ">100": "17/29"
+   },
+   "two_wicket_frames_both_found": "11/27",
+   "edge_err_px_median": 1.2588880273437155,
+   "edge_err_px_p90": 6.188870607421993,
+   "worst_edge_err_rel_to_height_median": 0.06623344873108994
+  },
+  "auto_calibration_on_other_matches": {
+   "clips": 40,
+   "calibrated": 3,
+   "visually_correct": 3,
+   "refused": 37,
+   "note": "With the pair-geometry and camera-plausibility checks, all 3 calibrations project the creases onto the painted creases; 37 are refused, mostly because the near wicket is occluded or not detected. Before the checks, 2 of 6 accepted calibrations were false."
+  }
+ },
+ "use": "Seeds camera calibration (scripts/calibrate_cameras.py auto). Output is never marked validated.",
+ "known_limitations": [
+  "Trained on a single match; other grounds, kits and stump colours are untested beyond 40 clips",
+  "Recall 0.58; both wickets found in only 7/18 two-wicket test frames",
+  "Box edges: median 1.4 px, p90 7 px error on the test frames; synthetic benchmark shows 2 px edge noise gives ~13 cm median / ~32 cm p90 ground error",
+  "The near wicket is often hidden by the umpire or bowler in delivery views"
+ ]
+}

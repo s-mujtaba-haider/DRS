@@ -68,3 +68,6 @@ kaggle.json
 !outputs/reports/detector_eval_broadcast_mixv3_1920.json
 !outputs/reports/detector_eval_broadcast_mixv3_960.json
 !outputs/reports/detector_eval_kaggle_test_mixv3_1280.json
+!models/checkpoints/cricket_stumps_best.json
+!outputs/reports/stumps_detector_eval_y11s_1280.json
+!outputs/reports/stumps_calibration_synth.json

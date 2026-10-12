@@ -1,4 +1,4 @@
-"""Fine-tune a YOLO ball detector (Ultralytics) with pre-flight checks and run records.
+"""Fine-tune a YOLO ball (or stumps) detector (Ultralytics) with pre-flight checks and run records.
 
     # smoke test (a couple of epochs, small images) - verifies the pipeline, NOT a usable model
     python scripts/train_detector.py --data data/processed/synth_yolo/data.yaml --smoke
@@ -39,7 +39,8 @@ def main() -> int:
     ap.add_argument("--name", default=None)
     ap.add_argument("--smoke", action="store_true", help="2 epochs at 640px: pipeline check only")
     ap.add_argument("--resume", help="path to last.pt of an interrupted run")
-    ap.add_argument("--promote", action="store_true", help="copy best.pt to models/checkpoints/cricket_ball_best.pt")
+    ap.add_argument("--target-class", default="ball", help="class the dataset must contain (ball or stumps)")
+    ap.add_argument("--promote", action="store_true", help="copy best.pt to models/checkpoints/cricket_<target-class>_best.pt")
     ap.add_argument("--purpose", default="", help="free-text note stored in the model card")
     a = ap.parse_args()
 
@@ -62,8 +63,8 @@ def main() -> int:
     cfg = yaml.safe_load(data_yaml.read_text())
     names = cfg["names"]
     names = list(names.values()) if isinstance(names, dict) else list(names)
-    if "ball" not in [n.lower() for n in names]:
-        print(f"ERROR: class list {names} has no 'ball' class")
+    if a.target_class not in [n.lower() for n in names]:
+        print(f"ERROR: class list {names} has no '{a.target_class}' class")
         return 2
     root = Path(cfg.get("path") or data_yaml.parent)
     rep = validate(root, len(names), check_duplicates=False)
@@ -81,7 +82,7 @@ def main() -> int:
 
     if a.smoke:
         a.epochs, a.imgsz, a.batch = 2, 640, min(a.batch, 4) if a.batch > 0 else 4
-    name = a.name or f"{'smoke' if a.smoke else 'ball'}_{time.strftime('%Y%m%d_%H%M%S')}"
+    name = a.name or f"{'smoke' if a.smoke else a.target_class}_{time.strftime('%Y%m%d_%H%M%S')}"
     record = {"args": vars(a), "dataset_validation": rep.as_dict(), "torch": torch.__version__, "cuda": torch.version.cuda,
               "ultralytics": ultralytics.__version__, "python": platform.python_version(), "platform": platform.platform(),
               "gpu": torch.cuda.get_device_name(0) if torch.cuda.is_available() else None}
@@ -111,7 +112,7 @@ def main() -> int:
         if a.smoke:
             print("Refusing to promote a smoke-test model")
             return 3
-        dst = ROOT / "models" / "checkpoints" / "cricket_ball_best.pt"
+        dst = ROOT / "models" / "checkpoints" / f"cricket_{a.target_class}_best.pt"
         shutil.copy2(best, dst)
         shutil.copy2(runs / name / "model_card.json", dst.with_suffix(".json"))
         print(f"Promoted to {dst}")

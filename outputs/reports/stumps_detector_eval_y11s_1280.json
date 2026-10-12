@@ -1,0 +1,30 @@
+{
+ "val": {
+  "gt": 81,
+  "precision": 0.575,
+  "recall": 0.5679012345679012,
+  "recall_by_height_px": {
+   "<40": "8/21",
+   "40-100": "21/31",
+   ">100": "17/29"
+  },
+  "two_wicket_frames_both_found": "11/27",
+  "edge_err_px_median": 1.2588880273437155,
+  "edge_err_px_p90": 6.188870607421993,
+  "worst_edge_err_rel_to_height_median": 0.06623344873108994
+ },
+ "test": {
+  "gt": 73,
+  "precision": 0.5833333333333334,
+  "recall": 0.5753424657534246,
+  "recall_by_height_px": {
+   "<40": "5/13",
+   "40-100": "21/26",
+   ">100": "16/34"
+  },
+  "two_wicket_frames_both_found": "7/18",
+  "edge_err_px_median": 1.4117283398436484,
+  "edge_err_px_p90": 7.124784488281273,
+  "worst_edge_err_rel_to_height_median": 0.052126209336151794
+ }
+}

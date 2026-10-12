@@ -13,6 +13,7 @@ An independent, locally-run research system for cricket ball tracking and **expe
 | Ball tracking (Kalman CA, gated Hungarian, RTS smoothing, fragment merge, camera-cut handling, reliability flag) | Implemented and tested on synthetic data. Real-footage quality limited by detection. |
 | 2D trajectory (robust polynomial + change point, BIC/LOO, prediction intervals) | Implemented and tested |
 | Camera calibration (chessboard intrinsics, PnP from pitch landmarks, approximate mode) | Implemented and tested |
+| Automatic calibration seed from detected stumps | **Experimental.** Stumps detector trained on one match (held-out P 0.58 / R 0.58). On 40 clips from other matches, 3 calibrated, all visually correct; 37 refused. Never marked validated. See `docs/EVALUATION.md` §4f. |
 | Multi-view triangulation (sync association, consensus, covariance) | Implemented and tested on synthetic geometry. No real multi-view data processed. |
 | 3D flight model (gravity, drag, lift, bounce; monocular and multi-view fits) | Implemented. Benchmarked on synthetic deliveries. |
 | Experimental LBW engine (Monte Carlo, Law 36 rules layer, unknowns stay unknown) | Implemented. Benchmarked on synthetic data only. |
@@ -95,7 +96,7 @@ python scripts\annotate_video.py export|from-ui|build ...
 python scripts\train_detector.py --data DATA.yaml [--smoke] [--promote]
 python scripts\evaluate_detector.py --data DATA.yaml --split test --weights W.pt
 python scripts\run_tracking.py VIDEO --out DIR [--detector auto|cricket|coco_hybrid|coco|motion]
-python scripts\calibrate_cameras.py intrinsics|pose|landmarks ...
+python scripts\calibrate_cameras.py intrinsics|pose|landmarks|auto ...
 python scripts\run_drs_analysis.py VIDEO --out DIR --camera camera.json --impact-frame N --handedness right
 python scripts\evaluate_trajectory_synth.py --limit 120 [--offset 120]
 python scripts\benchmark_inference.py VIDEO

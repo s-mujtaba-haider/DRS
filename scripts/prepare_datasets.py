@@ -2,6 +2,7 @@
 
     python scripts/prepare_datasets.py synth           # cricket-synth -> data/processed/synth_yolo
     python scripts/prepare_datasets.py broadcast-seg   # Kaggle seg masks -> data/processed/broadcast_seg_test (test only)
+    python scripts/prepare_datasets.py stumps-seg      # its stumps boxes -> data/processed/stumps_seg (split by match time)
     python scripts/prepare_datasets.py yolo-dir PATH   # adopt an existing YOLO export (e.g. Kaggle/Roboflow)
                                                        #  -> data/processed/<name>, provenance + leak check
 """
@@ -71,6 +72,7 @@ def main() -> int:
     sub = ap.add_subparsers(dest="cmd", required=True)
     sub.add_parser("synth")
     sub.add_parser("broadcast-seg", help="Acme AI segmentation masks -> YOLO boxes (independent broadcast test set)")
+    sub.add_parser("stumps-seg", help="broadcast_seg_test -> single-class stumps set split by match time")
     y = sub.add_parser("yolo-dir")
     y.add_argument("path")
     y.add_argument("--name", required=True)
@@ -84,6 +86,12 @@ def main() -> int:
         dst = ROOT / "data" / "processed" / "broadcast_seg_test"
         info = convert(src, dst)
         rep = validate(dst, len(NAMES))
+    elif a.cmd == "stumps-seg":
+        from ml.datasets.superannotate import derive_stumps_set
+
+        dst = ROOT / "data" / "processed" / "stumps_seg"
+        info = derive_stumps_set(ROOT / "data" / "processed" / "broadcast_seg_test", dst)
+        rep = validate(dst, 1)
     elif a.cmd == "synth":
         src = ROOT / "data" / "raw" / "hf-cricket-synth"
         dst = ROOT / "data" / "processed" / "synth_yolo"

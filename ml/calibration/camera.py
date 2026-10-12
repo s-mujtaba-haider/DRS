@@ -169,6 +169,7 @@ def estimate_pose(
     dist: np.ndarray | None = None,
     intrinsics_validated: bool = False,
     max_rms_px: float = 3.0,
+    focal_guess_px: float | None = None,
 ) -> CameraModel:
     width, height = image_size
     world = np.asarray(world_points, dtype=np.float64)
@@ -185,7 +186,7 @@ def estimate_pose(
             "Lens distortion assumed to be zero",
             "Focal length estimated from pitch landmarks, not from a calibration target",
         ]
-        f0 = 1.2 * max(width, height)
+        f0 = focal_guess_px or 1.2 * max(width, height)
         K0 = np.array([[f0, 0, width / 2], [0, f0, height / 2], [0, 0, 1]], dtype=np.float64)
         flags = (
             cv2.CALIB_USE_INTRINSIC_GUESS | cv2.CALIB_FIX_PRINCIPAL_POINT | cv2.CALIB_FIX_ASPECT_RATIO

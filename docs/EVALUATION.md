@@ -4,13 +4,13 @@ Every number here was measured in this repository on 2026-10-12. The raw outputs
 
 ## 1. Automated tests
 
-- `pytest`: 71 tests (59 ML, 12 API), all passing. They cover:
+- `pytest`: 81 tests, all passing. They cover:
   - video metadata, frame extraction, and empty or invalid files;
   - the detection schema, NMS, tiling, the motion detector and missing-weights errors;
   - Kalman initialisation, missing frames, outlier rejection, static clutter and camera cuts;
   - 2D fits, change points and intervals;
   - 3D ballistic fits and monocular observability;
-  - calibration validation and mislabelled points;
+  - calibration validation and mislabelled points, and calibration from stumps boxes (wicket pairing, focal grid, implausible cameras);
   - triangulation with known geometry, sync offsets, inconsistent views and unsynchronised cameras;
   - LBW hit, miss, over-the-top, marginal, unvalidated-calibration and rules cases, plus uncertainty propagation;
   - dataset splits, detection metrics, and API validation, jobs, cancellation, Range requests, exports and PDF.
@@ -175,6 +175,57 @@ On the same 5 unlabelled broadcast clips as in section 3:
 - Self-training has plateaued, and the label noise is growing.
 - A third round would need stricter track filters, for example rejecting tracks that start near the stumps or players, or requiring larger image-plane motion.
 - The better next step is human-labelled broadcast frames (Roadmap 1).
+
+## 4f. Stumps detector and automatic calibration seed (experimental)
+
+**Data and training.**
+- Stumps boxes come from the Acme AI masks (`prepare_datasets.py stumps-seg`), which cover one match (IND v ZIM 2022).
+- The set is split by match time: frames ≤ 175 train (130 boxes), 176–260 val (81), ≥ 261 test (73, later in the second innings).
+- The ball detector never trains on these frames; only this separate stumps model does.
+- YOLO11s (COCO) was trained at 1280 px for 100 epochs.
+
+**Detector, held-out test frames** (`stumps_detector_eval_y11s_1280.json`, conf 0.25, IoU ≥ 0.5):
+
+| Split | P | R | Recall by box height (< 40 / 40–100 / > 100 px) | Both wickets found | Edge error median / p90 |
+|---|---|---|---|---|---|
+| Test | 0.58 | 0.58 | 5/13, 21/26, 16/34 | 7 of 18 frames | 1.4 / 7.1 px |
+| Val | 0.58 | 0.57 | 8/21, 21/31, 17/29 | 11 of 27 frames | 1.3 / 6.2 px |
+
+**Calibration from two stumps boxes** (`ml/calibration/stumps_landmarks.py`).
+- Each box gives 4 points: the outer stump edges at ground and bail-top height.
+- Both wickets give 8 points in two parallel planes, which is enough for the approximate-focal pose.
+- Broadcast delivery views are long telephoto shots (focal length 2–15× the image width). The old single initial focal guess converged to a mirrored pose on some cameras, so the stumps path now starts from a log-spaced grid of guesses. `estimate_pose` gained an optional `focal_guess_px`; manual calibration is unchanged.
+
+**Synthetic benchmark** (`scripts/evaluate_stumps_calibration.py`, `stumps_calibration_synth.json`).
+- Setup: 300 random behind-the-bowler cameras, 40–100 m back, 6–20 m high, far wicket 80–130 px tall.
+- Boxes are exact projections, with Gaussian noise added to each edge.
+
+| Box noise | Failures | Focal error median / p90 | Ground error near striker median / p90 | Stump-plane error median / p90 |
+|---|---|---|---|---|
+| 0 px | 4 | 0.0 / 0.1% | 1.5 / 1.7 cm | 0.3 / 0.4 cm |
+| 0.5 px | 3 | 2.5 / 7.0% | 3.5 / 9.2 cm | 0.4 / 0.8 cm |
+| 1 px | 8 | 4.9 / 15% | 6.6 / 18 cm | 0.8 / 1.4 cm |
+| 2 px | 37 | 9.2 / 28% | 13 / 32 cm | 1.5 / 2.7 cm |
+
+The 1.5 cm floor at zero noise comes from box edges not lining up exactly with the stump corners (perspective and stump thickness). The zero-noise failures are low cameras refused by the pair rule below.
+
+**Real clips from other matches** (`calibrate_cameras.py auto`; 40 clips, every 6th of `hf-cricket-delivery-videos`, 4 series). The first version accepted 6 calibrations, and **2 were false**:
+- two stacked boxes on one wicket (the bails half and the base half);
+- a fielder's legs plus a far object, with no pitch in view, which still had a reprojection RMS of 1.8 px.
+
+**Eight points fit almost any camera, so a low RMS proves nothing.** Two checks were added:
+- **Pair geometry.** The near wicket must be at least 5% taller, with its base at least 1.5 near-wicket heights below the far base. Synthetic broadcast cameras show this refuses about 13% of genuine pairs from low cameras.
+- **Camera plausibility.** The camera must be at least 45 m from pitch centre along the pitch line, 3–60 m high, and within 15 m of the pitch axis.
+
+With both checks:
+- **3 of 40 clips calibrate** (video061, video085, video223). In all three, the projected creases and return creases land on the painted lines at both ends.
+- 37 are refused: the near wicket is not detected (usually hidden behind the umpire or bowler), no consistent pair is found, or every pair fails the checks.
+- There is no independent ground-truth camera, so this is a visual check, not an accuracy measurement.
+
+**Conclusion:**
+- Automatic calibration works when both wickets are cleanly visible, and it now refuses rather than guesses otherwise.
+- Its coverage (3 of 40) is too low to replace manual clicks.
+- More stumps training data (better recall and edges) and crease detection (to calibrate from one wicket) are the next steps.
 
 ## 4c. Experiments that did not help (kept for the record)
 

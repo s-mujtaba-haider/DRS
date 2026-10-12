@@ -55,4 +55,10 @@ These limitations are measured or known. They are not hypothetical.
 - Competition-specific DRS protocol (umpire's call thresholds, review counts) is **not** implemented as a decision. `p_centre_in_zone` is reported for reference only.
 
 ## Not implemented
-Run-out, stumping and boundary analysis; synchronised multi-camera ingestion; audio (snicko); thermal; bat detection; pad and body segmentation; automatic stump detection in the image (stumps are located manually through calibration landmarks).
+Run-out, stumping and boundary analysis; synchronised multi-camera ingestion; audio (snicko); thermal; bat detection; pad and body segmentation; automatic crease detection.
+
+## Automatic calibration from stumps (experimental)
+- The stumps detector was trained on **one match**. It finds both wickets in only 7 of 18 held-out frames that show both, and its box edges are off by more than 7 px in 10% of cases.
+- It needs both wickets. In delivery views the near wicket is often hidden by the umpire or bowler, so on 40 clips from other matches only 3 produced a calibration (all 3 visually correct); 37 were refused.
+- A low reprojection error is **not** evidence of a correct calibration: 8 points fit almost any camera. False pairs are rejected by geometry rules (near wicket taller and well below the far one) and a camera-position check. These rules also refuse about 13% of genuine pairs seen from low (< ~6 m) cameras.
+- Even with perfect detection, 2 px of box noise gives about 13 cm median and 32 cm p90 ground-position error near the striker (synthetic). The result is a seed for manual correction, never a validated calibration.

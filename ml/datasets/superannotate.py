@@ -86,3 +86,39 @@ def convert(src_images: Path, dst: Path, split: str = "test", source_name: str =
         w.writerows(rows)
     write_data_yaml(dst, NAMES)
     return {"images": len(rows), "boxes_per_class": dict(counts)}
+
+
+# Frame-number blocks (match time order) for the stumps-only derivative: the first innings trains,
+# the later second innings tests, so neighbouring near-identical frames never straddle splits.
+STUMPS_SPLITS = (("train", 0, 175), ("val", 176, 260), ("test", 261, 10**9))
+
+
+def derive_stumps_set(seg_test: Path, dst: Path, splits=STUMPS_SPLITS) -> dict:
+    """broadcast_seg_test (all classes, test-only) -> single-class 'stumps' set split by match time.
+
+    The ball detector never trains on these frames; only the separate stumps model does.
+    """
+    import re
+
+    if dst.exists():
+        shutil.rmtree(dst)
+    stumps_id = NAMES.index("stumps")
+    rows, counts = [], Counter()
+    for img in sorted((seg_test / "images" / "test").glob("*.jpg")):
+        n = int(re.search(r"_(\d+)", img.stem).group(1))
+        split = next(s for s, lo, hi in splits if lo <= n <= hi)
+        lab = seg_test / "labels" / "test" / f"{img.stem}.txt"
+        lines = [" ".join(["0", *p[1:]]) for p in (ln.split() for ln in lab.read_text().splitlines())
+                 if p and int(p[0]) == stumps_id]
+        (dst / "images" / split).mkdir(parents=True, exist_ok=True)
+        (dst / "labels" / split).mkdir(parents=True, exist_ok=True)
+        shutil.copy2(img, dst / "images" / split / img.name)
+        (dst / "labels" / split / f"{img.stem}.txt").write_text("\n".join(lines))
+        counts[split] += len(lines)
+        rows.append({"file": img.name, "source_sequence": f"acmeai_frame_{n}", "label_origin": "human", "split": split})
+    with (dst / "provenance.csv").open("w", newline="") as fh:
+        w = csv.DictWriter(fh, fieldnames=["file", "source_sequence", "label_origin", "split"])
+        w.writeheader()
+        w.writerows(rows)
+    write_data_yaml(dst, ["stumps"])
+    return {"images": len(rows), "boxes_per_split": dict(counts)}
