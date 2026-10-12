@@ -7,8 +7,8 @@ These limitations are measured or known. They are not hypothetical.
 - The **real-world accuracy of every decision output is unknown.** No dataset with independent LBW or ball-tracking ground truth on real footage was available.
 
 ## Detection (the weakest component)
-- **Broadcast detection is still the weakest link.** The current v2 detector reaches recall 0.53 and precision 0.62 on independent broadcast frames (v1: 0.37 / 0.64), so about half of tiny broadcast balls are missed. Its training labels include self-generated (track-verified) pseudo-labels, which favour balls the earlier model could already see.
-- With it, 2 of 5 real broadcast clips produced a consistent ball track, and 3 of 5 did not.
+- **Broadcast detection is still the weakest link.** The current v3 detector reaches recall 0.51 and precision 0.63 (AP 0.53) on independent broadcast frames (v2: 0.53 / 0.62 / 0.49; v1: 0.37 / 0.64 / 0.38), so about half of tiny broadcast balls are missed. Its training labels include self-generated (track-verified) pseudo-labels, which favour balls earlier models could already see. The second round of pseudo-labels is noticeably noisier (about 70% clearly a ball in a 48-crop sample), so further self-training rounds are not expected to help without stricter filtering or human labels.
+- With it, 3 of 5 real broadcast clips produce a consistent track that is visually the ball (v2: 2 of 5). All three follow the ball **after** the shot (in the air or across the outfield), not the delivery itself, which is what LBW analysis needs.
 - Generic COCO plus motion failed on all 5 clips (mean innovation 47–616 px).
 - **The motion heuristic** is confused by players, the bat, fielders and camera motion. It works on simple synthetic scenes.
 - **Broadcast footage** cuts between cameras, zooms and overlays graphics:

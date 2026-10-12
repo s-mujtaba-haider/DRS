@@ -121,7 +121,7 @@ On the same 5 unlabelled broadcast clips as in section 3:
 
 **Conclusion:** the in-domain detector is good, but detection of the small ball in broadcast footage remains weak (recall 0.37). The fix is broadcast-domain training data.
 
-## 4d. Self-training on real broadcast footage (v2, the current detector)
+## 4d. Self-training on real broadcast footage (v2)
 
 **Method** (`scripts/pseudo_label_broadcast.py`):
 1. The v1 detector and the tracker are run over the 214 allowed broadcast clips. Zimbabwe series are excluded because they could overlap the test match.
@@ -141,6 +141,40 @@ On the same 5 unlabelled broadcast clips as in section 3:
 - In-domain Kaggle test for v2 at 1280: P 0.88, R 0.98, AP 0.93 (v1: 0.91 / 0.98 / 0.99).
 - Self-training gives a real-domain gain of **+42% recall and +29% AP** at about the same precision.
 - **Caveat:** pseudo-labels favour balls the previous model could already detect (self-training bias), and the test set is a single match.
+
+## 4e. Second self-training round (v3, the current detector)
+
+**Method:** the same as §4d, but the pseudo-labels came from v2.
+- v2 plus the tracker gave 3,373 labels on 3,273 crops from 213 clips (196 verified tracks).
+- v1 was fine-tuned on Kaggle plus these labels at 960 px for 50 epochs (43 min).
+
+**Label quality dropped.** A random sample of 48 crops held about 33 clear balls. About 8 were clearly something else: a fielder's cap, a logo letter, stumps or crease marks, and shoes near the stumps. About 7 were unclear. In round 1, all 48 sampled crops were balls.
+
+**Independent human-labelled broadcast test** (same 213 balls as §4d):
+
+| Model | Inference | P | R | F1 | AP | FP |
+|---|---|---|---|---|---|---|
+| v2 | 960 | 0.62 | 0.42 | 0.50 | 0.42 | 56 |
+| v3 | 960 | 0.65 | 0.44 | 0.53 | 0.45 | 51 |
+| v2 | 1280 | 0.62 | 0.53 | 0.57 | 0.49 | 70 |
+| **v3** | **1280** | **0.63** | **0.51** | **0.57** | **0.53** | **63** |
+| v2 | 1920 | 0.47 | 0.58 | 0.52 | 0.53 | 141 |
+| v3 | 1920 | 0.48 | 0.57 | 0.52 | 0.54 | 132 |
+
+- In-domain Kaggle test at 1280: v3 P 0.87, R 0.97, AP 0.96 (v2: 0.88 / 0.98 / 0.92).
+- At 1280, F1 is unchanged and AP is +0.04. The differences are a handful of detections (−3 TP, −7 FP) on a single match, which is within noise.
+
+**Tracking on the 5 reference clips** (score 0.15, 1280 px):
+- Reliable primary tracks: **v3 3 of 5** (video002, video004, video005); v2 2 of 5 (video001, video004).
+- All five reliable tracks were checked visually, and every one is the real ball. In every case it is the ball **after** the shot: high in the air, or running across the outfield to the rope. None is the delivery.
+- Caveat: these clips were in the pseudo-labelling pool, so this check is not held out.
+
+**Decision:** v3 was promoted. It is level or better on every measure, but the gain is small.
+
+**Conclusion:**
+- Self-training has plateaued, and the label noise is growing.
+- A third round would need stricter track filters, for example rejecting tracks that start near the stumps or players, or requiring larger image-plane motion.
+- The better next step is human-labelled broadcast frames (Roadmap 1).
 
 ## 4c. Experiments that did not help (kept for the record)
 

@@ -2,7 +2,7 @@
 
 Ordered by expected impact on real-footage usefulness.
 
-1. **Broadcast-domain ball detection.** A baseline exists (in-domain R 0.98, broadcast R 0.37).
+1. **Broadcast-domain ball detection.** v3 exists (in-domain R 0.97, broadcast R 0.51 / AP 0.53). Two self-training rounds have plateaued; the next gain needs human labels.
    - Label 300–500 small-ball frames from your own broadcast footage (`annotate_video.py` plus UI corrections; split by video).
    - Optionally add licence-checked Roboflow broadcast sets.
    - Retrain and re-evaluate on `broadcast_seg_test`, keeping it test-only.
