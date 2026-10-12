@@ -1,0 +1,26 @@
+# GPU backend in a Linux container (NVIDIA GPU via Docker Desktop + WSL2).
+# Frontend runs on the host: cd frontend && npm run dev   (http://localhost:3100)
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.gpu
+    image: drs-backend-gpu:local
+    ports:
+      - "${DRS_BACKEND_PORT:-8100}:8100"
+    environment:
+      DRS_STORAGE_DIR: /app/storage
+      DRS_CORS_ORIGINS: '["http://localhost:3100","http://127.0.0.1:3100"]'
+    volumes:
+      - ./storage-docker:/app/storage
+      - ./data:/app/data
+      - ./models:/app/models
+      - ./outputs:/app/outputs
+    shm_size: "2gb"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]

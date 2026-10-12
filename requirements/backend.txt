@@ -1,0 +1,14 @@
+# Backend + core ML (no PyTorch). Lower bounds tested; exact Windows versions in requirements/lock-windows.txt
+fastapi>=0.115
+uvicorn[standard]>=0.30
+sqlalchemy>=2.0
+pydantic>=2.8
+pydantic-settings>=2.4
+python-multipart>=0.0.9
+reportlab>=4.2
+numpy>=1.26
+scipy>=1.13
+av>=13.0
+pyyaml>=6.0
+opencv-python-headless>=4.10
+huggingface_hub>=0.24

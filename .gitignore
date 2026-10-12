@@ -1,0 +1,54 @@
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+
+# Node / Next.js
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/next-env.d.ts
+frontend/*.tsbuildinfo
+
+# Large data, models and generated outputs (reproduce with scripts/)
+data/raw/
+data/processed/
+data/annotations/
+!data/dataset_registry.json
+models/checkpoints/*
+!models/checkpoints/.gitkeep
+models/runs/
+outputs/*
+!outputs/reports/
+outputs/reports/*
+!outputs/reports/synth_benchmark_heldout.json
+!outputs/reports/synth_benchmark_calibration_split.json
+!outputs/reports/inference_benchmark_docker_rtx3080ti.json
+!outputs/reports/inference_benchmark_native_rtx3080ti.json
+!outputs/reports/detector_eval_synth_smoke_test.json
+storage/
+storage-docker/
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.pt
+*.onnx
+*.engine
+
+# Secrets and local config
+.env
+.env.*
+!.env.example
+kaggle.json
+
+# Tooling
+.vscode/
+.idea/
+*.log
+
+# Ultralytics side artefacts
+/runs/
+/weights/

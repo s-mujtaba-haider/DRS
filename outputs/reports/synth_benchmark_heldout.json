@@ -1,0 +1,2531 @@
+{
+  "summary": {
+    "num_clips": 120,
+    "status_counts": {
+      "ok": 108,
+      "no_projection": 12
+    },
+    "num_with_projection": 108,
+    "stump_plane_error_m": {
+      "median": 0.07905298807150464,
+      "mean": 0.2918444206430015,
+      "p90": 0.38441318776178346,
+      "max": 5.711485023608664
+    },
+    "interval_90_empirical_coverage": 0.8888888888888888,
+    "verdict_confusion": {
+      "true_hit": {
+        "INCONCLUSIVE": 20
+      },
+      "true_miss": {
+        "INCONCLUSIVE": 45,
+        "PROJECTED_TO_MISS": 55
+      }
+    },
+    "inconclusive_rate": 0.5416666666666666,
+    "definite_verdicts": 55,
+    "definite_verdict_accuracy": 1.0,
+    "false_hit": 0,
+    "false_miss": 0,
+    "by_rig": {
+      "front_on_stump": 120
+    },
+    "dataset": "Ranvin36/cricket-synth (synthetic)",
+    "pixel_noise_sigma": 1.0,
+    "impact_y_m": 1.5,
+    "rig": "front_on_stump",
+    "radius_cue": true,
+    "radius_noise_px": 0.5,
+    "bounce_prior": true,
+    "covariance_inflation": 6.0,
+    "clip_offset": 120,
+    "runtime_s": 435.9573908000002,
+    "caveat": "Synthetic data with a known camera. Measures trajectory/projection layers only; not evidence of real-world accuracy."
+  },
+  "clips": [
+    {
+      "clip_id": "extra_200_000120",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 17,
+      "true_crossing_xz": [
+        0.1466054510598837,
+        0.32737096837657115
+      ],
+      "pred_crossing_xz": [
+        0.40640660298254994,
+        0.03212367562133278
+      ],
+      "crossing_error_m": 0.39327802178565957,
+      "within_90pct_interval": true,
+      "true_hit": true,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.026,
+      "projection_distance_m": 0.49945617334790854,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000121",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 36,
+      "true_crossing_xz": [
+        0.4318003024158284,
+        0.300798508810375
+      ],
+      "pred_crossing_xz": [
+        0.6035267666252828,
+        -2.126407455072475
+      ],
+      "crossing_error_m": 2.4332732624221136,
+      "within_90pct_interval": false,
+      "true_hit": false,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.0,
+      "projection_distance_m": 5.115749973147318,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000122",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 19,
+      "true_crossing_xz": [
+        -0.0428842904756587,
+        0.37383914776977684
+      ],
+      "pred_crossing_xz": [
+        -0.0019135106629668969,
+        0.42369139930939226
+      ],
+      "crossing_error_m": 0.06452791475035562,
+      "within_90pct_interval": true,
+      "true_hit": true,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.394,
+      "projection_distance_m": 1.2337369478854545,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000123",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 25,
+      "true_crossing_xz": [
+        0.14702515366478483,
+        0.48922738720711095
+      ],
+      "pred_crossing_xz": [
+        0.10277311668674455,
+        0.48845020591149735
+      ],
+      "crossing_error_m": 0.0442588611181094,
+      "within_90pct_interval": true,
+      "true_hit": true,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.546,
+      "projection_distance_m": 1.5952915812527586,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000124",
+      "rig": "front_on_stump",
+      "status": "no_projection",
+      "n_obs": 28,
+      "true_crossing_xz": [
+        -0.5755369386161203,
+        0.5621626097707842
+      ],
+      "pred_crossing_xz": null,
+      "crossing_error_m": null,
+      "within_90pct_interval": null,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": null,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000125",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 34,
+      "true_crossing_xz": [
+        -1.0359817453824594,
+        0.33750918113429845
+      ],
+      "pred_crossing_xz": [
+        -1.0462598020580063,
+        0.35420346932496477
+      ],
+      "crossing_error_m": 0.019604532823272677,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": 0.7746398945485379,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000126",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 19,
+      "true_crossing_xz": [
+        1.1760039235506796,
+        0.44697839577710824
+      ],
+      "pred_crossing_xz": [
+        1.2232259261965288,
+        0.354785166764495
+      ],
+      "crossing_error_m": 0.10358334330217739,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.0,
+      "projection_distance_m": 2.4458896360074713,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000127",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 35,
+      "true_crossing_xz": [
+        0.11078509620286478,
+        0.45075413857041136
+      ],
+      "pred_crossing_xz": [
+        0.07287178999094028,
+        0.4677125326292835
+      ],
+      "crossing_error_m": 0.041533190546539304,
+      "within_90pct_interval": true,
+      "true_hit": true,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.562,
+      "projection_distance_m": 1.3254485532873486,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000128",
+      "rig": "front_on_stump",
+      "status": "no_projection",
+      "n_obs": 26,
+      "true_crossing_xz": [
+        -0.37616366641501686,
+        0.1719355204266788
+      ],
+      "pred_crossing_xz": null,
+      "crossing_error_m": null,
+      "within_90pct_interval": null,
+      "true_hit": false,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.0,
+      "projection_distance_m": null,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000129",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 34,
+      "true_crossing_xz": [
+        -0.32177993446986636,
+        0.3295042746735901
+      ],
+      "pred_crossing_xz": [
+        -0.3920476145305683,
+        0.3748782389827909
+      ],
+      "crossing_error_m": 0.08364414802151908,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": 1.4138385633924155,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000130",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 40,
+      "true_crossing_xz": [
+        -1.058346924330913,
+        0.7869690910362959
+      ],
+      "pred_crossing_xz": [
+        -1.0682407797411346,
+        0.7635366967480279
+      ],
+      "crossing_error_m": 0.02543551605450978,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": 2.0382373809519567,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000131",
+      "rig": "front_on_stump",
+      "status": "no_projection",
+      "n_obs": 13,
+      "true_crossing_xz": [
+        0.4561365959611873,
+        0.46928855913982537
+      ],
+      "pred_crossing_xz": null,
+      "crossing_error_m": null,
+      "within_90pct_interval": null,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": null,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000132",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 12,
+      "true_crossing_xz": [
+        -0.7381966450484997,
+        1.1324110266904728
+      ],
+      "pred_crossing_xz": [
+        -0.7336906882395438,
+        1.1193008988339708
+      ],
+      "crossing_error_m": 0.013862867639056729,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": 1.5813741045946503,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000133",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 26,
+      "true_crossing_xz": [
+        1.45439464256117,
+        0.6425838925950885
+      ],
+      "pred_crossing_xz": [
+        1.384268383179414,
+        0.6663615527529871
+      ],
+      "crossing_error_m": 0.07404775065767925,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.0,
+      "projection_distance_m": 1.2427985547401224,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000134",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 14,
+      "true_crossing_xz": [
+        0.6356913795753957,
+        0.6624273468034008
+      ],
+      "pred_crossing_xz": [
+        0.5941625963381456,
+        0.7156423167782
+      ],
+      "crossing_error_m": 0.06750165084340742,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": 0.7196637591702302,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000135",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 15,
+      "true_crossing_xz": [
+        -0.9948600368476457,
+        0.315809949230358
+      ],
+      "pred_crossing_xz": [
+        -1.0385027832147355,
+        0.4017951100282831
+      ],
+      "crossing_error_m": 0.09642684889545637,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": 1.5756310344957882,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000136",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 23,
+      "true_crossing_xz": [
+        0.878410572209451,
+        0.3935307094398834
+      ],
+      "pred_crossing_xz": [
+        1.3687324651730868,
+        -2.8174762110298537
+      ],
+      "crossing_error_m": 3.2482273630434166,
+      "within_90pct_interval": false,
+      "true_hit": false,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.0,
+      "projection_distance_m": 7.0910378698697,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000137",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 28,
+      "true_crossing_xz": [
+        -0.5377739772281237,
+        0.5835212113275852
+      ],
+      "pred_crossing_xz": [
+        -0.4022235850740164,
+        0.768115493343981
+      ],
+      "crossing_error_m": 0.2290173743764454,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.0,
+      "projection_distance_m": 0.2019917618410158,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000138",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 30,
+      "true_crossing_xz": [
+        0.995480835758991,
+        0.44540313646864615
+      ],
+      "pred_crossing_xz": [
+        0.9430884446594765,
+        0.48335978729163476
+      ],
+      "crossing_error_m": 0.06469675406713055,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": 0.9852828966286513,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000139",
+      "rig": "front_on_stump",
+      "status": "no_projection",
+      "n_obs": 42,
+      "true_crossing_xz": [
+        0.10005090093550097,
+        0.3138028003399464
+      ],
+      "pred_crossing_xz": null,
+      "crossing_error_m": null,
+      "within_90pct_interval": null,
+      "true_hit": true,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.014,
+      "projection_distance_m": null,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000140",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 12,
+      "true_crossing_xz": [
+        0.16180129225871492,
+        0.33706124368169077
+      ],
+      "pred_crossing_xz": [
+        0.15380456646126128,
+        0.3575247001763795
+      ],
+      "crossing_error_m": 0.021970450045223897,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.32,
+      "projection_distance_m": 1.2420243249127045,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000141",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 51,
+      "true_crossing_xz": [
+        0.5832745447764333,
+        0.4180312255766821
+      ],
+      "pred_crossing_xz": [
+        0.5559632874148905,
+        0.38092837748112757
+      ],
+      "crossing_error_m": 0.04607088142710334,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.0,
+      "projection_distance_m": 0.625046464790432,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000142",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 16,
+      "true_crossing_xz": [
+        0.2443555437934555,
+        0.11593469276882372
+      ],
+      "pred_crossing_xz": [
+        0.25390612628992826,
+        -0.14760643843487276
+      ],
+      "crossing_error_m": 0.26371412829453394,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.018,
+      "projection_distance_m": 3.509917467248934,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000143",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 31,
+      "true_crossing_xz": [
+        -1.0017407566986856,
+        0.24413271733989134
+      ],
+      "pred_crossing_xz": [
+        -1.1262183413977467,
+        -0.11555093184011644
+      ],
+      "crossing_error_m": 0.3806139731801223,
+      "within_90pct_interval": false,
+      "true_hit": false,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.0,
+      "projection_distance_m": 3.7567455808098216,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000144",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 30,
+      "true_crossing_xz": [
+        -0.2268661110558588,
+        0.443856428558437
+      ],
+      "pred_crossing_xz": [
+        -0.226630224702563,
+        0.39301696292731014
+      ],
+      "crossing_error_m": 0.05084001286418208,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.02,
+      "projection_distance_m": 2.0008492539347906,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000145",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 33,
+      "true_crossing_xz": [
+        0.07239434202308533,
+        0.662597986306123
+      ],
+      "pred_crossing_xz": [
+        0.07535986866150624,
+        0.6945428776743832
+      ],
+      "crossing_error_m": 0.03208224482128904,
+      "within_90pct_interval": true,
+      "true_hit": true,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.608,
+      "projection_distance_m": 1.3538181370937337,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000146",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 31,
+      "true_crossing_xz": [
+        -0.12592592980972342,
+        0.1098550845762567
+      ],
+      "pred_crossing_xz": [
+        -0.1275917837915559,
+        -0.008476695986127547
+      ],
+      "crossing_error_m": 0.11834350578106534,
+      "within_90pct_interval": true,
+      "true_hit": true,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.262,
+      "projection_distance_m": 2.435414140108321,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000147",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 44,
+      "true_crossing_xz": [
+        0.45718799849064234,
+        0.27718813452517166
+      ],
+      "pred_crossing_xz": [
+        0.4053376422317555,
+        0.3367050512548493
+      ],
+      "crossing_error_m": 0.0789349277644622,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.0,
+      "projection_distance_m": 0.6039900439088709,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000148",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 20,
+      "true_crossing_xz": [
+        1.5411098613230731,
+        0.36849527574105484
+      ],
+      "pred_crossing_xz": [
+        1.5949261850133096,
+        -1.6281056880875262
+      ],
+      "crossing_error_m": 1.9973261139475325,
+      "within_90pct_interval": false,
+      "true_hit": false,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.0,
+      "projection_distance_m": 4.469156594782475,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000149",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 24,
+      "true_crossing_xz": [
+        0.4494758267575546,
+        0.37811447420953265
+      ],
+      "pred_crossing_xz": [
+        0.44580798236609676,
+        0.4265724168925138
+      ],
+      "crossing_error_m": 0.04859655637539593,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": 1.710173111120207,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000150",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 16,
+      "true_crossing_xz": [
+        -0.31100590465367106,
+        0.39643474846334625
+      ],
+      "pred_crossing_xz": [
+        -0.3292652036830267,
+        0.49012721326038267
+      ],
+      "crossing_error_m": 0.09545512013919073,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.014,
+      "projection_distance_m": 1.6053509282562786,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000151",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 12,
+      "true_crossing_xz": [
+        -1.111903636060544,
+        0.7323645734192246
+      ],
+      "pred_crossing_xz": [
+        -1.0595087530481526,
+        0.6986028065295873
+      ],
+      "crossing_error_m": 0.06233041528333016,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": 0.6131094666230822,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000152",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 25,
+      "true_crossing_xz": [
+        0.7846569051466862,
+        0.5432173226357057
+      ],
+      "pred_crossing_xz": [
+        0.7931554464504055,
+        0.6529810402941847
+      ],
+      "crossing_error_m": 0.11009222914675369,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": 0.7296807312521388,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000153",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 16,
+      "true_crossing_xz": [
+        -0.3688625886579076,
+        0.4704362005193897
+      ],
+      "pred_crossing_xz": [
+        -0.37928244964186186,
+        0.5336622072216711
+      ],
+      "crossing_error_m": 0.06407886879808246,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": 1.4907246976214892,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000154",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 31,
+      "true_crossing_xz": [
+        -0.361095886938169,
+        0.3688436669026772
+      ],
+      "pred_crossing_xz": [
+        -0.3562081233438251,
+        0.4065457118551917
+      ],
+      "crossing_error_m": 0.03801755418955325,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": 0.31215652002673416,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000155",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 21,
+      "true_crossing_xz": [
+        -0.6146059795221737,
+        0.5837599647995122
+      ],
+      "pred_crossing_xz": [
+        -0.5356226168172539,
+        0.5791473331980184
+      ],
+      "crossing_error_m": 0.07911793699577874,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.0,
+      "projection_distance_m": 1.043640850511062,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000156",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 35,
+      "true_crossing_xz": [
+        -0.7436699905957258,
+        0.1437202498919574
+      ],
+      "pred_crossing_xz": [
+        -0.6324475315691163,
+        -0.12318884663275043
+      ],
+      "crossing_error_m": 0.28915549657504636,
+      "within_90pct_interval": false,
+      "true_hit": false,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.0,
+      "projection_distance_m": 1.1108506282417958,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000157",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 34,
+      "true_crossing_xz": [
+        -0.2100941144093648,
+        0.7176896518989478
+      ],
+      "pred_crossing_xz": [
+        -0.24028512565947585,
+        0.7520188602913805
+      ],
+      "crossing_error_m": 0.04571642712587461,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.072,
+      "projection_distance_m": 0.91167107067729,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000158",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 18,
+      "true_crossing_xz": [
+        0.2318378362130072,
+        0.41964030827953147
+      ],
+      "pred_crossing_xz": [
+        0.255235704475368,
+        0.43399568258820503
+      ],
+      "crossing_error_m": 0.027450628604185283,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.192,
+      "projection_distance_m": 0.960747226524003,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000159",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 29,
+      "true_crossing_xz": [
+        0.4404005718967637,
+        0.3181454751960213
+      ],
+      "pred_crossing_xz": [
+        0.3978581967789186,
+        0.21608965373928335
+      ],
+      "crossing_error_m": 0.11056782702882889,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.0,
+      "projection_distance_m": 2.690583511981926,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000160",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 48,
+      "true_crossing_xz": [
+        0.36717588535599094,
+        0.45535870119867133
+      ],
+      "pred_crossing_xz": [
+        0.5391624717238876,
+        0.26689045562514147
+      ],
+      "crossing_error_m": 0.25514636089908543,
+      "within_90pct_interval": false,
+      "true_hit": false,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.0,
+      "projection_distance_m": 0.6344695823956855,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000161",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 25,
+      "true_crossing_xz": [
+        1.2787326667387264,
+        0.4248337038350121
+      ],
+      "pred_crossing_xz": [
+        1.2640369196649202,
+        0.35495055450226
+      ],
+      "crossing_error_m": 0.07141162050199548,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.0,
+      "projection_distance_m": 1.4726529156143842,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000162",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 44,
+      "true_crossing_xz": [
+        1.2201045984659555,
+        0.644473713981303
+      ],
+      "pred_crossing_xz": [
+        1.6366651594819634,
+        1.1801153947417318
+      ],
+      "crossing_error_m": 0.678553395954827,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": 2.3885951969424966,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000163",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 12,
+      "true_crossing_xz": [
+        -0.40980874940724127,
+        0.48306262041541326
+      ],
+      "pred_crossing_xz": [
+        -0.3189220778030686,
+        0.41991202100595454
+      ],
+      "crossing_error_m": 0.11067242330887428,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": 0.17163635821383283,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000164",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 23,
+      "true_crossing_xz": [
+        0.39420275893511103,
+        0.41006961874440984
+      ],
+      "pred_crossing_xz": [
+        0.3670006158299629,
+        0.5018847278788895
+      ],
+      "crossing_error_m": 0.0957599647811619,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": 1.4440590377769202,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000165",
+      "rig": "front_on_stump",
+      "status": "no_projection",
+      "n_obs": 37,
+      "true_crossing_xz": [
+        0.8660808393690769,
+        0.730630520959108
+      ],
+      "pred_crossing_xz": null,
+      "crossing_error_m": null,
+      "within_90pct_interval": null,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": null,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000166",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 26,
+      "true_crossing_xz": [
+        -0.1618814508116864,
+        0.32631542715950834
+      ],
+      "pred_crossing_xz": [
+        -0.15131708560807117,
+        0.4307435661466792
+      ],
+      "crossing_error_m": 0.10496114530853419,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.456,
+      "projection_distance_m": 0.6272988144890701,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000167",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 14,
+      "true_crossing_xz": [
+        1.459489419943249,
+        0.8911362034618113
+      ],
+      "pred_crossing_xz": [
+        1.391704417645151,
+        0.9248007545334942
+      ],
+      "crossing_error_m": 0.07568426874464147,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": 0.37212365546175097,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000168",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 14,
+      "true_crossing_xz": [
+        -0.2461663740379748,
+        0.23699687901759806
+      ],
+      "pred_crossing_xz": [
+        -0.2324276961990778,
+        0.31592182145664327
+      ],
+      "crossing_error_m": 0.08011178320177126,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.012,
+      "projection_distance_m": 0.8380019543175262,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000169",
+      "rig": "front_on_stump",
+      "status": "no_projection",
+      "n_obs": 15,
+      "true_crossing_xz": [
+        -1.1412731748484535,
+        0.712645670588124
+      ],
+      "pred_crossing_xz": null,
+      "crossing_error_m": null,
+      "within_90pct_interval": null,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": null,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000170",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 15,
+      "true_crossing_xz": [
+        -0.022323352711747096,
+        0.13449466708977598
+      ],
+      "pred_crossing_xz": [
+        -0.028443829905620444,
+        0.06166579821493734
+      ],
+      "crossing_error_m": 0.07308559627361033,
+      "within_90pct_interval": true,
+      "true_hit": true,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.698,
+      "projection_distance_m": 2.169492758389295,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000171",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 14,
+      "true_crossing_xz": [
+        0.27357010084851746,
+        0.3755879613894306
+      ],
+      "pred_crossing_xz": [
+        0.2860289346390945,
+        0.4489494097326666
+      ],
+      "crossing_error_m": 0.07441185821116489,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": 1.7636009937993575,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000172",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 32,
+      "true_crossing_xz": [
+        0.04744431598847879,
+        0.36769821577829415
+      ],
+      "pred_crossing_xz": [
+        0.05141222981137106,
+        0.39892690538014475
+      ],
+      "crossing_error_m": 0.03147976166292609,
+      "within_90pct_interval": true,
+      "true_hit": true,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.928,
+      "projection_distance_m": 1.289351066004505,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000173",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 14,
+      "true_crossing_xz": [
+        -0.5781761768545601,
+        0.4651180248259294
+      ],
+      "pred_crossing_xz": [
+        -0.5755260941336422,
+        0.5326081568700674
+      ],
+      "crossing_error_m": 0.06754214137679442,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": 1.493134502189311,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000174",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 27,
+      "true_crossing_xz": [
+        0.36843864769964224,
+        0.344957510200739
+      ],
+      "pred_crossing_xz": [
+        0.35402783104505986,
+        0.4109867917071731
+      ],
+      "crossing_error_m": 0.06758356052257021,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": 1.5663556730779278,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000175",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 67,
+      "true_crossing_xz": [
+        -0.6013986807088302,
+        0.11605042244964837
+      ],
+      "pred_crossing_xz": [
+        -1.2706046032105502,
+        -5.55609419913703
+      ],
+      "crossing_error_m": 5.711485023608664,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.0,
+      "projection_distance_m": 7.540598485934294,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000176",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 30,
+      "true_crossing_xz": [
+        -0.08602819320421187,
+        0.2872733691141415
+      ],
+      "pred_crossing_xz": [
+        -0.12131444437485417,
+        0.19258037771440684
+      ],
+      "crossing_error_m": 0.10105385763001763,
+      "within_90pct_interval": true,
+      "true_hit": true,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.686,
+      "projection_distance_m": 2.2346050612159662,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000177",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 11,
+      "true_crossing_xz": [
+        0.22347252329142292,
+        0.3606859810963318
+      ],
+      "pred_crossing_xz": [
+        0.19003500610655752,
+        0.35521957207781796
+      ],
+      "crossing_error_m": 0.03388139877640619,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.212,
+      "projection_distance_m": 1.3376193789381605,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000178",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 30,
+      "true_crossing_xz": [
+        -2.209552180526508,
+        0.5290580469076784
+      ],
+      "pred_crossing_xz": [
+        -2.078439420164721,
+        0.5931422515332483
+      ],
+      "crossing_error_m": 0.1459360860520085,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": 0.21426147072418708,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000179",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 33,
+      "true_crossing_xz": [
+        -0.18238389957806858,
+        0.3374863670285901
+      ],
+      "pred_crossing_xz": [
+        -0.19608700469054371,
+        0.3273152101439111
+      ],
+      "crossing_error_m": 0.017065389596967757,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.16,
+      "projection_distance_m": 1.5165549619214433,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000180",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 13,
+      "true_crossing_xz": [
+        0.41760222799026925,
+        0.2753021019645996
+      ],
+      "pred_crossing_xz": [
+        0.4544719508030843,
+        0.4169124333408114
+      ],
+      "crossing_error_m": 0.1463313446011289,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": 0.3873392346258142,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000181",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 14,
+      "true_crossing_xz": [
+        -0.5037841398160313,
+        0.7775505437496388
+      ],
+      "pred_crossing_xz": [
+        -0.4699406477013388,
+        0.7792060214100807
+      ],
+      "crossing_error_m": 0.033883957336791046,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": 0.6964290223022547,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000182",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 25,
+      "true_crossing_xz": [
+        0.957747927942354,
+        0.33493646917534026
+      ],
+      "pred_crossing_xz": [
+        0.8217143993319627,
+        0.3994271479576674
+      ],
+      "crossing_error_m": 0.15054623394824412,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.0,
+      "projection_distance_m": 0.347694777574451,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000183",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 20,
+      "true_crossing_xz": [
+        0.8686011384463598,
+        0.5786170132392633
+      ],
+      "pred_crossing_xz": [
+        0.9742525717099225,
+        -1.0348804671868246
+      ],
+      "crossing_error_m": 1.6169527960617711,
+      "within_90pct_interval": false,
+      "true_hit": false,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.0,
+      "projection_distance_m": 4.696045476067008,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000184",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 11,
+      "true_crossing_xz": [
+        0.3654673239294424,
+        0.3305194311792667
+      ],
+      "pred_crossing_xz": [
+        0.42394232867612475,
+        0.4239807596898741
+      ],
+      "crossing_error_m": 0.11024675100469944,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.006,
+      "projection_distance_m": 1.620027181714735,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000185",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 20,
+      "true_crossing_xz": [
+        1.1427644395950476,
+        0.7967446458133804
+      ],
+      "pred_crossing_xz": [
+        1.1079251428113996,
+        -1.6440392871921863
+      ],
+      "crossing_error_m": 2.441032565169605,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.0,
+      "projection_distance_m": 5.513842856509647,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000186",
+      "rig": "front_on_stump",
+      "status": "no_projection",
+      "n_obs": 28,
+      "true_crossing_xz": [
+        -0.8370379534037927,
+        0.4230738168555764
+      ],
+      "pred_crossing_xz": null,
+      "crossing_error_m": null,
+      "within_90pct_interval": null,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": null,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000187",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 14,
+      "true_crossing_xz": [
+        -0.5412621616878126,
+        0.27624047981750927
+      ],
+      "pred_crossing_xz": [
+        -0.5387752319583595,
+        0.37379299976999436
+      ],
+      "crossing_error_m": 0.09758421475094853,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": 0.6455252390368086,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000188",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 22,
+      "true_crossing_xz": [
+        0.5487852776122026,
+        0.5904738801689943
+      ],
+      "pred_crossing_xz": [
+        0.5056491140353756,
+        0.5574003378481713
+      ],
+      "crossing_error_m": 0.05435612026050098,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": 1.1609478195650835,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000189",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 14,
+      "true_crossing_xz": [
+        -0.14691806539446128,
+        0.4850409278093112
+      ],
+      "pred_crossing_xz": [
+        -0.164710525550539,
+        0.3861020229138442
+      ],
+      "crossing_error_m": 0.10052600927282387,
+      "within_90pct_interval": true,
+      "true_hit": true,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.4,
+      "projection_distance_m": 2.172893916390514,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000190",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 22,
+      "true_crossing_xz": [
+        -0.4373730104481539,
+        0.2664105035586618
+      ],
+      "pred_crossing_xz": [
+        -0.45947861300136467,
+        0.30566311664379464
+      ],
+      "crossing_error_m": 0.04504914314669769,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.008,
+      "projection_distance_m": 1.6576164019851636,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000191",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 23,
+      "true_crossing_xz": [
+        0.41266754526699395,
+        0.5731547112102117
+      ],
+      "pred_crossing_xz": [
+        0.3870210519978128,
+        0.5944862288287528
+      ],
+      "crossing_error_m": 0.033358301229473385,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.0,
+      "projection_distance_m": 0.9643650681788549,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000192",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 12,
+      "true_crossing_xz": [
+        0.08711070696171971,
+        0.4339192734858295
+      ],
+      "pred_crossing_xz": [
+        0.09980083273697304,
+        0.3596674844570992
+      ],
+      "crossing_error_m": 0.07532839747504803,
+      "within_90pct_interval": true,
+      "true_hit": true,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.646,
+      "projection_distance_m": 2.207458942978378,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000193",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 27,
+      "true_crossing_xz": [
+        0.2530746558805996,
+        0.32735255695474375
+      ],
+      "pred_crossing_xz": [
+        0.27000476272172996,
+        0.4067135634674126
+      ],
+      "crossing_error_m": 0.08114676747940093,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.016,
+      "projection_distance_m": 1.6697571894142034,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000194",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 26,
+      "true_crossing_xz": [
+        0.5283394789198363,
+        0.4662331121408516
+      ],
+      "pred_crossing_xz": [
+        0.5080457932005702,
+        0.5849755581310094
+      ],
+      "crossing_error_m": 0.12046411150130105,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": 0.554274325528828,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000195",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 29,
+      "true_crossing_xz": [
+        0.6583446108352108,
+        0.3410125344929222
+      ],
+      "pred_crossing_xz": [
+        0.6359828441600341,
+        0.33526060140634334
+      ],
+      "crossing_error_m": 0.02308968044533144,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": 1.214767205400614,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000196",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 13,
+      "true_crossing_xz": [
+        -1.045027506339497,
+        0.5326985806843337
+      ],
+      "pred_crossing_xz": [
+        -1.0883909818997402,
+        0.5860393857849813
+      ],
+      "crossing_error_m": 0.06874323604143959,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": 1.6791848124853666,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000197",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 26,
+      "true_crossing_xz": [
+        0.45174764930010486,
+        0.12014862063177256
+      ],
+      "pred_crossing_xz": [
+        0.44412181254315525,
+        -0.1447381683686857
+      ],
+      "crossing_error_m": 0.26499653653060623,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.0,
+      "projection_distance_m": 3.1391080451743822,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000198",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 13,
+      "true_crossing_xz": [
+        0.5552500052918662,
+        0.3539782123294757
+      ],
+      "pred_crossing_xz": [
+        0.5959262959695206,
+        0.07996958283750598
+      ],
+      "crossing_error_m": 0.2770113529430889,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.002,
+      "projection_distance_m": 0.01295381300593308,
+      "notes": []
+    },
+    {
+      "clip_id": "extra_200_000199",
+      "rig": "front_on_stump",
+      "status": "no_projection",
+      "n_obs": 38,
+      "true_crossing_xz": [
+        0.4643734501507636,
+        0.39820787970528154
+      ],
+      "pred_crossing_xz": null,
+      "crossing_error_m": null,
+      "within_90pct_interval": null,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": null,
+      "notes": []
+    },
+    {
+      "clip_id": "front_on_test_000000",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 14,
+      "true_crossing_xz": [
+        -0.5303822656436704,
+        0.43621965759294673
+      ],
+      "pred_crossing_xz": [
+        -0.5653991683415981,
+        0.4956560407156105
+      ],
+      "crossing_error_m": 0.0689845425675941,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.0,
+      "projection_distance_m": 1.9704960081820369,
+      "notes": []
+    },
+    {
+      "clip_id": "front_on_test_000001",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 28,
+      "true_crossing_xz": [
+        0.23735866519417953,
+        0.27311903751430217
+      ],
+      "pred_crossing_xz": [
+        0.19563908693252052,
+        -0.6437432109004806
+      ],
+      "crossing_error_m": 0.9178109313897616,
+      "within_90pct_interval": false,
+      "true_hit": false,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.0,
+      "projection_distance_m": 2.8978748481666563,
+      "notes": []
+    },
+    {
+      "clip_id": "front_on_test_000002",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 30,
+      "true_crossing_xz": [
+        0.2225051044959923,
+        0.5616597142440314
+      ],
+      "pred_crossing_xz": [
+        0.27110054480956636,
+        0.6239300403155583
+      ],
+      "crossing_error_m": 0.07898803914723054,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.032,
+      "projection_distance_m": 0.9941088927482218,
+      "notes": []
+    },
+    {
+      "clip_id": "front_on_test_000003",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 39,
+      "true_crossing_xz": [
+        -0.193928039193729,
+        0.44888113659014556
+      ],
+      "pred_crossing_xz": [
+        -0.17214380995659873,
+        0.4744112423336112
+      ],
+      "crossing_error_m": 0.03356097350686328,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.21,
+      "projection_distance_m": 0.5383351372906223,
+      "notes": []
+    },
+    {
+      "clip_id": "front_on_test_000004",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 13,
+      "true_crossing_xz": [
+        0.26569046647922767,
+        0.4961965462175013
+      ],
+      "pred_crossing_xz": [
+        0.26917994216887897,
+        0.6032988399646687
+      ],
+      "crossing_error_m": 0.10715912358027757,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.06,
+      "projection_distance_m": 1.7379438538666034,
+      "notes": []
+    },
+    {
+      "clip_id": "lengths_100_000000",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 17,
+      "true_crossing_xz": [
+        2.3124149629277486,
+        0.5285170346643124
+      ],
+      "pred_crossing_xz": [
+        2.304824052454837,
+        0.6329112656342866
+      ],
+      "crossing_error_m": 0.10466984943917741,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.0,
+      "projection_distance_m": 1.5044960593001726,
+      "notes": []
+    },
+    {
+      "clip_id": "lengths_100_000001",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 20,
+      "true_crossing_xz": [
+        0.46397101636274934,
+        0.1599895535757279
+      ],
+      "pred_crossing_xz": [
+        0.4454398017568662,
+        0.2922928922694237
+      ],
+      "crossing_error_m": 0.13359483277532885,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.0,
+      "projection_distance_m": 0.2726509770048023,
+      "notes": []
+    },
+    {
+      "clip_id": "lengths_100_000002",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 13,
+      "true_crossing_xz": [
+        -0.06191663455482611,
+        0.38505600292660247
+      ],
+      "pred_crossing_xz": [
+        -0.03284844410161192,
+        0.3590344309988672
+      ],
+      "crossing_error_m": 0.0390138680704007,
+      "within_90pct_interval": true,
+      "true_hit": true,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.734,
+      "projection_distance_m": 1.9094545710598128,
+      "notes": []
+    },
+    {
+      "clip_id": "lengths_100_000003",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 16,
+      "true_crossing_xz": [
+        -0.23973452032436746,
+        1.082084164454889
+      ],
+      "pred_crossing_xz": [
+        -0.2298009132280689,
+        1.1028822377315428
+      ],
+      "crossing_error_m": 0.02304856615854208,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.038,
+      "projection_distance_m": 1.5556081165545694,
+      "notes": []
+    },
+    {
+      "clip_id": "lengths_100_000004",
+      "rig": "front_on_stump",
+      "status": "no_projection",
+      "n_obs": 13,
+      "true_crossing_xz": [
+        -0.06450813166641554,
+        0.18758354099883542
+      ],
+      "pred_crossing_xz": null,
+      "crossing_error_m": null,
+      "within_90pct_interval": null,
+      "true_hit": true,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.282,
+      "projection_distance_m": null,
+      "notes": []
+    },
+    {
+      "clip_id": "lengths_100_000005",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 63,
+      "true_crossing_xz": [
+        0.10359042518800378,
+        0.0756283968562692
+      ],
+      "pred_crossing_xz": [
+        0.13675226204117868,
+        0.25577912402151415
+      ],
+      "crossing_error_m": 0.18317748748588925,
+      "within_90pct_interval": true,
+      "true_hit": true,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.232,
+      "projection_distance_m": 0.4752912159493525,
+      "notes": []
+    },
+    {
+      "clip_id": "lengths_100_000006",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 14,
+      "true_crossing_xz": [
+        -0.7740611784183116,
+        0.664509452043435
+      ],
+      "pred_crossing_xz": [
+        -0.7761618145375733,
+        0.7274731307098325
+      ],
+      "crossing_error_m": 0.062998710330537,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": 1.3139279334753056,
+      "notes": []
+    },
+    {
+      "clip_id": "lengths_100_000007",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 18,
+      "true_crossing_xz": [
+        -0.27556041029032474,
+        0.44124519642660315
+      ],
+      "pred_crossing_xz": [
+        -0.20670824844040167,
+        0.4767240781874766
+      ],
+      "crossing_error_m": 0.07745560820502309,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.146,
+      "projection_distance_m": 1.147884593225425,
+      "notes": []
+    },
+    {
+      "clip_id": "lengths_100_000008",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 38,
+      "true_crossing_xz": [
+        1.1334299089722029,
+        0.5379949880600705
+      ],
+      "pred_crossing_xz": [
+        1.1038044891364847,
+        0.6267772675315876
+      ],
+      "crossing_error_m": 0.09359465074779182,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": 0.16951688382923266,
+      "notes": []
+    },
+    {
+      "clip_id": "lengths_100_000009",
+      "rig": "front_on_stump",
+      "status": "no_projection",
+      "n_obs": 13,
+      "true_crossing_xz": [
+        0.6189729362080862,
+        0.9884780921767631
+      ],
+      "pred_crossing_xz": null,
+      "crossing_error_m": null,
+      "within_90pct_interval": null,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": null,
+      "notes": []
+    },
+    {
+      "clip_id": "lengths_100_000010",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 20,
+      "true_crossing_xz": [
+        0.660476693532737,
+        0.602253628387662
+      ],
+      "pred_crossing_xz": [
+        0.6522571932568098,
+        0.5507754805091508
+      ],
+      "crossing_error_m": 0.052130220542290426,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.0,
+      "projection_distance_m": 1.2658213819167883,
+      "notes": []
+    },
+    {
+      "clip_id": "lengths_100_000011",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 24,
+      "true_crossing_xz": [
+        -0.4644363466801825,
+        0.5037979442473391
+      ],
+      "pred_crossing_xz": [
+        -0.4626849992756231,
+        0.5028846341631181
+      ],
+      "crossing_error_m": 0.0019751843056780177,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": 1.3622850328065752,
+      "notes": []
+    },
+    {
+      "clip_id": "lengths_100_000012",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 25,
+      "true_crossing_xz": [
+        -0.0526736170872865,
+        0.34531283237164423
+      ],
+      "pred_crossing_xz": [
+        -0.03542059498044037,
+        0.4117245577052566
+      ],
+      "crossing_error_m": 0.06861620824270673,
+      "within_90pct_interval": true,
+      "true_hit": true,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.744,
+      "projection_distance_m": 0.939426602302017,
+      "notes": []
+    },
+    {
+      "clip_id": "lengths_100_000013",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 26,
+      "true_crossing_xz": [
+        -0.4662022592287807,
+        0.19504647617671456
+      ],
+      "pred_crossing_xz": [
+        -0.48975289519222776,
+        0.36784295658184174
+      ],
+      "crossing_error_m": 0.17439396805704693,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": 0.22014951970984944,
+      "notes": []
+    },
+    {
+      "clip_id": "lengths_100_000014",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 17,
+      "true_crossing_xz": [
+        -0.5669093161968001,
+        0.41938728585134943
+      ],
+      "pred_crossing_xz": [
+        -0.48475747540679526,
+        0.45180315240818075
+      ],
+      "crossing_error_m": 0.08831598581127086,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": 0.83579519823909,
+      "notes": []
+    },
+    {
+      "clip_id": "lengths_100_000015",
+      "rig": "front_on_stump",
+      "status": "no_projection",
+      "n_obs": 21,
+      "true_crossing_xz": [
+        0.403688661072575,
+        0.20027591667374894
+      ],
+      "pred_crossing_xz": null,
+      "crossing_error_m": null,
+      "within_90pct_interval": null,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": null,
+      "notes": []
+    },
+    {
+      "clip_id": "lengths_100_000016",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 13,
+      "true_crossing_xz": [
+        0.08498963500900181,
+        0.2586965061252666
+      ],
+      "pred_crossing_xz": [
+        0.07803962469162967,
+        0.12538358717770726
+      ],
+      "crossing_error_m": 0.1334939586712826,
+      "within_90pct_interval": true,
+      "true_hit": true,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.656,
+      "projection_distance_m": 2.449831442477234,
+      "notes": []
+    },
+    {
+      "clip_id": "lengths_100_000017",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 33,
+      "true_crossing_xz": [
+        0.5289005325033423,
+        0.33750586149971357
+      ],
+      "pred_crossing_xz": [
+        0.5579422572084141,
+        0.39672753301063446
+      ],
+      "crossing_error_m": 0.06595929161530309,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": 1.4590362088585898,
+      "notes": []
+    },
+    {
+      "clip_id": "lengths_100_000018",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 17,
+      "true_crossing_xz": [
+        -0.5892462777440893,
+        1.2586845973505538
+      ],
+      "pred_crossing_xz": [
+        -0.5903184447752545,
+        1.2659010048346802
+      ],
+      "crossing_error_m": 0.00729562054383807,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": 1.2367854968369179,
+      "notes": []
+    },
+    {
+      "clip_id": "lengths_100_000019",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 26,
+      "true_crossing_xz": [
+        -0.10571881172241977,
+        0.7115092917569745
+      ],
+      "pred_crossing_xz": [
+        -0.12122946408766863,
+        0.7279569797847519
+      ],
+      "crossing_error_m": 0.02260767078349055,
+      "within_90pct_interval": true,
+      "true_hit": true,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.296,
+      "projection_distance_m": 0.9857772197071996,
+      "notes": []
+    },
+    {
+      "clip_id": "lengths_100_000020",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 17,
+      "true_crossing_xz": [
+        -0.13136294112631403,
+        0.2908311059958541
+      ],
+      "pred_crossing_xz": [
+        -0.07798625241487256,
+        0.24728891402847955
+      ],
+      "crossing_error_m": 0.06888391233896213,
+      "within_90pct_interval": true,
+      "true_hit": true,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.508,
+      "projection_distance_m": 1.1188512803373807,
+      "notes": []
+    },
+    {
+      "clip_id": "lengths_100_000021",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 27,
+      "true_crossing_xz": [
+        -0.9449552885423586,
+        0.31578186569760947
+      ],
+      "pred_crossing_xz": [
+        -0.8939958975395019,
+        0.34220870221695054
+      ],
+      "crossing_error_m": 0.0574041568164014,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": 0.46870998664260527,
+      "notes": []
+    },
+    {
+      "clip_id": "lengths_100_000022",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 22,
+      "true_crossing_xz": [
+        0.15798830343686482,
+        0.38327341711514457
+      ],
+      "pred_crossing_xz": [
+        0.17811157954292323,
+        0.29347114524149986
+      ],
+      "crossing_error_m": 0.09202931204191771,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.31,
+      "projection_distance_m": 2.4790645459647243,
+      "notes": []
+    },
+    {
+      "clip_id": "lengths_100_000023",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 14,
+      "true_crossing_xz": [
+        -1.4512903711133718,
+        0.36643578101354357
+      ],
+      "pred_crossing_xz": [
+        -1.4638204172425056,
+        0.45035429241062735
+      ],
+      "crossing_error_m": 0.08484879852479174,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": 1.427153460368532,
+      "notes": []
+    },
+    {
+      "clip_id": "lengths_100_000024",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 12,
+      "true_crossing_xz": [
+        -0.6011946131695007,
+        0.6037776449847881
+      ],
+      "pred_crossing_xz": [
+        -0.5952909560894704,
+        0.6138797480215842
+      ],
+      "crossing_error_m": 0.011700668899026097,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": 1.3572502433636964,
+      "notes": []
+    },
+    {
+      "clip_id": "lengths_100_000025",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 14,
+      "true_crossing_xz": [
+        0.017588259156111875,
+        0.14752042348963854
+      ],
+      "pred_crossing_xz": [
+        -0.006915177986628995,
+        0.0348875246320548
+      ],
+      "crossing_error_m": 0.11526746434649693,
+      "within_90pct_interval": true,
+      "true_hit": true,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.528,
+      "projection_distance_m": 2.096213256999481,
+      "notes": []
+    },
+    {
+      "clip_id": "lengths_100_000026",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 19,
+      "true_crossing_xz": [
+        1.0769881528895053,
+        1.085111902658345
+      ],
+      "pred_crossing_xz": [
+        1.0886908117363239,
+        1.1000430867106372
+      ],
+      "crossing_error_m": 0.018970832382593252,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": 1.715549004895947,
+      "notes": []
+    },
+    {
+      "clip_id": "lengths_100_000027",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 29,
+      "true_crossing_xz": [
+        -1.503096703359743,
+        0.39574970546054206
+      ],
+      "pred_crossing_xz": [
+        -1.4176156744898822,
+        0.37864307666778796
+      ],
+      "crossing_error_m": 0.08717593157118007,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": 0.20786401569337157,
+      "notes": []
+    },
+    {
+      "clip_id": "lengths_100_000028",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 22,
+      "true_crossing_xz": [
+        0.9928799620246127,
+        0.4964498162645491
+      ],
+      "pred_crossing_xz": [
+        0.8226518387336846,
+        0.4689957274918184
+      ],
+      "crossing_error_m": 0.17242778473753118,
+      "within_90pct_interval": false,
+      "true_hit": false,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.0,
+      "projection_distance_m": 1.911793003869115,
+      "notes": []
+    },
+    {
+      "clip_id": "lengths_100_000029",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 26,
+      "true_crossing_xz": [
+        -0.20854141776330773,
+        0.548150113559264
+      ],
+      "pred_crossing_xz": [
+        -0.25279123655049385,
+        0.3370388065521328
+      ],
+      "crossing_error_m": 0.21569893464956663,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.06,
+      "projection_distance_m": 2.6967055320541324,
+      "notes": []
+    },
+    {
+      "clip_id": "lengths_100_000030",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 17,
+      "true_crossing_xz": [
+        0.7442174170339289,
+        0.42058587378324536
+      ],
+      "pred_crossing_xz": [
+        0.8302000844183258,
+        -1.7741717140329412
+      ],
+      "crossing_error_m": 2.196441187094993,
+      "within_90pct_interval": false,
+      "true_hit": false,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.0,
+      "projection_distance_m": 4.720889882955153,
+      "notes": []
+    },
+    {
+      "clip_id": "lengths_100_000031",
+      "rig": "front_on_stump",
+      "status": "no_projection",
+      "n_obs": 32,
+      "true_crossing_xz": [
+        -0.6804855227574134,
+        1.0015206362665499
+      ],
+      "pred_crossing_xz": null,
+      "crossing_error_m": null,
+      "within_90pct_interval": null,
+      "true_hit": false,
+      "verdict": "PROJECTED_TO_MISS",
+      "p_hit": 0.0,
+      "projection_distance_m": null,
+      "notes": []
+    },
+    {
+      "clip_id": "lengths_100_000032",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 15,
+      "true_crossing_xz": [
+        -0.20324095183267088,
+        0.49498852761394213
+      ],
+      "pred_crossing_xz": [
+        -0.13929275740391167,
+        0.514699878906526
+      ],
+      "crossing_error_m": 0.06691717971102816,
+      "within_90pct_interval": true,
+      "true_hit": false,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.196,
+      "projection_distance_m": 0.8593990272056717,
+      "notes": []
+    },
+    {
+      "clip_id": "lengths_100_000033",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 45,
+      "true_crossing_xz": [
+        0.47174326167432323,
+        0.33155346725168355
+      ],
+      "pred_crossing_xz": [
+        0.6208582351611893,
+        -0.709836459194872
+      ],
+      "crossing_error_m": 1.0520115276090616,
+      "within_90pct_interval": false,
+      "true_hit": false,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.0,
+      "projection_distance_m": 3.8966628174254065,
+      "notes": []
+    },
+    {
+      "clip_id": "lengths_100_000034",
+      "rig": "front_on_stump",
+      "status": "ok",
+      "n_obs": 24,
+      "true_crossing_xz": [
+        -0.8866266281296875,
+        0.778242602064652
+      ],
+      "pred_crossing_xz": [
+        -1.0360483990213978,
+        0.589529067819138
+      ],
+      "crossing_error_m": 0.2407065923979805,
+      "within_90pct_interval": false,
+      "true_hit": false,
+      "verdict": "INCONCLUSIVE",
+      "p_hit": 0.0,
+      "projection_distance_m": 1.9653630724303381,
+      "notes": []
+    }
+  ]
+}

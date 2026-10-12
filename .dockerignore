@@ -1,0 +1,10 @@
+.venv
+node_modules
+frontend
+storage
+data/raw
+data/processed
+outputs
+models/checkpoints
+**/__pycache__
+.git

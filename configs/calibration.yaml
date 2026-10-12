@@ -1,0 +1,11 @@
+# Calibration defaults (documentation; see ml/calibration/camera.py).
+max_reprojection_rms_px: 3.0       # above this a calibration is flagged unreliable and never "validated"
+approximate_mode_min_points: 6     # unknown intrinsics: focal length estimated, principal point at centre
+approximate_mode_assumptions:
+  - principal point at image centre
+  - square pixels
+  - zero lens distortion
+multiview:
+  sync_tolerance_ms: 2.0
+  max_reprojection_px: 5.0
+  min_ray_angle_deg: 5.0

@@ -1,0 +1,20 @@
+# GPU backend/worker image (Linux, CUDA). Used on Windows hosts where native PyTorch cannot
+# load (e.g. Smart App Control blocks unsigned DLLs), or whenever a Linux runtime is preferred.
+FROM pytorch/pytorch:2.7.1-cuda12.8-cudnn9-runtime
+
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PIP_NO_CACHE_DIR=1 YOLO_CONFIG_DIR=/tmp/ultralytics
+WORKDIR /app
+
+COPY requirements/backend.txt requirements/ml-gpu.txt /tmp/req/
+# ultralytics pulls the GUI opencv build; keep only the headless one in the container.
+RUN pip install -r /tmp/req/backend.txt -r /tmp/req/ml-gpu.txt \
+ && pip uninstall -y opencv-python \
+ && pip install --force-reinstall --no-deps opencv-python-headless
+
+COPY ml /app/ml
+COPY backend /app/backend
+COPY scripts /app/scripts
+COPY configs /app/configs
+
+EXPOSE 8100
+CMD ["python", "-m", "uvicorn", "backend.app.main:app", "--host", "0.0.0.0", "--port", "8100"]

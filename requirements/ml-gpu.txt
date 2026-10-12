@@ -1,0 +1,2 @@
+# Learned detector (requires PyTorch; install torch from https://download.pytorch.org/whl/cu128 first)
+ultralytics>=8.3

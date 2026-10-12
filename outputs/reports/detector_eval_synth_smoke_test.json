@@ -1,0 +1,25 @@
+{
+  "summary": {
+    "num_gt": 38,
+    "num_predictions": 460,
+    "score_threshold": 0.25,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "ap_centre_match": 0.041304946496867376,
+    "true_positives": 0,
+    "false_positives": 2,
+    "false_negatives": 38,
+    "centre_error_px": null,
+    "gt_size_px": {
+      "median": 7.219819999284242,
+      "frac_lt_16px": 0.9210526315789473
+    },
+    "weights": "models/runs/smoke_synth/weights/best.pt",
+    "data": "data/processed/synth_yolo/data.yaml",
+    "split": "test",
+    "images": 46,
+    "model_id": "yolo:best.pt",
+    "caveat": "Metrics apply only to this split's distribution; they do not establish accuracy on other footage."
+  }
+}

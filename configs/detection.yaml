@@ -1,0 +1,12 @@
+# Detection / pipeline settings (keys map to ml.pipeline.PipelineConfig).
+detector: auto        # auto | cricket | coco_hybrid | coco | motion
+conf: 0.15
+imgsz: 1280           # inference size; 1280 keeps more pixels on a tiny ball than 640
+tile_size: null       # e.g. 640 for tiled native-resolution inference on very small balls
+batch_size: 8         # 12 GB RTX 3080 Ti: 8-16 at 1280 FP16 uses < 1 GB (measured); halves automatically on OOM
+device: auto          # auto | cpu | 0
+half: true            # FP16 on CUDA
+frame_step: 1
+max_frames: 3000
+render_video: true
+detect_shot_cuts: true

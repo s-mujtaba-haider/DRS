@@ -1,0 +1,136 @@
+{
+  "video": "video001.mp4",
+  "resolution": [
+    1920,
+    1080
+  ],
+  "frames": 150,
+  "decode_fps": 244.8887773539624,
+  "host": "f08d79b3b611",
+  "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.35",
+  "torch": "2.7.1+cu128",
+  "cuda": true,
+  "gpu": "NVIDIA GeForce RTX 3080 Ti",
+  "runs": [
+    {
+      "imgsz": 640,
+      "batch": 1,
+      "half": true,
+      "device": "0",
+      "fps": 33.38663384040336,
+      "batch_latency_ms_median": 12.623917999917467,
+      "gpu_peak_mb": 71.592448,
+      "effective_batch": 1
+    },
+    {
+      "imgsz": 640,
+      "batch": 1,
+      "half": false,
+      "device": "0",
+      "fps": 124.45897011534205,
+      "batch_latency_ms_median": 7.449199000348017,
+      "gpu_peak_mb": 117.8752,
+      "effective_batch": 1
+    },
+    {
+      "imgsz": 640,
+      "batch": 8,
+      "half": true,
+      "device": "0",
+      "fps": 369.59353221964346,
+      "batch_latency_ms_median": 19.059514999753446,
+      "gpu_peak_mb": 201.042944,
+      "effective_batch": 8
+    },
+    {
+      "imgsz": 640,
+      "batch": 8,
+      "half": false,
+      "device": "0",
+      "fps": 222.83272876863165,
+      "batch_latency_ms_median": 33.89477199971225,
+      "gpu_peak_mb": 283.74016,
+      "effective_batch": 8
+    },
+    {
+      "imgsz": 640,
+      "batch": 16,
+      "half": true,
+      "device": "0",
+      "fps": 454.5769470856542,
+      "batch_latency_ms_median": 35.81013700022595,
+      "gpu_peak_mb": 289.009664,
+      "effective_batch": 16
+    },
+    {
+      "imgsz": 640,
+      "batch": 16,
+      "half": false,
+      "device": "0",
+      "fps": 372.57174317223246,
+      "batch_latency_ms_median": 42.4469249996946,
+      "gpu_peak_mb": 523.993088,
+      "effective_batch": 16
+    },
+    {
+      "imgsz": 1280,
+      "batch": 1,
+      "half": true,
+      "device": "0",
+      "fps": 61.82317179043176,
+      "batch_latency_ms_median": 14.962394000122003,
+      "gpu_peak_mb": 139.332096,
+      "effective_batch": 1
+    },
+    {
+      "imgsz": 1280,
+      "batch": 1,
+      "half": false,
+      "device": "0",
+      "fps": 110.17278217478747,
+      "batch_latency_ms_median": 8.991193999918323,
+      "gpu_peak_mb": 210.853888,
+      "effective_batch": 1
+    },
+    {
+      "imgsz": 1280,
+      "batch": 8,
+      "half": true,
+      "device": "0",
+      "fps": 168.17742220240862,
+      "batch_latency_ms_median": 45.74502200011921,
+      "gpu_peak_mb": 514.330624,
+      "effective_batch": 8
+    },
+    {
+      "imgsz": 1280,
+      "batch": 8,
+      "half": false,
+      "device": "0",
+      "fps": 128.18204305740713,
+      "batch_latency_ms_median": 61.71622200008642,
+      "gpu_peak_mb": 950.213632,
+      "effective_batch": 8
+    },
+    {
+      "imgsz": 1280,
+      "batch": 16,
+      "half": true,
+      "device": "0",
+      "fps": 175.57571249791016,
+      "batch_latency_ms_median": 90.2968260002126,
+      "gpu_peak_mb": 868.642304,
+      "effective_batch": 16
+    },
+    {
+      "imgsz": 1280,
+      "batch": 16,
+      "half": false,
+      "device": "0",
+      "fps": 131.58059985912993,
+      "batch_latency_ms_median": 120.50484500014136,
+      "gpu_peak_mb": 1715.710976,
+      "effective_batch": 16
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+# Experimental LBW engine settings (keys map to ml.lbw.engine.LbwConfig).
+# Rules source: MCC Laws of Cricket, 2017 Code 4th edition (in force 1 Oct 2026), Law 36.
+#   https://lawsofcricket.lords.org/laws-of-cricket/appeals-dismissals/leg-before-wicket
+# Wicket-zone reference (umpire's call): ICC playing conditions, changes announced 27 Jun 2025:
+#   https://www.icc-cricket.com/news/several-changes-made-to-icc-playing-conditions
+decision_confidence: 0.95          # P(hit) >= 0.95 -> PROJECTED_TO_HIT; <= 0.05 -> PROJECTED_TO_MISS
+n_samples: 2000
+require_validated_calibration_for_definite: true
+max_projection_distance_m: 3.5
+alternative_drag_scale: 1.5
+covariance_inflation: 6.0          # calibrated for ~90% interval coverage on cricket-synth (docs/EVALUATION.md)
+rules:
+  in_line_any_part_of_ball: true
