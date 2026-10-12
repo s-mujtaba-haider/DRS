@@ -28,6 +28,10 @@ RAW = ROOT / "data" / "raw"
 
 
 def kaggle_credentials_present() -> bool:
+    # New-style access tokens (KGAT_...) via KAGGLE_API_TOKEN or ~/.kaggle/access_token,
+    # or legacy username/key via env vars or ~/.kaggle/kaggle.json.
+    if os.environ.get("KAGGLE_API_TOKEN") or (Path.home() / ".kaggle" / "access_token").is_file():
+        return True
     if os.environ.get("KAGGLE_USERNAME") and os.environ.get("KAGGLE_KEY"):
         return True
     return (Path.home() / ".kaggle" / "kaggle.json").is_file()
@@ -57,8 +61,9 @@ def download_hf(entry: dict, dest: Path, max_videos: int) -> str:
 def download_kaggle(entry: dict, dest: Path) -> str:
     if not kaggle_credentials_present():
         raise PermissionError(
-            "Kaggle API token not configured. Create one at kaggle.com > Settings > API, save kaggle.json to "
-            "%USERPROFILE%\\.kaggle\\kaggle.json, then re-run this script."
+            "Kaggle API token not configured. Create one at kaggle.com > Settings > API, then either set "
+            "KAGGLE_API_TOKEN, save it to %USERPROFILE%\\.kaggle\\access_token, or (legacy) save kaggle.json to "
+            "%USERPROFILE%\\.kaggle\\kaggle.json, and re-run this script."
         )
     from kaggle.api.kaggle_api_extended import KaggleApi
 

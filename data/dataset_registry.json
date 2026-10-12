@@ -119,8 +119,11 @@
       "auth_required": "Kaggle API token (~/.kaggle/kaggle.json or KAGGLE_USERNAME/KAGGLE_KEY)",
       "intended_use": "Primary training set for the cricket-ball detector",
       "verification": "Verified via Kaggle API metadata and file listing",
-      "status": "blocked_credentials",
-      "last_error": "Kaggle API token not configured. Create one at kaggle.com > Settings > API, save kaggle.json to %USERPROFILE%\\.kaggle\\kaggle.json, then re-run this script."
+      "status": "downloaded",
+      "last_error": null,
+      "local_path": "data/raw/kaggle-kushagra-ball-yolo",
+      "download_note": "full archive; 3827 files, 375.6 MB",
+      "downloaded_at": "2026-10-12T09:31:02+00:00"
     },
     {
       "id": "kaggle-semantic-seg",
@@ -154,8 +157,11 @@
       "auth_required": "Kaggle API token",
       "intended_use": "Stumps/player/ball boxes (mask -> bbox conversion) and broadcast-domain ball test images",
       "verification": "Verified via Kaggle API",
-      "status": "blocked_credentials",
-      "last_error": "Kaggle API token not configured. Create one at kaggle.com > Settings > API, save kaggle.json to %USERPROFILE%\\.kaggle\\kaggle.json, then re-run this script."
+      "status": "downloaded",
+      "last_error": null,
+      "local_path": "data/raw/kaggle-semantic-seg",
+      "download_note": "full archive; 1194 files, 551.2 MB",
+      "downloaded_at": "2026-10-12T09:33:50+00:00"
     },
     {
       "id": "kaggle-wide-balls-2view",
@@ -239,8 +245,11 @@
       "auth_required": "Kaggle API token",
       "intended_use": "Qualitative LBW test footage. Folder label 'LBW' is NOT a reference decision with ball-tracking ground truth",
       "verification": "Verified metadata/files",
-      "status": "blocked_credentials",
-      "last_error": "Kaggle API token not configured. Create one at kaggle.com > Settings > API, save kaggle.json to %USERPROFILE%\\.kaggle\\kaggle.json, then re-run this script."
+      "status": "downloaded",
+      "last_error": null,
+      "local_path": "data/raw/kaggle-lbw-wide-noball-videos",
+      "download_note": "full archive; 239 files, 158.6 MB",
+      "downloaded_at": "2026-10-12T09:34:29+00:00"
     },
     {
       "id": "kaggle-bat-ball",

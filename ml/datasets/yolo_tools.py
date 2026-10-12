@@ -220,3 +220,62 @@ def convert_cricket_synth(src: Path, dst: Path, include_negatives: bool = True, 
         w.writerows(rows)
     write_data_yaml(dst, ["ball"])
     return {"clips": len(seqs), "images": len(rows), "splits": dict(Counter(r["split"] for r in rows))}
+
+
+def rebuild_leak_free(src: Path, dst: Path, ratios=(0.8, 0.1, 0.1), seed: int = 0) -> dict:
+    """Re-split an existing YOLO dataset so identical / near-duplicate images never cross splits.
+
+    Images are grouped by file stem and by dHash (union-find); exact same-name copies are
+    collapsed to one (preferring a copy that has a label file); whole groups are then assigned
+    to splits. Use when a downloaded dataset's own splits leak.
+    """
+    src, dst = Path(src), Path(dst)
+    items = []  # (img, label)
+    for img in sorted(p for p in (src / "images").rglob("*") if p.suffix.lower() in IMG_EXT):
+        split = img.parent.name
+        items.append((img, src / "labels" / split / f"{img.stem}.txt"))
+    by_stem: dict[str, tuple[Path, Path]] = {}
+    for img, lab in items:  # collapse same-name copies
+        if img.stem not in by_stem or (lab.is_file() and not by_stem[img.stem][1].is_file()):
+            by_stem[img.stem] = (img, lab)
+    stems = sorted(by_stem)
+    parent = {s: s for s in stems}
+
+    def find(x):
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+
+    first_by_hash: dict[str, str] = {}
+    for s in stems:
+        h = dhash(by_stem[s][0])
+        if h is None:
+            continue
+        if h in first_by_hash:
+            parent[find(s)] = find(first_by_hash[h])
+        else:
+            first_by_hash[h] = s
+    groups: dict[str, list[str]] = defaultdict(list)
+    for s in stems:
+        groups[find(s)].append(s)
+    assign = split_by_sequence(groups, ratios=ratios, seed=seed)
+    if dst.exists():
+        shutil.rmtree(dst)
+    rows = []
+    for g, members in groups.items():
+        for s in members:
+            img, lab = by_stem[s]
+            split = assign[s]
+            (dst / "images" / split).mkdir(parents=True, exist_ok=True)
+            (dst / "labels" / split).mkdir(parents=True, exist_ok=True)
+            shutil.copy2(img, dst / "images" / split / img.name)
+            if lab.is_file():
+                shutil.copy2(lab, dst / "labels" / split / lab.name)
+            rows.append({"file": img.name, "source_sequence": g, "label_origin": "human", "split": split})
+    with (dst / "provenance.csv").open("w", newline="") as fh:
+        w = csv.DictWriter(fh, fieldnames=["file", "source_sequence", "label_origin", "split"])
+        w.writeheader()
+        w.writerows(rows)
+    return {"input_images": len(items), "unique_images": len(stems), "groups": len(groups),
+            "splits": dict(Counter(r["split"] for r in rows))}
