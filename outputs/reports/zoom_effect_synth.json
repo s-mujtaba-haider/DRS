@@ -1,0 +1,77 @@
+{
+ "clips": 120,
+ "rig": "front_on_stump",
+ "residual_px": 1.5,
+ "results": {
+  "baseline": {
+   "num_with_projection": 109,
+   "stump_plane_error_m": {
+    "median": 0.0536849306053741,
+    "mean": 0.15868601562426962,
+    "p90": 0.18129306704099046,
+    "max": 4.556988319964186
+   },
+   "inconclusive_rate": 0.39166666666666666,
+   "definite_verdicts": 73,
+   "false_hit": 0,
+   "false_miss": 0,
+   "interval_90_empirical_coverage": 0.8715596330275229
+  },
+  "ignored_0.005": {
+   "num_with_projection": 109,
+   "stump_plane_error_m": {
+    "median": 0.0846811596968123,
+    "mean": 0.24586944958539886,
+    "p90": 0.3242391203764692,
+    "max": 3.877586920787819
+   },
+   "inconclusive_rate": 0.4583333333333333,
+   "definite_verdicts": 65,
+   "false_hit": 0,
+   "false_miss": 0,
+   "interval_90_empirical_coverage": 0.6605504587155964
+  },
+  "compensated_0.005": {
+   "num_with_projection": 104,
+   "stump_plane_error_m": {
+    "median": 0.07460859239452028,
+    "mean": 0.19084662786146747,
+    "p90": 0.25867127150733726,
+    "max": 3.6835005820572637
+   },
+   "inconclusive_rate": 0.44166666666666665,
+   "definite_verdicts": 67,
+   "false_hit": 0,
+   "false_miss": 0,
+   "interval_90_empirical_coverage": 0.8846153846153846
+  },
+  "ignored_0.01": {
+   "num_with_projection": 104,
+   "stump_plane_error_m": {
+    "median": 0.1784972214683894,
+    "mean": 0.46927755543094984,
+    "p90": 0.573763046795086,
+    "max": 9.894038062678458
+   },
+   "inconclusive_rate": 0.5583333333333333,
+   "definite_verdicts": 53,
+   "false_hit": 0,
+   "false_miss": 1,
+   "interval_90_empirical_coverage": 0.4230769230769231
+  },
+  "compensated_0.01": {
+   "num_with_projection": 106,
+   "stump_plane_error_m": {
+    "median": 0.07973822921339083,
+    "mean": 0.19565259116229258,
+    "p90": 0.32786587761417174,
+    "max": 3.754324991640848
+   },
+   "inconclusive_rate": 0.4583333333333333,
+   "definite_verdicts": 65,
+   "false_hit": 0,
+   "false_miss": 0,
+   "interval_90_empirical_coverage": 0.9056603773584906
+  }
+ }
+}

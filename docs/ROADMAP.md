@@ -12,7 +12,7 @@ Ordered by expected impact on real-footage usefulness.
    - Add stumps labels from more matches (licence-checked Roboflow sets or own labels); recall and box-edge accuracy are the limits.
    - Crease registration from one wicket is implemented and works on synthetic frames, but hand-crafted line extraction fails on real broadcast creases (`EVALUATION.md` §4f). Next: a learned crease/keypoint detector (heatmaps for crease corners), trained on labelled frames.
    - Done: *Auto-detect* in the web calibration panel places the landmarks for correction.
-4. **Delivery segmentation for broadcast.**
+4. **Delivery segmentation for broadcast.** Done: pan/tilt/zoom compensation within a shot (`EVALUATION.md` §4g). Next: auto-propagate the calibration across a shot so any frame can be the calibration frame, and flag frames where the chain residual is high.
    - Filter by shot type (pitch view vs. replay or crowd); `suksham-cricket-frames` provides labels for this.
    - Detect bowl release using the DeepSportradar set, which is non-commercial.
 5. **Multi-camera workflow.**

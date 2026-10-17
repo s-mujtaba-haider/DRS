@@ -54,6 +54,7 @@ class CalibrationCreate(BaseModel):
     image_height: int | None = Field(None, gt=0)
     points: list[PointPair] = Field(min_length=4)
     intrinsics: Intrinsics | None = None
+    frame_index: int | None = Field(None, ge=0, description="frame the landmarks were clicked on (enables pan/zoom compensation)")
     time_offset_ms: float = 0.0
     sync_uncertainty_ms: float | None = None
 
@@ -170,6 +171,7 @@ class LbwRequest(BaseModel):
     decision_confidence: float = Field(0.95, ge=0.5, lt=1.0)
     require_validated_calibration_for_definite: bool = True
     use_ball_size_depth_cue: bool = True
+    compensate_camera_motion: bool = True
 
 
 @router.post("/lbw/analyze", status_code=201)
@@ -192,8 +194,12 @@ def lbw_analyze(body: LbwRequest, s: Session = Depends(db), cfg: Settings = Depe
     lbw_cfg = LbwConfig(decision_confidence=body.decision_confidence,
                         require_validated_calibration_for_definite=body.require_validated_calibration_for_definite)
     try:
+        cal_frame = (cal.correspondences or {}).get("frame_index") if body.compensate_camera_motion else None
+        video = s.get(Video, job.video_id) if cal_frame is not None else None
         result, overlay = run_lbw(cfg.jobs_dir / job.id, cam, body.facts, lbw_cfg, impact_t, anns,
-                                  use_radius=body.use_ball_size_depth_cue)
+                                  use_radius=body.use_ball_size_depth_cue,
+                                  video_path=(cfg.videos_dir / video.stored_name) if video else None,
+                                  calibration_frame=cal_frame)
     except AnalysisInputError as exc:
         raise HTTPException(422, str(exc)) from exc
     rec = LbwAnalysis(job_id=job.id, calibration_id=cal.id, request=body.model_dump(mode="json"),

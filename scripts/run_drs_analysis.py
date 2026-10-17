@@ -1,7 +1,11 @@
 """Full offline analysis: tracking -> (calibration) -> experimental LBW, using configs/*.yaml.
 
-    python scripts/run_drs_analysis.py VIDEO --camera camera.json --out outputs/delivery1 \
+    python scripts/run_drs_analysis.py VIDEO --camera camera.json --camera-frame 30 --out outputs/delivery1 \
         --handedness right --impact-frame 212
+
+--camera-frame is the frame the calibration was made on; ball observations from other frames of
+the same shot are mapped into it (broadcast pan/tilt/zoom compensation). Without it the camera is
+assumed static, which is wrong whenever the broadcast camera zooms during the delivery.
 
 Without --camera only tracking and 2D trajectory are produced (no 3D / LBW: a calibrated
 camera is required). Results are written as JSON next to the tracking outputs.
@@ -36,6 +40,7 @@ def main() -> int:
     ap.add_argument("video")
     ap.add_argument("--out", required=True)
     ap.add_argument("--camera", help="CameraModel JSON (scripts/calibrate_cameras.py or exported from the UI)")
+    ap.add_argument("--camera-frame", type=int, help="frame the calibration was made on (enables pan/zoom compensation)")
     ap.add_argument("--impact-frame", type=int)
     ap.add_argument("--handedness", choices=["right", "left"])
     ap.add_argument("--no-ball", choices=["yes", "no"])
@@ -63,7 +68,8 @@ def main() -> int:
             ts = {p["frame_index"]: p["timestamp_ms"] for t in tr["tracks"] for p in t["points"]}
             impact_t = ts.get(a.impact_frame, None)
             impact_t = None if impact_t is None else impact_t / 1000
-        res, overlay = run_lbw(Path(a.out), cam, facts, lcfg, impact_t, [])
+        res, overlay = run_lbw(Path(a.out), cam, facts, lcfg, impact_t, [], video_path=Path(a.video),
+                               calibration_frame=a.camera_frame)
         result["lbw"] = {**res.model_dump(mode="json"), "overlay": overlay}
         print(json.dumps({k: result["lbw"][k] for k in ("verdict", "p_hit", "rules_summary", "reasons", "warnings")}, indent=2))
     else:

@@ -1,0 +1,484 @@
+{
+ "clips": 34,
+ "evaluated": 28,
+ "clip_median_of": {
+  "raw_median_px": 11.125647971750247,
+  "raw_p90_px": 30.606641657868913,
+  "stabilised_median_px": 3.227886332424017,
+  "stabilised_p90_px": 8.651741084756633
+ },
+ "rows": [
+  {
+   "clip": "video001.mp4",
+   "frames": 45,
+   "mapped_frames": 30,
+   "stumps_detections": 23,
+   "zoom_range": [
+    0.44009520478313574,
+    1.1978725119354579
+   ],
+   "raw_median_px": 2.091709410268626,
+   "raw_p90_px": 17.73227281771729,
+   "stabilised_median_px": 3.1765516925394723,
+   "stabilised_p90_px": 7.716587645167225,
+   "warnings": [
+    "Camera-motion chain broken at frame 30 (5 inliers): frames beyond it are not mapped"
+   ]
+  },
+  {
+   "clip": "video004.mp4",
+   "frames": 45,
+   "mapped_frames": 24,
+   "stumps_detections": 7,
+   "zoom_range": [
+    0.546934280651792,
+    1.0010852250832725
+   ],
+   "raw_median_px": 13.482316875603038,
+   "raw_p90_px": 33.98392329802647,
+   "stabilised_median_px": 1.322128077047499,
+   "stabilised_p90_px": 2.1655053671088846,
+   "warnings": [
+    "Camera-motion chain broken at frame 20 (27 inliers): frames beyond it are not mapped"
+   ]
+  },
+  {
+   "clip": "video007.mp4",
+   "frames": 45,
+   "mapped_frames": 45,
+   "stumps_detections": 13,
+   "zoom_range": [
+    0.5428851103524861,
+    1.3828086139760944
+   ],
+   "raw_median_px": NaN,
+   "raw_p90_px": NaN,
+   "stabilised_median_px": 5.001397280949005,
+   "stabilised_p90_px": 15.865848632161349,
+   "warnings": []
+  },
+  {
+   "clip": "video010.mp4",
+   "frames": 45,
+   "mapped_frames": 29,
+   "stumps_detections": 20,
+   "zoom_range": [
+    0.5163372408647438,
+    1.4620258944774795
+   ],
+   "raw_median_px": NaN,
+   "raw_p90_px": NaN,
+   "stabilised_median_px": 5.784751711481908,
+   "stabilised_p90_px": 12.254564164011722,
+   "warnings": [
+    "Camera-motion chain broken at frame 29 (8 inliers): frames beyond it are not mapped"
+   ]
+  },
+  {
+   "clip": "video013.mp4",
+   "frames": 45,
+   "mapped_frames": 45,
+   "stumps_detections": 17,
+   "zoom_range": [
+    0.5924986099807357,
+    1.9656594102795575
+   ],
+   "raw_median_px": 17.29591151593403,
+   "raw_p90_px": 31.025490197404864,
+   "stabilised_median_px": 13.890117890033011,
+   "stabilised_p90_px": 32.44367564885772,
+   "warnings": []
+  },
+  {
+   "clip": "video016.mp4",
+   "frames": 45,
+   "mapped_frames": 41,
+   "stumps_detections": 40,
+   "zoom_range": [
+    0.8083383336551545,
+    4.972816787154626
+   ],
+   "raw_median_px": 6.7356114827713425,
+   "raw_p90_px": 31.434044583671483,
+   "stabilised_median_px": 2.862934220162488,
+   "stabilised_p90_px": 6.939894428826436,
+   "warnings": [
+    "Camera-motion chain broken at frame 41 (7 inliers): frames beyond it are not mapped"
+   ]
+  },
+  {
+   "clip": "video019.mp4",
+   "frames": 29,
+   "mapped_frames": 29,
+   "stumps_detections": 32,
+   "zoom_range": [
+    0.5864560140201113,
+    8.751500376263948
+   ],
+   "raw_median_px": 14.788518677326554,
+   "raw_p90_px": 33.72222788522515,
+   "stabilised_median_px": 4.397418082176116,
+   "stabilised_p90_px": 8.886337636093286,
+   "warnings": []
+  },
+  {
+   "clip": "video025.mp4",
+   "frames": 34,
+   "mapped_frames": 34,
+   "stumps_detections": 37,
+   "zoom_range": [
+    0.4739271482350525,
+    1.6056437911976513
+   ],
+   "raw_median_px": 12.122213505587808,
+   "raw_p90_px": 22.397303550649376,
+   "stabilised_median_px": 4.94336171738726,
+   "stabilised_p90_px": 7.640187176285966,
+   "warnings": []
+  },
+  {
+   "clip": "video028.mp4",
+   "frames": 45,
+   "mapped_frames": 31,
+   "stumps_detections": 26,
+   "zoom_range": [
+    0.8510151264485689,
+    1.2252781618164967
+   ],
+   "raw_median_px": 20.740524749710612,
+   "raw_p90_px": 33.02615394480861,
+   "stabilised_median_px": 11.880518876854008,
+   "stabilised_p90_px": 27.390065497992094,
+   "warnings": [
+    "Camera-motion chain broken at frame 31 (7 inliers): frames beyond it are not mapped"
+   ]
+  },
+  {
+   "clip": "video031.mp4",
+   "frames": 45,
+   "mapped_frames": 45,
+   "stumps_detections": 47,
+   "zoom_range": [
+    0.9756267325875334,
+    1.3446777144236663
+   ],
+   "raw_median_px": 6.301336490433484,
+   "raw_p90_px": 23.84604500846437,
+   "stabilised_median_px": 2.00404727679682,
+   "stabilised_p90_px": 3.250867912152761,
+   "warnings": []
+  },
+  {
+   "clip": "video034.mp4",
+   "frames": 45,
+   "mapped_frames": 45,
+   "stumps_detections": 67,
+   "zoom_range": [
+    0.8427203642148707,
+    1.155216797349011
+   ],
+   "raw_median_px": 9.996139776139549,
+   "raw_p90_px": 30.48135127404912,
+   "stabilised_median_px": 3.3650249726849193,
+   "stabilised_p90_px": 16.00640877877367,
+   "warnings": []
+  },
+  {
+   "clip": "video037.mp4",
+   "frames": 45,
+   "mapped_frames": 45,
+   "stumps_detections": 83,
+   "zoom_range": [
+    0.9890028222931236,
+    1.0576770539598404
+   ],
+   "raw_median_px": 17.78840716462927,
+   "raw_p90_px": 31.988686047127487,
+   "stabilised_median_px": 5.534915763942638,
+   "stabilised_p90_px": 18.177230010586758,
+   "warnings": []
+  },
+  {
+   "clip": "video040.mp4",
+   "frames": 45,
+   "mapped_frames": 45,
+   "stumps_detections": 132,
+   "zoom_range": [
+    0.9011191498725999,
+    1.2924280546863351
+   ],
+   "raw_median_px": 15.32325499240922,
+   "raw_p90_px": 33.715083240876965,
+   "stabilised_median_px": 2.886144768942904,
+   "stabilised_p90_px": 16.219504146127274,
+   "warnings": []
+  },
+  {
+   "clip": "video043.mp4",
+   "frames": 45,
+   "mapped_frames": 45,
+   "note": "too few stumps detections"
+  },
+  {
+   "clip": "video046.mp4",
+   "frames": 45,
+   "mapped_frames": 45,
+   "stumps_detections": 19,
+   "zoom_range": [
+    0.8120944472762982,
+    1.3927563705609218
+   ],
+   "raw_median_px": 3.492778767758365,
+   "raw_p90_px": 14.572004008180691,
+   "stabilised_median_px": 2.7226232807321713,
+   "stabilised_p90_px": 9.868574273511568,
+   "warnings": []
+  },
+  {
+   "clip": "video049.mp4",
+   "frames": 45,
+   "mapped_frames": 33,
+   "note": "too few stumps detections"
+  },
+  {
+   "clip": "video052.mp4",
+   "frames": 45,
+   "mapped_frames": 45,
+   "stumps_detections": 25,
+   "zoom_range": [
+    0.7634747551907862,
+    1.2847529609837736
+   ],
+   "raw_median_px": 10.129082437912686,
+   "raw_p90_px": 30.731932041688708,
+   "stabilised_median_px": 2.1282681522335616,
+   "stabilised_p90_px": 8.886643897383715,
+   "warnings": []
+  },
+  {
+   "clip": "video055.mp4",
+   "frames": 45,
+   "mapped_frames": 45,
+   "stumps_detections": 38,
+   "zoom_range": [
+    0.9482573362793669,
+    1.1882505972267488
+   ],
+   "raw_median_px": 8.00999192742127,
+   "raw_p90_px": 31.225186107428627,
+   "stabilised_median_px": 1.6635574634370727,
+   "stabilised_p90_px": 5.522884627037795,
+   "warnings": []
+  },
+  {
+   "clip": "video058.mp4",
+   "frames": 45,
+   "mapped_frames": 45,
+   "stumps_detections": 150,
+   "zoom_range": [
+    0.9024177614427562,
+    1.0889515932755467
+   ],
+   "raw_median_px": 15.86239032165878,
+   "raw_p90_px": 37.33712500029003,
+   "stabilised_median_px": 1.5642730818059727,
+   "stabilised_p90_px": 2.9787456305735875,
+   "warnings": []
+  },
+  {
+   "clip": "video061.mp4",
+   "frames": 45,
+   "mapped_frames": 45,
+   "stumps_detections": 147,
+   "zoom_range": [
+    0.8443371777476458,
+    1.0597217057814283
+   ],
+   "raw_median_px": 16.538209459487188,
+   "raw_p90_px": 43.30460382220725,
+   "stabilised_median_px": 2.035833872913502,
+   "stabilised_p90_px": 10.508169990169494,
+   "warnings": []
+  },
+  {
+   "clip": "video064.mp4",
+   "frames": 30,
+   "mapped_frames": 30,
+   "note": "too few stumps detections"
+  },
+  {
+   "clip": "video067.mp4",
+   "frames": 42,
+   "mapped_frames": 42,
+   "stumps_detections": 5,
+   "zoom_range": [
+    0.9345360737693775,
+    1.0383618297893207
+   ],
+   "raw_median_px": 0.013772999211790406,
+   "raw_p90_px": 28.914155056878688,
+   "stabilised_median_px": 0.012640246824736367,
+   "stabilised_p90_px": 1.1615285471367707,
+   "warnings": []
+  },
+  {
+   "clip": "video070.mp4",
+   "frames": 45,
+   "mapped_frames": 38,
+   "stumps_detections": 18,
+   "zoom_range": [
+    0.5386160791550033,
+    1.8242509725783167
+   ],
+   "raw_median_px": 3.084372083562073,
+   "raw_p90_px": 18.704971295348567,
+   "stabilised_median_px": 1.7546290751159859,
+   "stabilised_p90_px": 8.057008567089888,
+   "warnings": [
+    "Camera-motion chain broken at frame 38 (6 inliers): frames beyond it are not mapped"
+   ]
+  },
+  {
+   "clip": "video073.mp4",
+   "frames": 45,
+   "mapped_frames": 45,
+   "stumps_detections": 32,
+   "zoom_range": [
+    0.7671656748797899,
+    3.470922878612828
+   ],
+   "raw_median_px": 9.423465109291564,
+   "raw_p90_px": 26.080526560915583,
+   "stabilised_median_px": 3.3343186296827456,
+   "stabilised_p90_px": 7.565274599088859,
+   "warnings": []
+  },
+  {
+   "clip": "video076.mp4",
+   "frames": 45,
+   "mapped_frames": 45,
+   "stumps_detections": 63,
+   "zoom_range": [
+    0.42554661069796923,
+    7.318058022068507
+   ],
+   "raw_median_px": 13.588611195505866,
+   "raw_p90_px": 28.320726329613823,
+   "stabilised_median_px": 4.057620594937737,
+   "stabilised_p90_px": 25.22482686071515,
+   "warnings": []
+  },
+  {
+   "clip": "video079.mp4",
+   "frames": 45,
+   "mapped_frames": 45,
+   "stumps_detections": 26,
+   "zoom_range": [
+    0.5677805044803036,
+    1.5477569907587334
+   ],
+   "raw_median_px": 14.285122549059814,
+   "raw_p90_px": 26.994552242866618,
+   "stabilised_median_px": 1.584891919281232,
+   "stabilised_p90_px": 4.147278025111676,
+   "warnings": []
+  },
+  {
+   "clip": "video085.mp4",
+   "frames": 45,
+   "mapped_frames": 45,
+   "stumps_detections": 61,
+   "zoom_range": [
+    0.8944953473861398,
+    1.085034704036874
+   ],
+   "raw_median_px": 14.601197673685315,
+   "raw_p90_px": 32.511022493050156,
+   "stabilised_median_px": 4.460166732703664,
+   "stabilised_p90_px": 8.41714453341998,
+   "warnings": []
+  },
+  {
+   "clip": "video088.mp4",
+   "frames": 45,
+   "mapped_frames": 45,
+   "stumps_detections": 48,
+   "zoom_range": [
+    0.8029381318365832,
+    1.4162734604551734
+   ],
+   "raw_median_px": 12.846074421161708,
+   "raw_p90_px": 38.36244770151407,
+   "stabilised_median_px": 13.557675789273496,
+   "stabilised_p90_px": 28.46934036223041,
+   "warnings": []
+  },
+  {
+   "clip": "video094.mp4",
+   "frames": 11,
+   "mapped_frames": 11,
+   "note": "too few stumps detections"
+  },
+  {
+   "clip": "video097.mp4",
+   "frames": 45,
+   "mapped_frames": 45,
+   "note": "too few stumps detections"
+  },
+  {
+   "clip": "video109.mp4",
+   "frames": 45,
+   "mapped_frames": 45,
+   "stumps_detections": 38,
+   "zoom_range": [
+    0.9875165199688712,
+    1.05212593319005
+   ],
+   "raw_median_px": 9.063245784120841,
+   "raw_p90_px": 18.50345048910332,
+   "stabilised_median_px": 1.5879409711001395,
+   "stabilised_p90_px": 3.7970662840177187,
+   "warnings": []
+  },
+  {
+   "clip": "video112.mp4",
+   "frames": 21,
+   "mapped_frames": 21,
+   "stumps_detections": 36,
+   "zoom_range": [
+    0.9872420193556808,
+    1.034149623451113
+   ],
+   "raw_median_px": 2.935152154515516,
+   "raw_p90_px": 7.503917468375564,
+   "stabilised_median_px": 5.174375684923999,
+   "stabilised_p90_px": 12.266864550434565,
+   "warnings": []
+  },
+  {
+   "clip": "video115.mp4",
+   "frames": 45,
+   "mapped_frames": 42,
+   "stumps_detections": 34,
+   "zoom_range": [
+    0.5533401590579285,
+    1.8931162120171892
+   ],
+   "raw_median_px": 7.430451397293191,
+   "raw_p90_px": 27.308860747653465,
+   "stabilised_median_px": 3.2792209723085617,
+   "stabilised_p90_px": 5.587254356333715,
+   "warnings": [
+    "Camera-motion chain broken at frame 42 (5 inliers): frames beyond it are not mapped"
+   ]
+  },
+  {
+   "clip": "video118.mp4",
+   "frames": 14,
+   "mapped_frames": 14,
+   "note": "too few stumps detections"
+  }
+ ],
+ "note": "Residual = distance of a detected stumps base from its static landmark (raw image positions vs. positions mapped into the reference frame); includes stumps-detector noise. Landmarks with < 5 detections are dropped as false detections. Note: with the raw positions a landmark spread by camera motion may split into several groups, which understates the raw error.",
+ "raw_unmeasurable_clips": 2
+}

@@ -37,7 +37,7 @@ def load_detections_index(job_dir: Path) -> dict[tuple[int, float, float], dict]
     return out
 
 
-def observations_for_lbw(job_dir: Path, annotations: list[dict]) -> tuple[np.ndarray, np.ndarray, np.ndarray, list[str]]:
+def observations_for_lbw(job_dir: Path, annotations: list[dict]) -> tuple[np.ndarray, np.ndarray, np.ndarray, list[str], np.ndarray]:
     """Primary-track observations with manual corrections applied (corrections win, originals untouched on disk)."""
     tracking = load_tracking(job_dir)
     primary = next((t for t in tracking.tracks if t.is_primary), None)
@@ -76,16 +76,33 @@ def observations_for_lbw(job_dir: Path, annotations: list[dict]) -> tuple[np.nda
         notes.append(f"{n_manual} manual correction(s) applied")
     frames = sorted(obs)
     arr = np.array([obs[f] for f in frames]) if frames else np.zeros((0, 4))
-    return arr[:, 0], arr[:, 1:3], arr[:, 3], notes
+    return arr[:, 0], arr[:, 1:3], arr[:, 3], notes, np.array(frames, int)
 
 
 def run_lbw(job_dir: Path, cam: CameraModel, facts: LbwFacts, cfg: LbwConfig, impact_time_s: float | None,
-            annotations: list[dict], use_radius: bool = True) -> tuple[LbwResult, dict]:
-    t, uv, radius, notes = observations_for_lbw(job_dir, annotations)
+            annotations: list[dict], use_radius: bool = True, video_path: Path | None = None,
+            calibration_frame: int | None = None) -> tuple[LbwResult, dict]:
+    """LBW analysis of the primary track.
+
+    With ``video_path`` and the frame the calibration was made on, observations are first mapped
+    into that frame (broadcast pan/tilt/zoom compensation, ``ml.video.ptz``); otherwise the camera
+    is assumed static over the delivery, which is wrong whenever the broadcast camera zooms.
+    """
+    t, uv, radius, notes, frames = observations_for_lbw(job_dir, annotations)
     overlay: dict = {"notes": notes}
     if impact_time_s is not None:
         keep = t <= impact_time_s + 1e-6
-        t, uv, radius = t[keep], uv[keep], radius[keep]
+        t, uv, radius, frames = t[keep], uv[keep], radius[keep], frames[keep]
+    if video_path is not None and calibration_frame is not None and len(frames):
+        from ml.video.ptz import stabilise_observations
+
+        st = stabilise_observations(str(video_path), frames, uv, radius, calibration_frame)
+        t, uv, radius = t[st.keep], st.uv[st.keep], st.radius[st.keep]
+        notes.extend(st.notes)
+        overlay["reference_frame"] = calibration_frame
+    else:
+        notes.append("Camera assumed static over the delivery (no calibration frame recorded): "
+                     "broadcast zoom or pan would bias the 3D reconstruction")
     try:
         fit = fit_to_pixels(cam, t, uv, sigma_px=2.0, ball_radius=BallSpec().radius_m,
                             radius_px=radius if use_radius else None, radius_sigma_px=1.0)

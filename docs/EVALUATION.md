@@ -254,6 +254,35 @@ Synthetic frames (`scripts/evaluate_pitch_registration.py`, `pitch_registration_
 - Otherwise the four stumps corners are placed.
 - Nothing is stored. The user checks and corrects the points, then computes the calibration as before.
 
+## 4g. Broadcast pan/tilt/zoom compensation
+
+Broadcast delivery cameras zoom in (often 1.2-2x, sometimes far more) and follow the play while the ball is in flight. Previously the calibration made on one frame was applied to every frame, which is wrong as soon as the camera moves. `ml/video/ptz.py` now relates each frame of the shot to the calibration frame by a homography (exact for rotation and zoom about a fixed optical centre). The homographies come from ORB features with a MAGSAC fit, chained frame to frame. Static on-screen graphics are masked out, and moving players are rejected as outliers. Ball positions and apparent radii are mapped into the calibration frame before the 3D fit. Observations whose frame cannot be chained to it (a cut, or too few matches) are dropped and reported.
+
+It is used by `POST /api/lbw/analyze` (when the calibration records `frame_index`, which the web console now sends) and by `run_drs_analysis.py --camera-frame`.
+
+**Real footage** (`scripts/evaluate_ptz.py`, 34 clips from `hf-cricket-delivery-videos`, 45-frame delivery window cut at the first shot cut, reference frame in the middle). The wickets do not move, so independently detected stumps bases should land on one reference pixel. Residuals include stumps-detector noise (about 1-2 px). Report: `outputs/reports/ptz_stabilisation_real.json`.
+
+| | Clips | Residual median (clip median) | Residual p90 (clip median) |
+|---|---|---|---|
+| Raw image positions | 26 measurable | 11.1 px | 30.6 px |
+| Mapped into the reference frame | 28 | **3.2 px** | **8.7 px** |
+
+- 6 clips had too few stumps detections to evaluate. 2 clips had no raw value: camera motion spread every landmark too widely to group.
+- The raw figure understates the raw error, because a landmark smeared by camera motion can split into several groups.
+- Failures remain. On video013, video028 and video088 the stabilised median stays at 12-14 px (fast pans, large zoom, few static features).
+
+**Effect on LBW projection** (synthetic, `scripts/evaluate_zoom_effect.py`, 120 held-out cricket-synth clips, front-on rig). The exact camera is zoomed about its principal point by a constant rate per frame, relative to a calibration frame in the middle of the flight. *Compensated* adds 1.5 px Gaussian noise in place of the measured stabilisation residual. Report: `outputs/reports/zoom_effect_synth.json`.
+
+| Case | Stump-plane error median / p90 | Inconclusive | Definite | Confident errors | 90% interval coverage |
+|---|---|---|---|---|---|
+| No zoom (baseline) | 5.4 / 18 cm | 39% | 73 | 0 | 0.87 |
+| 0.5%/frame, ignored | 8.5 / 32 cm | 46% | 65 | 0 | 0.66 |
+| 0.5%/frame, compensated | 7.5 / 26 cm | 44% | 67 | 0 | 0.88 |
+| 1%/frame, ignored | 17.8 / 57 cm | 56% | 53 | 1 false miss | **0.42** |
+| 1%/frame, compensated | 8.0 / 33 cm | 46% | 65 | 0 | 0.91 |
+
+An ignored 1%/frame zoom triples the error and halves the coverage of the uncertainty interval: the interval becomes overconfident and a confident wrong verdict appears. With compensation the intervals stay calibrated. The remaining loss against the baseline comes from the extra 1.5 px residual noise.
+
 ## 4c. Experiments that did not help (kept for the record)
 
 **Copy-paste compositing (`scripts/build_broadcast_training_set.py`, `ml/datasets/composite.py`).**

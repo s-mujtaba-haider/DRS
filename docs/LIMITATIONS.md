@@ -13,6 +13,7 @@ These limitations are measured or known. They are not hypothetical.
 - **The motion heuristic** is confused by players, the bat, fielders and camera motion. It works on simple synthetic scenes.
 - **Broadcast footage** cuts between cameras, zooms and overlays graphics:
   - Cuts are detected heuristically and tracks are never joined across them.
+  - Pan, tilt and zoom within a shot are compensated by mapping observations into the calibration frame (`EVALUATION.md` §4g). The residual is about 3 px median and 9 px p90 on real clips, with 12-14 px failures under fast pans. Camera translation (a moving rig) is not modelled. Without a recorded calibration frame the camera is assumed static.
   - Replays, slow motion and picture-in-picture are not specially handled.
 
 ## Tracking

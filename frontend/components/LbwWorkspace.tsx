@@ -153,7 +153,7 @@ export default function LbwWorkspace({
     setError(null);
     setBusy(true);
     try {
-      const c = await api.createCalibration({ video_id: videoId, points });
+      const c = await api.createCalibration({ video_id: videoId, points, frame_index: frame });
       setCals((cs) => [c, ...cs]);
       setCalId(c.id);
     } catch (e) {
@@ -177,6 +177,9 @@ export default function LbwWorkspace({
         require_validated_calibration_for_definite: requireValidated,
       });
       setSelectedId(a.id);
+      // The overlay is drawn in the calibration frame's pixels (pan/zoom compensated).
+      const ref = a.result?.overlay?.reference_frame;
+      if (typeof ref === "number") setFrame(ref);
       onNewAnalysis();
     } catch (e) {
       setError(e);

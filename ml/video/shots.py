@@ -32,3 +32,19 @@ class ShotCutDetector:
         if prev is None:
             return False
         return float(cv2.compareHist(prev, h, cv2.HISTCMP_CORREL)) < self.threshold
+
+
+def detect_shot_cuts(video: str, max_frames: int | None = None, threshold: float = 0.6) -> list[int]:
+    """Frame indices that start a new shot."""
+    det = ShotCutDetector(threshold=threshold)
+    cap = cv2.VideoCapture(video)
+    cuts, i = [], 0
+    while max_frames is None or i < max_frames:
+        ok, img = cap.read()
+        if not ok:
+            break
+        if det.is_cut(img):
+            cuts.append(i)
+        i += 1
+    cap.release()
+    return cuts

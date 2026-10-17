@@ -235,6 +235,7 @@ export interface LbwResult {
     stump_crossing_px?: number[] | null;
     stump_crossing_2sigma_px?: (number[] | null)[];
     notes?: string[];
+    reference_frame?: number;
   };
 }
 export interface LbwAnalysis {
