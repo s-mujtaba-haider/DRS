@@ -43,8 +43,15 @@ def make_delivery(
     impact_y: float = 1.2,
     camera: CameraModel | None = None,
     ball_radius: float = BallSpec().radius_m,
+    drag_c: float = 0.0,
 ) -> SyntheticDelivery:
-    """Construct a delivery that pitches at (line_x, pitch_y) and passes x=end_x at the stumps (y=0)."""
+    """Construct a delivery that pitches at (line_x, pitch_y) and passes x=end_x at the stumps (y=0).
+
+    ``drag_c`` (1/m, quadratic drag as in ``FlightModel``; ``ballistic.DEFAULT_DRAG_C`` is a real
+    ball) adds air drag. The launch and post-bounce velocities are then solved numerically so the
+    delivery still pitches at (line_x, pitch_y) and reaches x = end_x at the stumps. With the default
+    0 the flight is drag-free (the original behaviour, kept for existing tests).
+    """
     L = PitchSpec().stumps_distance_m
     p0 = np.array([0.15, L - 1.2, release_height])
     # Time to reach the pitching point at roughly constant along-pitch speed.
@@ -57,6 +64,8 @@ def make_delivery(
     t_after = pitch_y / (speed_mps * 0.9)
     v1 = np.array([(end_x - line_x) / t_after, -speed_mps * 0.9, post_bounce_vz])
     model = FlightModel(np.concatenate([p0, v0, v1]), 0.0, True, ball_radius)
+    if drag_c > 0:
+        model = _solve_with_drag(p0, v0, v1, ball_radius, drag_c, line_x, pitch_y, end_x)
     # Impact: when the ball reaches y = impact_y.
     ts = np.arange(0, 1.5, 1e-4)
     ys = model.position(ts)[:, 1]
@@ -66,6 +75,32 @@ def make_delivery(
     cam = camera or broadcast_camera()
     uv = cam.project(xyz)
     return SyntheticDelivery(model, times, xyz, cam, uv, impact_time)
+
+
+def _solve_with_drag(p0, v0, v1, r, drag_c, line_x, pitch_y, end_x) -> FlightModel:
+    """Adjust (vx0, vy0, vz0, vx1) so the dragged flight pitches at (line_x, pitch_y) and passes end_x at y = 0."""
+    from scipy.optimize import least_squares
+
+    def build(q):
+        th = np.concatenate([p0, [q[0], q[1], q[2]], [q[3], v1[1], v1[2]]])
+        return FlightModel(th, 0.0, True, r, drag_c=drag_c)
+
+    def resid(q):
+        m = build(q)
+        tb = m.bounce_time()
+        if tb is None:
+            return np.array([10.0, 10.0, 10.0])
+        pb = m.position(np.array([tb]))[0]
+        ts = np.arange(tb, tb + 1.0, 2e-4)
+        ys = m.position(ts)
+        k = int(np.argmax(ys[:, 1] <= 0.0)) if np.any(ys[:, 1] <= 0.0) else len(ts) - 1
+        return np.array([pb[0] - line_x, pb[1] - pitch_y, ys[k, 0] - end_x])
+
+    q0 = np.array([v0[0], v0[1] * 1.04, v0[2], v1[0]])  # drag slows the ball: start slightly faster
+    sol = least_squares(resid, q0, x_scale=[1, 5, 1, 1], xtol=1e-10, ftol=1e-10)
+    if np.max(np.abs(sol.fun)) > 5e-3:
+        raise ValueError(f"could not solve dragged delivery to targets (residual {np.max(np.abs(sol.fun)):.3f} m)")
+    return build(sol.x)
 
 
 def render_video_frames(d: SyntheticDelivery, lead_frames: int = 10, tail_frames: int = 10, noise: float = 4.0,

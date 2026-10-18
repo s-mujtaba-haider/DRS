@@ -46,6 +46,12 @@ class TrackerConfig:
     max_tracks: int = 40
     min_displacement_px: float = 20.0
     merge_max_gap_frames: int = 6
+    # Two live hypotheses following the same object (e.g. a slow ball near the bounce producing two
+    # nearby candidates per frame) alternately steal its detections and later cannot be merged because
+    # they overlap in time. When their positions stay within duplicate_px for duplicate_frames
+    # consecutive frames, the younger is folded into the older.
+    duplicate_px: float = 12.0
+    duplicate_frames: int = 3
     outlier_chi2: float = CHI2_2DOF_999
     # Minimum consistency for a track to be labelled "reliable" (necessary, not sufficient).
     reliable_min_observed: int = 8
@@ -61,6 +67,7 @@ class _Hyp:
     last_t: float = 0.0
     hits: int = 1
     misses: int = 0
+    close: dict = field(default_factory=dict)  # other tid -> consecutive frames within duplicate_px
 
     @property
     def confirmed_like(self) -> bool:
@@ -128,7 +135,7 @@ class BallTracker:
                     h.misses += 1
                 limit = cfg.max_consecutive_misses if h.confirmed_like else 1
                 (finished if h.misses > limit else still).append(h)
-            active = still
+            active = self._fold_duplicates(still)
             for j, d in enumerate(dets):
                 if j in matched_d or d.confidence < cfg.spawn_min_confidence:
                     continue
@@ -141,6 +148,28 @@ class BallTracker:
                 next_id += 1
         finished.extend(active)
         return [h for h in finished if h.hits >= self.cfg.min_hits_to_confirm]
+
+    def _fold_duplicates(self, active: list[_Hyp]) -> list[_Hyp]:
+        cfg = self.cfg
+        if len(active) < 2:
+            return active
+        order = sorted(active, key=lambda h: (-h.hits, h.tid))  # established first
+        keep: list[_Hyp] = []
+        for h in order:
+            target = None
+            for k in keep:
+                near = float(np.hypot(*(h.kf.x[:2] - k.kf.x[:2]))) < cfg.duplicate_px
+                n = h.close.get(k.tid, 0) + 1 if near else 0
+                h.close[k.tid] = n
+                if n >= cfg.duplicate_frames and target is None:
+                    target = k
+            if target is None:
+                keep.append(h)
+                continue
+            for f, d in h.obs.items():  # keep the established track's observation where both have one
+                target.obs.setdefault(f, d)
+            target.hits = len(target.obs)
+        return keep
 
     # ----------------------------------------------------------------- offline
     def smooth(self, obs: dict[int, Detection], frames: list[tuple[int, float]]):

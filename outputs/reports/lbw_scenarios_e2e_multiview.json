@@ -1,0 +1,152 @@
+[
+ {
+  "scenario": "hitting middle",
+  "truth": {
+   "x_at_stumps_cm": 0.0,
+   "z_at_stumps_cm": 37.6,
+   "would_hit": true,
+   "centre_in_zone": true,
+   "pitched_outside_leg": false
+  },
+  "on_field": "NOT_OUT",
+  "verdict": "INCONCLUSIVE",
+  "p_hit": 0.9445,
+  "rules_summary": "UNDETERMINED",
+  "pred_x_cm": -1.7,
+  "pred_z_cm": 36.2,
+  "recommendation": "INCONCLUSIVE",
+  "suggested": "NOT_OUT",
+  "components": {
+   "pitching": "SUPPORTS_OUT",
+   "impact": "SUPPORTS_OUT",
+   "wicket": "UNRESOLVED"
+  },
+  "review_url": "http://localhost:3100/reviews/c157ea4652914c83",
+  "session_url": "http://localhost:3100/sessions/a3c4d64f12c741ea"
+ },
+ {
+  "scenario": "missing off (wide)",
+  "truth": {
+   "x_at_stumps_cm": 32.0,
+   "z_at_stumps_cm": 37.6,
+   "would_hit": false,
+   "centre_in_zone": false,
+   "pitched_outside_leg": false
+  },
+  "on_field": "OUT",
+  "verdict": "PROJECTED_TO_MISS",
+  "p_hit": 0.021,
+  "rules_summary": "CONDITIONS_NOT_MET",
+  "pred_x_cm": 29.8,
+  "pred_z_cm": 35.9,
+  "recommendation": "OVERTURNED",
+  "suggested": "NOT_OUT",
+  "components": {
+   "pitching": "SUPPORTS_OUT",
+   "impact": "UNRESOLVED",
+   "wicket": "SUPPORTS_NOT_OUT"
+  },
+  "review_url": "http://localhost:3100/reviews/0132a7d4871a4a81",
+  "session_url": "http://localhost:3100/sessions/07ddd575af6f4b7e"
+ },
+ {
+  "scenario": "missing leg",
+  "truth": {
+   "x_at_stumps_cm": -30.0,
+   "z_at_stumps_cm": 37.6,
+   "would_hit": false,
+   "centre_in_zone": false,
+   "pitched_outside_leg": false
+  },
+  "on_field": "OUT",
+  "verdict": "PROJECTED_TO_MISS",
+  "p_hit": 0.0275,
+  "rules_summary": "CONDITIONS_NOT_MET",
+  "pred_x_cm": -30.2,
+  "pred_z_cm": 36.3,
+  "recommendation": "OVERTURNED",
+  "suggested": "NOT_OUT",
+  "components": {
+   "pitching": "SUPPORTS_OUT",
+   "impact": "UNRESOLVED",
+   "wicket": "SUPPORTS_NOT_OUT"
+  },
+  "review_url": "http://localhost:3100/reviews/28cd860073b447e2",
+  "session_url": "http://localhost:3100/sessions/3c8afee6ba014e76"
+ },
+ {
+  "scenario": "going over the top",
+  "truth": {
+   "x_at_stumps_cm": -0.0,
+   "z_at_stumps_cm": 105.8,
+   "would_hit": false,
+   "centre_in_zone": false,
+   "pitched_outside_leg": false
+  },
+  "on_field": "OUT",
+  "verdict": "PROJECTED_TO_MISS",
+  "p_hit": 0.003,
+  "rules_summary": "CONDITIONS_NOT_MET",
+  "pred_x_cm": -1.7,
+  "pred_z_cm": 104.1,
+  "recommendation": "OVERTURNED",
+  "suggested": "NOT_OUT",
+  "components": {
+   "pitching": "SUPPORTS_OUT",
+   "impact": "SUPPORTS_OUT",
+   "wicket": "SUPPORTS_NOT_OUT"
+  },
+  "review_url": "http://localhost:3100/reviews/f2cd332ada7d49af",
+  "session_url": "http://localhost:3100/sessions/99ea8ed9472547ce"
+ },
+ {
+  "scenario": "clipping off stump (marginal)",
+  "truth": {
+   "x_at_stumps_cm": 13.0,
+   "z_at_stumps_cm": 37.6,
+   "would_hit": true,
+   "centre_in_zone": false,
+   "pitched_outside_leg": false
+  },
+  "on_field": "NOT_OUT",
+  "verdict": "INCONCLUSIVE",
+  "p_hit": 0.6865,
+  "rules_summary": "UNDETERMINED",
+  "pred_x_cm": 11.3,
+  "pred_z_cm": 36.5,
+  "recommendation": "INCONCLUSIVE",
+  "suggested": "NOT_OUT",
+  "components": {
+   "pitching": "SUPPORTS_OUT",
+   "impact": "UNRESOLVED",
+   "wicket": "UNRESOLVED"
+  },
+  "review_url": "http://localhost:3100/reviews/32844033974d43fe",
+  "session_url": "http://localhost:3100/sessions/5531f7be7cf044c1"
+ },
+ {
+  "scenario": "pitched outside leg",
+  "truth": {
+   "x_at_stumps_cm": -2.0,
+   "z_at_stumps_cm": 37.6,
+   "would_hit": true,
+   "centre_in_zone": true,
+   "pitched_outside_leg": true
+  },
+  "on_field": "OUT",
+  "verdict": "INCONCLUSIVE",
+  "p_hit": 0.933,
+  "rules_summary": "CONDITIONS_NOT_MET",
+  "pred_x_cm": -3.0,
+  "pred_z_cm": 36.4,
+  "recommendation": "OVERTURNED",
+  "suggested": "NOT_OUT",
+  "components": {
+   "pitching": "SUPPORTS_NOT_OUT",
+   "impact": "UNRESOLVED",
+   "wicket": "UNRESOLVED"
+  },
+  "review_url": "http://localhost:3100/reviews/f535d4e3e73e441d",
+  "session_url": "http://localhost:3100/sessions/f51f2c6360f34fd2"
+ }
+]

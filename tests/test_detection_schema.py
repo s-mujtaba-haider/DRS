@@ -1,3 +1,4 @@
+import cv2
 import numpy as np
 import pytest
 from pydantic import ValidationError
@@ -57,6 +58,40 @@ def test_motion_detector_finds_moving_blob():
         assert found[i], f"no candidate at frame {i}"
         cx, cy = found[i][0].center
         assert abs(cx - (43 + 30 * i)) < 4 and abs(cy - 103) < 4
+
+
+def test_motion_detector_sees_red_ball_on_equal_luminance_grass():
+    # Red ball BGR (40,40,200) on outfield green (60,120,50): ~5 grey levels apart, invisible to a
+    # grayscale difference but clearly different in colour.
+    det = MotionCandidateDetector(compensate_camera_motion=False)
+    hits = 0
+    for i in range(8):
+        img = np.full((240, 320, 3), (60, 120, 50), np.uint8)
+        x = 30 + 30 * i
+        cv2.circle(img, (x, 120), 4, (40, 40, 200), -1)
+        d = det.detect_frame(img, FrameInfo(i, i * 20.0, "container_pts"))
+        if i >= 2 and d and abs(d[0].center[0] - x) < 4 and abs(d[0].center[1] - 120) < 4:
+            hits += 1
+    assert hits == 6
+
+
+def test_motion_detector_suppresses_ghosts_of_slow_ball():
+    # Near the bounce, seen from behind the bowler, the ball barely moves in the image for a few
+    # frames and then moves away. Both previous frames then contain it at the old spot, so a plain
+    # three-frame difference leaves a ghost blob where it was.
+    det = MotionCandidateDetector(compensate_camera_motion=False)
+    xs = [60, 70, 80, 90, 100, 110, 111, 112, 112, 130, 150, 170]
+    ghosts = real = 0
+    for i, x in enumerate(xs):
+        img = np.full((240, 320, 3), (60, 120, 50), np.uint8)
+        cv2.circle(img, (x, 120), 4, (40, 40, 200), -1)
+        for d in det.detect_frame(img, FrameInfo(i, i * 20.0, "container_pts")):
+            if abs(d.center[0] - x) <= 4 and abs(d.center[1] - 120) <= 3:  # edge crescents of a 1 px move are ~3.5 px off
+                real += 1
+            else:
+                ghosts += 1
+    assert ghosts == 0
+    assert real >= 7
 
 
 def test_missing_weights_raise_clear_error(tmp_path):

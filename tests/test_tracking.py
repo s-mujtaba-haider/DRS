@@ -122,3 +122,22 @@ def test_hysteresis_weak_detections_extend_but_do_not_spawn():
     # Weak detections alone never create a track.
     _, only_weak = _dets(t, x, y, conf=0.1)
     assert BallTracker(cfg).run(frames, only_weak).tracks == []
+
+
+def test_ghost_candidates_near_bounce_do_not_split_the_track():
+    # Recorded motion-detector output for a synthetic delivery seen from behind the bowler: near the
+    # bounce the ball barely moves in the image and ghost candidates appear beside it. A duplicate
+    # hypothesis used to follow the same ball, steal the post-bounce detections, and leave the
+    # primary track ending at the bounce (frames 33-35 lost), which broke the LBW projection.
+    import json
+    from pathlib import Path
+
+    from ml.common.schemas import FrameDetections
+
+    raw = json.loads((Path(__file__).parent / "data" / "ghost_bounce_detections.json").read_text())
+    fds = [FrameDetections.model_validate(x) for x in raw]
+    res = BallTracker().run([(f.frame_index, f.timestamp_ms) for f in fds], [d for f in fds for d in f.detections])
+    primary = next(t for t in res.tracks if t.is_primary)
+    obs = {p.frame_index for p in primary.points if p.kind == "observed"}
+    assert {32, 33, 34, 35} <= obs, "post-bounce observations must stay on the ball track"
+    assert len(res.tracks) == 1

@@ -4,7 +4,7 @@ Every number here was measured in this repository on 2026-10-12. The raw outputs
 
 ## 1. Automated tests
 
-- `pytest`: 211 tests, all passing (2026-10-18). Besides the areas below, they cover the match/review API, PIN roles, protocol engine, run-out/stumping/boundary engines and endpoints, wicket-break motion compensation, foot proposals, multi-view LBW, live capture and rehearsal replay through the API, synchronisation, labelling export and PDF review reports. The earlier set covers:
+- `pytest`: 215 tests, all passing (2026-10-18). Besides the areas below, they cover the match/review API, PIN roles, protocol engine, run-out/stumping/boundary engines and endpoints, wicket-break motion compensation, foot proposals, multi-view LBW, live capture and rehearsal replay through the API, synchronisation, labelling export and PDF review reports. The earlier set covers:
   - video metadata, frame extraction, and empty or invalid files;
   - the detection schema, NMS, tiling, the motion detector and missing-weights errors;
   - Kalman initialisation, missing frames, outlier rejection, static clutter and camera cuts;
@@ -583,6 +583,38 @@ Frames whose letterboxed shape is larger than the engine profile (4:3, portrait)
 - The single-camera defaults are unchanged.
 
 **Synthetic only.** These results say which model terms help against one simulator's physics with exact cameras. They are not evidence of real-world accuracy.
+
+## 14. LBW end to end through the running app (synthetic deliveries)
+
+`scripts/run_lbw_scenarios.py [--multiview]` renders six deliveries with known outcomes and puts each through the real workflow against the running API. The steps are:
+1. upload and run a tracking job (motion detector);
+2. calibrate with exact intrinsics;
+3. run LBW (single camera, or `/api/lbw/multiview` with an added side-on 100 fps camera and hardware sync asserted);
+4. open an LBW review under ICC T20I 2025 and compute the recommendation.
+
+The flight includes realistic air drag (`make_delivery(drag_c=DEFAULT_DRAG_C)`). Raw output: `lbw_scenarios_e2e*.json`.
+
+| Scenario (truth) | Single camera: verdict, recommendation | Two cameras: stump-plane error, verdict, recommendation |
+|---|---|---|
+| Hitting middle (centre in zone) | INCONCLUSIVE, refer to umpire | 2.2 cm, INCONCLUSIVE (P(centre in zone) 0.92 < 0.95), refer |
+| Missing off, 32 cm wide | PROJECTED_TO_MISS, OUT overturned | 2.8 cm, PROJECTED_TO_MISS, OUT overturned |
+| Missing leg | PROJECTED_TO_MISS, OUT overturned | 1.3 cm, PROJECTED_TO_MISS, OUT overturned |
+| Going over the top | INCONCLUSIVE, refer | 2.4 cm, PROJECTED_TO_MISS, OUT overturned |
+| Clipping off stump (part in zone, centre out) | INCONCLUSIVE, NOT OUT stands | 2.0 cm, INCONCLUSIVE, NOT OUT stands |
+| Pitched outside leg (would hit) | OUT overturned (Law 36.1.2) | 1.6 cm, OUT overturned (Law 36.1.2) |
+
+- **No recommendation contradicted the truth** with either set-up.
+- **Single camera:** heights come out about 20 cm high. This is a consistent bias from the monocular depth assumptions (bounce speed retention prior), so uncertain cases are referred to the umpire.
+- **Two cameras:** stump-plane errors are 1.3–2.8 cm.
+
+**Defects found and fixed by this test:**
+1. **Grayscale motion detection** missed a red ball on green grass, which have nearly equal luminance. The detector now differences in colour.
+2. **Ghost candidates.** Three-frame differencing left a ghost where a slow ball had been. Ghosts are now rejected against a 15-frame median background.
+3. **Duplicate tracker hypotheses** followed the same ball near the bounce and took the post-bounce detections, so the ball track ended at the bounce. A recorded fixture now tests this. Re-tracking the 5 real broadcast clips gives identical results (3/5 reliable).
+4. **The protocol layer** let an INCONCLUSIVE *would-hit* verdict override a certain "pitched outside leg". It now only blocks decisions that depend on the wicket projection.
+5. **The synthetic generator had no air drag**, while the engine assumes a real ball. Drag is now optional in the generator and used by this test.
+
+These are synthetic scenes. Real-world LBW accuracy remains unknown.
 
 ## 6. Not measured (no ground truth available)
 

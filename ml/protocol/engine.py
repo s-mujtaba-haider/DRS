@@ -329,7 +329,14 @@ def lbw_review(protocol: DrsProtocol, on_field: OnField, lbw_result: dict, revie
 
     outcome, final = decide()
     verdict = lbw_result.get("verdict")
-    if verdict in ("INCONCLUSIVE", "INSUFFICIENT_DATA") and outcome != ReviewOutcome.INCONCLUSIVE:
+    # An INCONCLUSIVE ball-tracking verdict concerns whether the ball would hit the wicket. It cannot
+    # overrule a NOT OUT that rests on a resolved pitching or impact component (each cleared its own
+    # confidence bar) or on a recorded fact. INSUFFICIENT_DATA means the track itself is unusable, so
+    # nothing derived from it is trusted.
+    independent_not_out = bool(fact_fail) or any(
+        c.name in ("pitching", "impact") and c.status == ComponentStatus.SUPPORTS_NOT_OUT for c in comps)
+    blocked = verdict == "INSUFFICIENT_DATA" or (verdict == "INCONCLUSIVE" and not (final == "NOT_OUT" and independent_not_out))
+    if blocked and outcome != ReviewOutcome.INCONCLUSIVE:
         reasons.append(f"Protocol reading would be {outcome.value} ({final}), but the ball-tracking verdict is {verdict}")
         outcome, final = ReviewOutcome.INCONCLUSIVE, on_field
     if outcome == ReviewOutcome.INCONCLUSIVE:

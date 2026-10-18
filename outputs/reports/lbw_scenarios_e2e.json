@@ -1,0 +1,152 @@
+[
+ {
+  "scenario": "hitting middle",
+  "truth": {
+   "x_at_stumps_cm": 0.0,
+   "z_at_stumps_cm": 37.6,
+   "would_hit": true,
+   "centre_in_zone": true,
+   "pitched_outside_leg": false
+  },
+  "on_field": "NOT_OUT",
+  "verdict": "INCONCLUSIVE",
+  "p_hit": 0.741,
+  "rules_summary": "UNDETERMINED",
+  "pred_x_cm": 0.4,
+  "pred_z_cm": 58.8,
+  "recommendation": "INCONCLUSIVE",
+  "suggested": "NOT_OUT",
+  "components": {
+   "pitching": "SUPPORTS_OUT",
+   "impact": "SUPPORTS_OUT",
+   "wicket": "UNRESOLVED"
+  },
+  "review_url": "http://localhost:3100/reviews/b25791c4554b478a",
+  "session_url": "http://localhost:3100/sessions/d021c280dc3d4bdc"
+ },
+ {
+  "scenario": "missing off (wide)",
+  "truth": {
+   "x_at_stumps_cm": 32.0,
+   "z_at_stumps_cm": 37.6,
+   "would_hit": false,
+   "centre_in_zone": false,
+   "pitched_outside_leg": false
+  },
+  "on_field": "OUT",
+  "verdict": "PROJECTED_TO_MISS",
+  "p_hit": 0.0005,
+  "rules_summary": "CONDITIONS_NOT_MET",
+  "pred_x_cm": 38.1,
+  "pred_z_cm": 62.1,
+  "recommendation": "OVERTURNED",
+  "suggested": "NOT_OUT",
+  "components": {
+   "pitching": "SUPPORTS_OUT",
+   "impact": "UNRESOLVED",
+   "wicket": "SUPPORTS_NOT_OUT"
+  },
+  "review_url": "http://localhost:3100/reviews/50099aaedaf44d44",
+  "session_url": "http://localhost:3100/sessions/dd873f14e2f2490b"
+ },
+ {
+  "scenario": "missing leg",
+  "truth": {
+   "x_at_stumps_cm": -30.0,
+   "z_at_stumps_cm": 37.6,
+   "would_hit": false,
+   "centre_in_zone": false,
+   "pitched_outside_leg": false
+  },
+  "on_field": "OUT",
+  "verdict": "PROJECTED_TO_MISS",
+  "p_hit": 0.0005,
+  "rules_summary": "CONDITIONS_NOT_MET",
+  "pred_x_cm": -34.6,
+  "pred_z_cm": 58.8,
+  "recommendation": "OVERTURNED",
+  "suggested": "NOT_OUT",
+  "components": {
+   "pitching": "SUPPORTS_OUT",
+   "impact": "UNRESOLVED",
+   "wicket": "SUPPORTS_NOT_OUT"
+  },
+  "review_url": "http://localhost:3100/reviews/c702ccbd771a45f2",
+  "session_url": "http://localhost:3100/sessions/36e52bdd10c64494"
+ },
+ {
+  "scenario": "going over the top",
+  "truth": {
+   "x_at_stumps_cm": -0.0,
+   "z_at_stumps_cm": 105.8,
+   "would_hit": false,
+   "centre_in_zone": false,
+   "pitched_outside_leg": false
+  },
+  "on_field": "OUT",
+  "verdict": "INCONCLUSIVE",
+  "p_hit": 0.3115,
+  "rules_summary": "UNDETERMINED",
+  "pred_x_cm": -1.8,
+  "pred_z_cm": 101.8,
+  "recommendation": "INCONCLUSIVE",
+  "suggested": "OUT",
+  "components": {
+   "pitching": "SUPPORTS_OUT",
+   "impact": "SUPPORTS_OUT",
+   "wicket": "UNRESOLVED"
+  },
+  "review_url": "http://localhost:3100/reviews/49992201e4e4413b",
+  "session_url": "http://localhost:3100/sessions/87564844521840aa"
+ },
+ {
+  "scenario": "clipping off stump (marginal)",
+  "truth": {
+   "x_at_stumps_cm": 13.0,
+   "z_at_stumps_cm": 37.6,
+   "would_hit": true,
+   "centre_in_zone": false,
+   "pitched_outside_leg": false
+  },
+  "on_field": "NOT_OUT",
+  "verdict": "INCONCLUSIVE",
+  "p_hit": 0.523,
+  "rules_summary": "UNDETERMINED",
+  "pred_x_cm": 14.8,
+  "pred_z_cm": 62.2,
+  "recommendation": "INCONCLUSIVE",
+  "suggested": "NOT_OUT",
+  "components": {
+   "pitching": "SUPPORTS_OUT",
+   "impact": "UNRESOLVED",
+   "wicket": "UNRESOLVED"
+  },
+  "review_url": "http://localhost:3100/reviews/012f02d90ab940a2",
+  "session_url": "http://localhost:3100/sessions/12f910710a4a4b48"
+ },
+ {
+  "scenario": "pitched outside leg",
+  "truth": {
+   "x_at_stumps_cm": -2.0,
+   "z_at_stumps_cm": 37.6,
+   "would_hit": true,
+   "centre_in_zone": true,
+   "pitched_outside_leg": true
+  },
+  "on_field": "OUT",
+  "verdict": "INCONCLUSIVE",
+  "p_hit": 0.7195,
+  "rules_summary": "CONDITIONS_NOT_MET",
+  "pred_x_cm": 5.6,
+  "pred_z_cm": 60.3,
+  "recommendation": "OVERTURNED",
+  "suggested": "NOT_OUT",
+  "components": {
+   "pitching": "SUPPORTS_NOT_OUT",
+   "impact": "UNRESOLVED",
+   "wicket": "UNRESOLVED"
+  },
+  "review_url": "http://localhost:3100/reviews/161b26d63d094393",
+  "session_url": "http://localhost:3100/sessions/16c15f370a31439c"
+ }
+]

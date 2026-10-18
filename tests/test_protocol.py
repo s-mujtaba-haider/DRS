@@ -91,6 +91,15 @@ def test_inconclusive_verdict_never_overturns():
     assert d.outcome == ReviewOutcome.INCONCLUSIVE and d.final_decision == "OUT"
 
 
+def test_decisive_pitching_not_out_survives_inconclusive_wicket_projection():
+    # Pitched outside leg for certain, but the would-hit projection is uncertain: still NOT OUT.
+    d = lbw_review(TEST, "OUT", result(leg=1.0, verdict="INCONCLUSIVE", p_hit=0.9, pc=0.8))
+    assert d.outcome == ReviewOutcome.OVERTURNED and d.final_decision == "NOT_OUT"
+    # ...but an uncertain projection never turns NOT OUT into OUT.
+    d2 = lbw_review(TEST, "NOT_OUT", result(verdict="INCONCLUSIVE"))
+    assert d2.outcome == ReviewOutcome.INCONCLUSIVE and d2.final_decision == "NOT_OUT"
+
+
 def test_uncertain_component_is_unresolved():
     d = lbw_review(TEST, "NOT_OUT", result(p_hit=0.7, pc=0.6, verdict="PROJECTED_TO_HIT"))
     assert d.outcome == ReviewOutcome.INCONCLUSIVE
