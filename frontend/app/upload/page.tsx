@@ -18,7 +18,7 @@ export default function UploadPage() {
   const [uploadPct, setUploadPct] = useState<number | null>(null);
   const [job, setJob] = useState<Job | null>(null);
   const [error, setError] = useState<unknown>(null);
-  const [cfg, setCfg] = useState({ detector: "auto", conf: 0.15, imgsz: 1280, frame_step: 1, start_frame: 0, end_frame: "", tile_size: "", batch_size: 8 });
+  const [cfg, setCfg] = useState({ detector: "auto", conf: 0.15, imgsz: 1280, frame_step: 1, start_frame: 0, end_frame: "", tile_size: "", batch_size: 8, use_tensorrt: false });
   const timer = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => () => void (timer.current && clearInterval(timer.current)), []);
@@ -49,6 +49,7 @@ export default function UploadPage() {
         frame_step: Number(cfg.frame_step),
         start_frame: Number(cfg.start_frame),
         batch_size: Number(cfg.batch_size),
+        use_tensorrt: cfg.use_tensorrt,
       };
       if (cfg.end_frame) body.end_frame = Number(cfg.end_frame);
       if (cfg.tile_size) body.tile_size = Number(cfg.tile_size);
@@ -155,6 +156,10 @@ export default function UploadPage() {
             <input className={field} type="number" min="1" placeholder="end" value={cfg.end_frame} onChange={(e) => setCfg({ ...cfg, end_frame: e.target.value })} />
           </label>
         </div>
+        <label className="mt-3 flex items-center gap-2 text-sm" title="Uses the TensorRT FP16 engine only if it was built and validated against these weights (docs/INSTALLATION.md §6); otherwise falls back to PyTorch">
+          <input type="checkbox" checked={cfg.use_tensorrt} onChange={(e) => setCfg({ ...cfg, use_tensorrt: e.target.checked })} />
+          Use validated TensorRT engine (faster; falls back automatically)
+        </label>
         <div className="mt-4 flex items-center gap-2">
           <Button variant="primary" disabled={!video || !!active} onClick={start}>Start analysis</Button>
           {active && <Button variant="danger" onClick={() => job && api.cancelJob(job.id).then(setJob).catch(setError)}>Cancel</Button>}
