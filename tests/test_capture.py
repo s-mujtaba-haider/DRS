@@ -174,3 +174,38 @@ def test_late_frame_with_contiguous_counter_is_not_a_drop(tmp_path: Path):
     rec.wait_finished(30)
     st = rec.status()
     assert st["source_dropped_est"] == 0 and st["late_arrivals"] >= 1
+
+
+class _BurstySource(SyntheticSource):
+    """Driver-buffered delivery like a real USB webcam: 3 frames ~7 ms apart, then a pause; no frame counter."""
+
+    def read(self):
+        fr = super().read()
+        if fr is None:
+            return None
+        slot = fr.backend_frame
+        period = int(1e9 / self.nominal_fps)
+        burst_start = (slot // 3) * 3
+        fr.host_ns = self._t0 + (burst_start + 3) * period + (slot - burst_start) * 7_000_000
+        fr.backend_frame = None
+        return fr
+
+
+def test_bursty_delivery_is_not_counted_as_drops(tmp_path: Path):
+    mgr = CaptureManager(tmp_path / "buf", RecorderConfig(**CFG))
+    rec = mgr.add_camera(_BurstySource("A", 160, 120, 30, duration_s=3.0, realtime=False))
+    rec.wait_finished(30)
+    st = rec.status()
+    assert st["source_dropped_est"] == 0
+    assert st["delivery"] == "bursty"
+    assert st["measured_fps"] == pytest.approx(30.0, rel=0.08)
+    assert st["arrival_jitter_ms"] > 10.0  # arrival time is a poor proxy for exposure time here
+
+
+def test_steady_delivery_reports_low_jitter(tmp_path: Path):
+    mgr = CaptureManager(tmp_path / "buf", RecorderConfig(**CFG))
+    rec = mgr.add_camera(SyntheticSource("A", 160, 120, 50, duration_s=1.0, realtime=False))
+    rec.wait_finished(30)
+    st = rec.status()
+    assert st["delivery"] == "steady" and st["arrival_jitter_ms"] < 1.0
+    assert st["measured_fps"] == pytest.approx(50.0, rel=0.02)

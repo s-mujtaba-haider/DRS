@@ -86,6 +86,7 @@ These limitations are measured or known. They are not hypothetical.
 - **Software synchronisation only.** Frames are timestamped when they arrive at the PC, not at exposure, so each camera's transport latency is unknown and not compensated. The sync uncertainty is reported as one frame interval plus measured arrival jitter (10–33 ms at 30–100 fps).
   - On the synthetic two-camera rig this means about 3.5 cm of 3D error per ms and 8–15 cm stump-plane error (`EVALUATION.md` §7).
   - Reprojection error does **not** reveal sync error.
+- Some USB webcam drivers deliver frames in bursts. The UGREEN 2K camera here gives 3 frames about 7 ms apart, then an 80 ms pause, about 30 fps on average. Arrival time then misstates exposure time by about 22 ms (std). This is detected (`delivery: bursty`), excluded from drop counting, and included in the clip's sync uncertainty (±44 ms measured), but it cannot be corrected without device timestamps. Machine-vision cameras with hardware timestamps avoid it.
 - OpenCV's backend timestamps on Windows (MSMF) tick at 33.3 ms and are not trusted. Webcams often deliver less than their declared rate; this is detected and flagged.
 - Capture throughput was measured with synthetic frames on one PC. Real cameras (USB bandwidth, GigE packet loss) were not tested beyond one 640×480 / 1280×720 webcam. The GeForce NVENC session limit was not measured.
 - Audio sync (GCC-PHAT) is tested on synthetic signals only. The audio-to-video mux offset inside each file is unknown, so audio alignment is not frame alignment.

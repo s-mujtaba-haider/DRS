@@ -40,3 +40,16 @@ def test_manager_exports_audio_with_clip(tmp_path: Path):
     a = exp["audio"]
     assert a["status"] == "ok" and Path(a["path"]).is_file()
     assert a["offset_ms"] == pytest.approx(0.0, abs=25.0)  # audio covers the window from its start
+
+
+def test_restart_in_same_directory_keeps_export_consistent(tmp_path: Path):
+    d = tmp_path / "a"
+    for _ in range(2):  # second session reuses the directory, as after a server restart
+        src = SyntheticAudioSource(click_every_s=0.25, duration_s=1.0)
+        rec = AudioRecorder(src, d, segment_s=0.4)
+        rec.start()
+        rec._thread.join(10)
+    a = export_audio(d, src.click_host_ns[0] - 50_000_000, src.click_host_ns[-1] + 50_000_000, tmp_path / "o.wav", 48000)
+    assert a["status"] == "ok"
+    r = analyze_video_audio(tmp_path / "o.wav")
+    assert len(r.transients) == len(src.click_host_ns)

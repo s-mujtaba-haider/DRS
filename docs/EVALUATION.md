@@ -4,7 +4,7 @@ Every number here was measured in this repository on 2026-10-12. The raw outputs
 
 ## 1. Automated tests
 
-- `pytest`: 208 tests, all passing (2026-10-18). Besides the areas below, they cover the match/review API, PIN roles, protocol engine, run-out/stumping/boundary engines and endpoints, wicket-break motion compensation, foot proposals, multi-view LBW, live capture and rehearsal replay through the API, synchronisation, labelling export and PDF review reports. The earlier set covers:
+- `pytest`: 211 tests, all passing (2026-10-18). Besides the areas below, they cover the match/review API, PIN roles, protocol engine, run-out/stumping/boundary engines and endpoints, wicket-break motion compensation, foot proposals, multi-view LBW, live capture and rehearsal replay through the API, synchronisation, labelling export and PDF review reports. The earlier set covers:
   - video metadata, frame extraction, and empty or invalid files;
   - the detection schema, NMS, tiling, the motion detector and missing-weights errors;
   - Kalman initialisation, missing frames, outlier rejection, static clutter and camera cuts;

@@ -423,6 +423,7 @@ export interface CaptureCamera {
   frames_encoded: number;
   source_dropped_est: number;
   late_arrivals?: number;
+  delivery?: "steady" | "bursty";
   queue_dropped: number;
   encoder: string | null;
   encoder_backlog: number;

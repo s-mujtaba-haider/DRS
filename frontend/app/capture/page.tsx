@@ -187,7 +187,7 @@ export default function CapturePage() {
                   <div><dt className="text-muted">Dropped frames</dt><dd className={`tabular ${drops ? "text-warn" : ""}`}>{drops} ({c.queue_dropped} encoder)</dd></div>
                   <div><dt className="text-muted">Encoder</dt><dd className="tabular">{c.encoder} · {fmt(c.encode_ms_per_frame, 1)} ms/f</dd></div>
                   <div><dt className="text-muted">Backlog</dt><dd className="tabular">{c.encoder_backlog} frames</dd></div>
-                  <div><dt className="text-muted">Arrival jitter / late</dt><dd className={`tabular ${c.late_arrivals ? "text-warn" : ""}`}>{fmt(c.arrival_jitter_ms, 1)} ms · {c.late_arrivals ?? 0} late</dd></div>
+                  <div><dt className="text-muted">Arrival jitter / late</dt><dd className={`tabular ${c.late_arrivals || c.delivery === "bursty" ? "text-warn" : ""}`}>{fmt(c.arrival_jitter_ms, 1)} ms · {c.late_arrivals ?? 0} late{c.delivery === "bursty" ? " · bursty driver" : ""}</dd></div>
                   <div><dt className="text-muted">Buffer</dt><dd className="tabular">{fmt(c.buffer_span_s, 0)} s · {(c.disk_bytes / 1e9).toFixed(2)} GB</dd></div>
                   <div><dt className="text-muted">Frames</dt><dd className="tabular">{c.frames_captured} / {c.frames_encoded} enc</dd></div>
                   <div><dt className="text-muted">Disk free</dt><dd className="tabular">{c.disk_free_bytes != null ? `${(c.disk_free_bytes / 1e9).toFixed(0)} GB` : "n/a"}</dd></div>

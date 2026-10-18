@@ -180,9 +180,15 @@ class AudioRecorder:
     def is_alive(self) -> bool:
         return bool(self._thread and self._thread.is_alive())
 
+    def _next_index(self) -> int:
+        # Continue after segments left by an earlier session in the same directory: reusing a
+        # number would overwrite that WAV while its old sidecar records stay behind.
+        idx = [int(f.stem.split("_")[1]) for f in self.dir.glob("aseg_*.wav") if f.stem.split("_")[1].isdigit()]
+        return max(idx) + 1 if idx else 0
+
     def _run(self) -> None:
         sr = self.source.sample_rate
-        seg_idx, wav, side, seg_samples, seg_t0 = 0, None, None, 0, None
+        seg_idx, wav, side, seg_samples, seg_t0 = self._next_index(), None, None, 0, None
         try:
             while not self._stop.is_set():
                 blk = self.source.read(timeout=0.5)
@@ -200,7 +206,7 @@ class AudioRecorder:
                     wav.setnchannels(1)
                     wav.setsampwidth(2)
                     wav.setframerate(sr)
-                    side = (self.dir / f"{name}.jsonl").open("a")
+                    side = (self.dir / f"{name}.jsonl").open("w")
                     seg_idx, seg_samples, seg_t0 = seg_idx + 1, 0, host_ns
                     self.stats.segments.append(name)
                     self._prune()
@@ -223,11 +229,13 @@ class AudioRecorder:
             self.running = False
 
     def _prune(self) -> None:
+        # Prune by what is on disk (including earlier sessions), oldest first.
         keep = max(2, int(self.retention_s / self.segment_s) + 1)
-        for name in self.stats.segments[:-keep]:
+        names = sorted(f.stem for f in self.dir.glob("aseg_*.wav"))
+        for name in names[:-keep]:
             for ext in (".wav", ".jsonl"):
                 (self.dir / f"{name}{ext}").unlink(missing_ok=True)
-        self.stats.segments = self.stats.segments[-keep:]
+        self.stats.segments = [n for n in self.stats.segments if (self.dir / f"{n}.wav").exists()]
 
     def status(self) -> dict:
         st = self.stats

@@ -24,7 +24,6 @@ import json
 import logging
 import queue
 import shutil
-import statistics
 import threading
 from collections import deque
 from dataclasses import asdict, dataclass, field
@@ -232,6 +231,8 @@ class CameraStats:
     queue_dropped: int = 0
     encode_ms_total: float = 0.0
     intervals_ns: deque = field(default_factory=lambda: deque(maxlen=600))
+    arrivals: deque = field(default_factory=lambda: deque(maxlen=240))  # (delivered frame count incl. drops, host_ns)
+    bursty: bool = False  # frames arrive in bursts (driver buffering): arrival time != exposure time
     last_host_ns: int | None = None
     started_host_ns: int | None = None
     error: str | None = None
@@ -322,9 +323,15 @@ class CameraRecorder:
                 gap_ns = fr.host_ns - st.last_host_ns if st.last_host_ns is not None else None
                 if gap_ns is not None:
                     raw_iv.append(gap_ns)
-                # Reference interval: what the camera actually delivers (cameras often run below their
-                # declared rate, e.g. auto-exposure in low light), falling back to the nominal rate.
-                ref_ns = statistics.median(raw_iv) if len(raw_iv) >= 10 else nominal_ns
+                # Reference interval: the camera's *mean* delivered interval (cameras often run below their
+                # declared rate, e.g. auto-exposure in low light), falling back to the nominal rate. The
+                # mean, not the median: drivers that deliver frames in bursts (several frames a few ms
+                # apart, then a pause) have a tiny median interval that would make every pause look like
+                # dropped frames.
+                ref_ns = float(np.mean(raw_iv)) if len(raw_iv) >= 10 else nominal_ns
+                if len(raw_iv) >= 10:
+                    short = sum(1 for g in raw_iv if g < 0.5 * ref_ns) / len(raw_iv)
+                    st.bursty = short > 0.25
                 missing = 0
                 late = gap_ns is not None and ref_ns and gap_ns > (self.cfg.drop_gap_factor if len(raw_iv) >= 10 else 2.5) * ref_ns
                 if fr.backend_frame is not None and last_backend is not None:
@@ -333,12 +340,17 @@ class CameraRecorder:
                     missing = max(0, fr.backend_frame - last_backend - 1)
                     if late and missing == 0:
                         st.late_arrivals += 1
-                elif late:
+                elif late and not st.bursty and len(raw_iv) >= 10:
+                    # Only once the delivery pattern is established; at start-up a pause is ambiguous.
                     missing = int(round(gap_ns / ref_ns)) - 1
+                elif late:
+                    st.late_arrivals += 1  # bursty delivery: a pause is not evidence of a lost frame
                 last_backend = fr.backend_frame
                 if gap_ns is not None and missing == 0:
                     st.intervals_ns.append(gap_ns)
                 st.source_dropped_est += missing
+                n_prev = st.arrivals[-1][0] if st.arrivals else -1
+                st.arrivals.append((n_prev + 1 + missing, fr.host_ns))
                 st.last_host_ns = fr.host_ns
                 st.frames_captured += 1
                 self._latest = (seq, fr.image)
@@ -480,17 +492,31 @@ class CameraRecorder:
     def latest_frame(self) -> tuple[int, np.ndarray] | None:
         return self._latest
 
-    def arrival_jitter_ms(self) -> float | None:
-        iv = list(self.stats.intervals_ns)
-        if len(iv) < 5:
+    def _arrival_fit(self):
+        a = list(self.stats.arrivals)
+        if len(a) < 8:
             return None
-        return float(np.std(np.asarray(iv) - statistics.median(iv)) / 1e6)
+        n = np.array([x[0] for x in a], float)
+        t = np.array([x[1] for x in a], float)
+        slope, icpt = np.polyfit(n, t, 1)  # host_ns per frame slot for an evenly clocked camera
+        return slope, t - (icpt + slope * n), len(a)
+
+    def arrival_jitter_ms(self) -> float | None:
+        """Timestamp error vs an evenly clocked camera: std of arrival-time residuals (ms).
+
+        This is what limits how well a frame's arrival time stands for its exposure time; for a
+        bursty driver it is tens of milliseconds even though the average rate is right."""
+        f = self._arrival_fit()
+        return None if f is None else float(np.std(f[1]) / 1e6)
 
     def measured_fps(self) -> float | None:
-        iv = list(self.stats.intervals_ns)
-        if len(iv) < 2:
+        """Delivered frame rate: frames over elapsed time in the recent window (robust to bursts)."""
+        a = list(self.stats.arrivals)
+        if len(a) < 3:
             return None
-        return 1e9 / float(np.mean(iv[-120:]))
+        frames = len(a) - 1
+        dt = a[-1][1] - a[0][1]
+        return frames * 1e9 / dt if dt > 0 else None
 
     def _rate_mismatch(self) -> str | None:
         fps, nominal = self.measured_fps(), self.source.nominal_fps
@@ -513,6 +539,7 @@ class CameraRecorder:
             "encoder": self.codec, "encoder_backlog": self.q.qsize(),
             "encode_ms_per_frame": st.encode_ms_total / st.frames_encoded if st.frames_encoded else None,
             "arrival_jitter_ms": self.arrival_jitter_ms(),
+            "delivery": "bursty" if self.stats.bursty else "steady",
             "rate_mismatch": self._rate_mismatch(),
             "last_frame_age_s": (now - st.last_host_ns) / 1e9 if st.last_host_ns else None,
             "segments": len(segs), "disk_bytes": disk,
