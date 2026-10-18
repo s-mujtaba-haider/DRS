@@ -23,7 +23,7 @@ class Settings(BaseSettings):
     default_detector: str = "auto"
     default_device: str = "auto"
     max_frames_per_job: int = 3000
-    use_tensorrt: bool = False  # opt-in: only a sidecar-validated engine is ever loaded (docs/EVALUATION.md §11)
+    use_tensorrt: bool = False  # opt-in: only a sidecar-validated engine is ever loaded (docs/EVALUATION.md section 11)
     log_level: str = "INFO"
     # Match-day roles. When either PIN is set, every state-changing request needs a valid PIN
     # (header X-DRS-PIN); recording or withdrawing a review decision needs the umpire PIN.

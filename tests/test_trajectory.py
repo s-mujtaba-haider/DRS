@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 
 from ml.evaluation.synthetic import broadcast_camera, make_delivery
-from ml.trajectory.ballistic import InsufficientObservations, fit_to_pixels, fit_to_points
+from ml.trajectory.ballistic import C_PER_CD, InsufficientObservations, drag_identifiability, fit_to_pixels, fit_to_points
 from ml.trajectory.image_trajectory import fit_image_trajectory, predict
 
 
@@ -121,3 +121,49 @@ def test_unobservable_parameters_are_uncertain_not_certain():
     cov = np.linalg.inv(J.T @ J + np.eye(9) / WEAK_PRIOR_SIGMA**2)
     ff = FlightFit(m, cov, "ok", "multiview_3d", 0.0, "m", 1.0, 6, 0.0, 0.1)
     assert np.sqrt(np.diag(ff.cov))[6:].min() > 10.0
+
+
+def _true_flight(cd=0.5, a_post=0.0, bounce=True):
+    from ml.trajectory.ballistic import FlightModel
+
+    theta = [0.1, 18.0, 2.2, -0.3, -36.0, -3.0] + ([-0.2, -27.0, 3.5] if bounce else []) + [0.0, 0.0] + ([a_post] if bounce else [])
+    return FlightModel(np.array(theta + [cd * C_PER_CD]), 0.0, bounce, 0.0364, 0.0, 0.0, lift=False, swing=True,
+                       swing_post=bounce, drag_free=True)
+
+
+def test_drag_fitted_when_observations_constrain_it():
+    true = _true_flight(cd=0.52)
+    t = np.linspace(0, 0.42, 43)
+    rng = np.random.default_rng(3)
+    X = true.position(t) + rng.normal(0, 0.003, (t.size, 3))
+    fit = fit_to_points(t, X, sigma_m=np.full(t.size, 0.003), drag_cd_prior=(0.4, 0.1))
+    info = drag_identifiability(fit, 0.1 * C_PER_CD)
+    assert info["identified"] and abs(info["cd"] - 0.52) < 0.05
+    assert any("Drag fitted per delivery" in r for r in fit.reasons)
+
+
+def test_drag_prior_dominates_short_noisy_track_and_needs_sigma():
+    true = _true_flight(cd=0.52, bounce=False)
+    t = np.linspace(0, 0.08, 6)
+    rng = np.random.default_rng(4)
+    X = true.position(t) + rng.normal(0, 0.03, (t.size, 3))
+    fit = fit_to_points(t, X, sigma_m=np.full(t.size, 0.03), drag_cd_prior=(0.4, 0.1), allow_bounce=False)
+    assert abs(fit.model.drag_c_eff / C_PER_CD - 0.4) < 0.06  # stays near the prior
+    assert any("weakly identified" in r for r in fit.reasons)
+    with pytest.raises(ValueError):
+        fit_to_points(t, X, drag_cd_prior=(0.4, 0.1), allow_bounce=False)
+
+
+def test_defaults_unchanged_without_refinements():
+    d = make_delivery(fps=60)
+    fit = fit_to_pixels(d.camera, d.times, d.uv)
+    assert not fit.model.drag_free and not fit.model.swing_post
+    assert fit.summary()["drag_fitted"] is False
+
+
+def test_monocular_post_bounce_swing_option_reports_parameter():
+    d = make_delivery(fps=60)
+    fit = fit_to_pixels(d.camera, d.times, d.uv, swing_post_prior_sigma=2.0, drag_cd_prior=(0.4, 0.1))
+    if fit.model.bounce:
+        assert fit.model.swing_post and any("Post-bounce lateral" in r for r in fit.reasons)
+    assert fit.model.drag_free and "drag_fitted" in fit.summary()

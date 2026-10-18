@@ -4,7 +4,7 @@ Every number here was measured in this repository on 2026-10-12. The raw outputs
 
 ## 1. Automated tests
 
-- `pytest`: 186 tests, all passing (2026-10-18). Besides the areas below, they cover the match/review API, PIN roles, protocol engine, run-out/stumping/boundary engines and endpoints, wicket-break motion compensation, foot proposals, multi-view LBW, live capture and rehearsal replay through the API, synchronisation, labelling export and PDF review reports. The earlier set covers:
+- `pytest`: 208 tests, all passing (2026-10-18). Besides the areas below, they cover the match/review API, PIN roles, protocol engine, run-out/stumping/boundary engines and endpoints, wicket-break motion compensation, foot proposals, multi-view LBW, live capture and rehearsal replay through the API, synchronisation, labelling export and PDF review reports. The earlier set covers:
   - video metadata, frame extraction, and empty or invalid files;
   - the detection schema, NMS, tiling, the motion detector and missing-weights errors;
   - Kalman initialisation, missing frames, outlier rejection, static clutter and camera cuts;
@@ -414,15 +414,17 @@ An ignored 1%/frame zoom triples the error and halves the coverage of the uncert
   - 1 px image noise; impact at 1.2 m in front of the stumps.
   - Camera B really exposes `error` ms later than its timestamps claim.
 
+Current defaults (swing and lift terms, covariance inflation ×8; chosen in §13 because the earlier drag-only model made confident errors on richer physics). The earlier defaults are in brackets.
+
 | Scenario | Actual / declared sync error | Definite (correct) | Confident errors | Inconclusive | Hits called hit | Stump-plane error median / p90 |
 |---|---|---|---|---|---|---|
-| hardware sync | 0 / 0 ms | 54 (54) | 0 | 10% | 18 / 22 | 1.1 / 2.4 cm |
-| software sync | 2 / 2 ms | 0 | 0 | 100% | 0 / 22 | 2.2 / 3.7 cm |
-| software sync | 20 / 20 ms | 0 | 0 | 100% | 0 / 22 | 61 / 198 cm |
-| hardware claimed, error undeclared | 2 / 0 ms | 54 (54) | 0 | 10% | 18 / 22 | 2.2 / 3.7 cm |
+| hardware sync | 0 / 0 ms | 47 (47) [54 (54)] | 0 [0] | 22% [10%] | 13 / 22 [18 / 22] | 1.1 / 1.9 cm [1.1 / 2.4] |
+| software sync | 2 / 2 ms | 0 | 0 | 100% | 0 / 22 | 2.1 / 3.7 cm |
+| software sync | 20 / 20 ms | 0 | 0 | 100% | 0 / 22 | 59 / 196 cm |
+| hardware claimed, error undeclared | 2 / 0 ms | 48 (48) [54 (54)] | 0 [0] | 20% [10%] | 14 / 22 [18 / 22] | 2.1 / 3.7 cm |
 
 **Reading the table:**
-- **With synchronised cameras, two views remove the monocular depth problem.** 54 of 60 deliveries got a definite verdict, all correct, and 18 of 22 hits were called as hits. That compares with about 1 in 20 hits for the single-camera engine (§2).
+- **With synchronised cameras, two views remove most of the monocular depth problem.** 47 of 60 deliveries got a definite verdict, all correct, and 13 of 22 hits were called as hits. That compares with about 1 in 20 hits for the single-camera engine (§2). This generator's deliveries have drag only and no lateral forces, so the wider intervals of the current defaults cost decisiveness here; on richer physics they are what prevents confident errors (§13).
 - **Software sync (any declared uncertainty) never gives a definite verdict.** At about 26–35 m/s near the pad, 2 ms is already 5–7 cm, more than the 3 cm tolerance (`configs/lbw.yaml` › `multiview.max_sync_position_error_m`). The sync error is also propagated into the projection's covariance by re-fitting with each camera's offset shifted by its uncertainty.
 - **20 ms of sync error (a typical USB-webcam rig) wrecks the geometry.** The median stump-plane error is 61 cm, much worse than the 15 cm of the matched-frame study in §7, because interpolating the side-on track at the wrong instants also corrupts the association. Such rigs can only support replay review, not ball tracking.
 - **An undeclared 2 ms error is not detected.** Verdicts stayed correct in this set because a 2 cm stump-plane shift rarely crosses the decision boundary, but nothing in the reconstruction (including reprojection error) reveals the error. The declared sync uncertainty must come from the hardware, not be assumed.
@@ -519,6 +521,68 @@ Frames whose letterboxed shape is larger than the engine profile (4:3, portrait)
 **Synthetic tests:**
 - A 7 kHz click is located within 1 ms. A slow 220 Hz sound is rejected by the rise-time test. A noise blip 6.5 ms before an onset no longer inflates the rise time.
 - Through an AAC-encoded MP4 the click is found 2.5 ms early (encoder priming), one reason the API warns that the audio/video offset is unknown.
+
+## 13. Physics refinement (synthetic)
+
+**Question:** which extra flight-model terms help? The terms tested are per-delivery drag, a separate post-bounce lateral term, and swing/lift in the 3D (multi-view) fit. A term is kept only if it improves held-out results without adding confident errors.
+
+**Data and protocol:**
+- Only the `front_on_stump` rig of cricket-synth has rendered labels (405 clips; the upstream repository has 410 label files). The manifests also describe 300 clips for other rigs, but those were never rendered.
+- For the multi-view experiment, the same simulated 3D tracks are re-projected through manifest `side_on` cameras (exact projections, 1 px noise).
+- **Tuning** used clips 0–119. **Final numbers** use clips 240–404, which no earlier tuning touched.
+- True per-delivery drag coefficients come from the manifests: Cd 0.38–0.52, median 0.45, against the fixed 0.40 the model assumes.
+- Script: `scripts/evaluate_physics_refinement.py`; output: `outputs/reports/physics_refinement_synth.json`.
+- **Prior choice:** the Cd prior N(0.40, 0.10) is deliberately not centred on the simulator's median. Published cricket-ball drag data show considerable scatter, and the prior should not encode this simulator.
+
+**1. Single camera (LBW benchmark protocol of §2), held out, n = 165:**
+
+| Variant | Projected | Stump-plane median / p90 | 90% coverage | Inconclusive | Definite (all correct) | Hits confirmed |
+|---|---|---|---|---|---|---|
+| **fixed drag (default, unchanged)** | 152 | 7.0 / 36.6 cm | 0.82 | 0.41 | 97 | 3 / 22 |
+| fitted drag, Cd ~ N(0.40, 0.10) | 153 | 6.8 / 36.9 cm | 0.81 | 0.42 | 95 | 3 / 22 |
+| separate post-bounce lateral term | 162 | 6.2 / 30.6 cm | 0.85 | 0.45 | 90 | 2 / 22 |
+| both | 162 | 6.2 / 30.5 cm | 0.85 | 0.47 | 87 | 1 / 22 |
+
+- **Drag is not identifiable from one 60 fps camera.** The posterior sd of Cd is 0.099 against the prior's 0.10 (ratio about 0.99). The fitted value stays at the prior (bias −0.045 against the true Cd) and only adds uncertainty.
+- **The separate post-bounce term** lowers the error and raises coverage, but gives fewer definite verdicts and fewer confirmed hits. **Neither is enabled by default.** Both remain available as options: `drag_cd_prior` and `swing_post_prior_sigma` in `fit_to_pixels`.
+- **Coverage below nominal:** this held-out set's 90%-interval coverage (0.82) is lower than the 0.87 measured on clips 120–239.
+
+**2. 3D fit on ground-truth positions + 1 cm noise (multi-view quality), held out, n = 165, stump-plane error median / p90:**
+
+| drag only (previous multi-view model) | + swing | + swing + lift | + swing + lift + fitted drag |
+|---|---|---|---|
+| 7.7 / 32.3 cm | 5.7 / 23.9 cm | **5.4 / 17.7 cm** | 5.5 / 20.3 cm |
+
+- With 3D data, drag *is* identifiable: the posterior/prior sd ratio is 0.28–0.37 (exploratory run, tuning clips 0–59), with a Cd error of about 0.03.
+- Fitting drag still does not improve the stump-plane prediction. Drag mainly changes timing along the pitch, not where the ball crosses the stump plane.
+
+**3. Multi-view LBW (front-on + side-on, hardware sync, 60 fps), held out, n = 165:**
+
+| Variant | Definite (correct) | Confident errors | 90% coverage | Inconclusive | Hits confirmed | Stump-plane median / p90 |
+|---|---|---|---|---|---|---|
+| drag only, inflation ×2 (previous default) | 131 (129) | **2 false misses** | 0.26 | 0.21 | 13 / 22 | 6.7 / 28.8 cm |
+| + swing + lift, ×2 | 137 (136) | 1 false hit | 0.52 | 0.17 | 16 / 22 | 5.2 / 19.9 cm |
+| **+ swing + lift, ×8 (new default)** | 118 (118) | **0** | 0.84 | 0.29 | 10 / 22 | 5.2 / 19.9 cm |
+
+- **The confident errors were 8–11 cm misses with intervals only about 4 cm wide.** The balls were near bail height and bounced off a friction-and-spin pitch model. The drag-only fit's uncertainty did not cover model misspecification: its "90%" intervals contained the truth 26% of the time.
+- **Choosing the inflation:** it was set on clips 0–119 to the smallest value reaching about 90% coverage.
+
+  | Inflation | 2 | 4 | 8 | 16 |
+  |---|---|---|---|---|
+  | Coverage | 0.62 | 0.78 | 0.90 | 0.97 |
+  | Definite verdicts (all correct) | 105 | 102 | 96 | 86 |
+
+- **Cost of the change:** fewer definite verdicts and confirmed hits, here (131 → 118, 13 → 10 of 22) and on §10's drag-only deliveries (54 → 47, 18 → 13 of 22).
+- **Why it is accepted anyway:** a review aid that is wrong with high confidence is worse than one that defers.
+- **Remaining gap:** held-out coverage is 0.84, slightly below nominal, so a residual risk of overconfidence remains.
+
+**Changes made:**
+- `MultiViewConfig` now defaults to swing (prior σ 2 m/s²), lift (σ 3 m/s²) and covariance inflation ×8 (`configs/lbw.yaml` › `multiview`).
+- `fit_to_points` gained optional `swing_prior_sigma`, `lift_prior_sigma` and `drag_cd_prior`, all requiring per-point sigmas.
+- `fit_to_pixels` gained optional `drag_cd_prior` and `swing_post_prior_sigma`, both off by default.
+- The single-camera defaults are unchanged.
+
+**Synthetic only.** These results say which model terms help against one simulator's physics with exact cameras. They are not evidence of real-world accuracy.
 
 ## 6. Not measured (no ground truth available)
 

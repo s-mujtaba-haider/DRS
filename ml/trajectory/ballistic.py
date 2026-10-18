@@ -34,16 +34,32 @@ WEAK_PRIOR_SIGMA = 100.0
 # (rho 1.225 kg/m^3, Cd ~0.4, radius 3.6 cm, mass 0.16 kg) -> ~0.0062 1/m.
 # Deceleration ~ c * v^2 (about 9 m/s^2 at 140 km/h). Cd varies with seam, wear and speed.
 DEFAULT_DRAG_C = 1.225 * 0.4 * np.pi * 0.036**2 / (2 * 0.16)
+C_PER_CD = DEFAULT_DRAG_C / 0.4  # drag_c per unit drag coefficient
+
+
+def drag_identifiability(fit: FlightFit, prior_sigma_c: float) -> dict | None:
+    """How much the observations constrained a fitted drag coefficient (posterior vs prior sd)."""
+    m = fit.model
+    if not m.drag_free:
+        return None
+    sd = float(np.sqrt(max(fit.cov[-1, -1], 0.0)))
+    ratio = sd / prior_sigma_c if prior_sigma_c > 0 else float("nan")
+    return {"cd": m.drag_c_eff / C_PER_CD, "cd_sigma": sd / C_PER_CD, "posterior_to_prior_sd": ratio,
+            "identified": bool(ratio < 0.5)}
 
 
 @dataclass
 class FlightModel:
     """Piecewise flight model.
 
-    theta = [p0(3), v0(3)] (+ [v1(3)] when bounce) (+ [a_swing] when swing) (+ [a_lift] when lift).
+    theta = [p0(3), v0(3)] (+ [v1(3)] when bounce) (+ [a_swing] when swing) (+ [a_lift] when lift)
+            (+ [a_swing_post] when swing_post) (+ [drag_c] when drag_free).
     Drag is approximated per segment as linear drag with k = drag_k + drag_c * |v_segment_start|.
     ``a_lift`` / ``a_swing`` are extra constant vertical / lateral (x) accelerations (Magnus, seam swing,
-    drift), each fitted with a zero-mean prior.
+    drift), each fitted with a zero-mean prior. With ``swing_post`` the lateral acceleration after the
+    bounce is a separate parameter (spin/seam orientation changes at the bounce); otherwise ``a_swing``
+    applies to both segments. With ``drag_free`` the quadratic-drag coefficient is a fitted parameter
+    (with a prior) instead of the fixed ``drag_c``.
     """
 
     theta: np.ndarray
@@ -54,6 +70,8 @@ class FlightModel:
     drag_c: float = 0.0  # 1/m, quadratic-drag coefficient (linearised per segment)
     lift: bool = False
     swing: bool = False
+    swing_post: bool = False
+    drag_free: bool = False
     _tb_cache: tuple | None = field(default=None, init=False, repr=False, compare=False)
 
     @property
@@ -68,12 +86,25 @@ class FlightModel:
     def a_lift(self) -> float:
         return float(self.theta[self._n_base + int(self.swing)]) if self.lift else 0.0
 
-    def _k(self, v) -> float:
-        return self.drag_k + self.drag_c * float(np.linalg.norm(v))
+    @property
+    def a_swing_post(self) -> float:
+        """Lateral acceleration after the bounce (equals ``a_swing`` unless ``swing_post``)."""
+        if self.swing_post:
+            return float(self.theta[self._n_base + int(self.swing) + int(self.lift)])
+        return self.a_swing
 
-    def _free(self, p, v, tau):
+    @property
+    def drag_c_eff(self) -> float:
+        if self.drag_free:
+            return max(float(self.theta[-1]), 0.0)
+        return self.drag_c
+
+    def _k(self, v) -> float:
+        return self.drag_k + self.drag_c_eff * float(np.linalg.norm(v))
+
+    def _free(self, p, v, tau, post: bool = False):
         tau = np.asarray(tau, dtype=float)[..., None]
-        g = np.array([self.a_swing, 0.0, -G + self.a_lift])
+        g = np.array([self.a_swing_post if post else self.a_swing, 0.0, -G + self.a_lift])
         k = self._k(v)
         if k <= 1e-9:
             return p + v * tau + 0.5 * g * tau**2, v + g * tau
@@ -87,7 +118,8 @@ class FlightModel:
             return None
         # Cached per parameter vector: position() needs it on every call and the root search dominates
         # Monte Carlo cost. The key covers every input, so in-place edits to theta cannot return stale values.
-        key = (self.theta.tobytes(), self.t0, self.ball_radius, self.drag_k, self.drag_c)
+        key = (self.theta.tobytes(), self.t0, self.ball_radius, self.drag_k, self.drag_c, self.swing, self.lift,
+               self.swing_post, self.drag_free)
         if self._tb_cache is not None and self._tb_cache[0] == key:
             return self._tb_cache[1]
         tb = self._solve_bounce_time()
@@ -120,7 +152,7 @@ class FlightModel:
             pb, _ = self._free(p0, v0, tb - self.t0)
             after = t > tb
             if np.any(after):
-                pa, va = self._free(pb, self.theta[6:9], t[after] - tb)
+                pa, va = self._free(pb, self.theta[6:9], t[after] - tb, post=True)
                 pos[after], vel[after] = pa, va
         return pos, vel
 
@@ -132,7 +164,7 @@ class FlightModel:
 
     def with_theta(self, theta) -> FlightModel:
         return FlightModel(np.asarray(theta, float), self.t0, self.bounce, self.ball_radius, self.drag_k, self.drag_c, self.lift,
-                           self.swing)
+                           self.swing, self.swing_post, self.drag_free)
 
 
 @dataclass
@@ -167,7 +199,9 @@ class FlightFit:
             "status": self.status, "mode": self.mode, "bounce": self.model.bounce,
             "bounce_time_s": tb, "residual_rms": self.residual_rms, "residual_unit": self.residual_unit,
             "condition_number": self.condition_number, "num_observations": self.num_observations,
-            "drag_k": self.model.drag_k, "drag_c": self.model.drag_c, "a_lift": self.model.a_lift, "a_swing": self.model.a_swing, "reasons": self.reasons, "alternatives_bic": self.alternatives,
+            "drag_k": self.model.drag_k, "drag_c": self.model.drag_c_eff, "drag_fitted": self.model.drag_free,
+            "a_lift": self.model.a_lift, "a_swing": self.model.a_swing, "a_swing_post": self.model.a_swing_post,
+            "reasons": self.reasons, "alternatives_bic": self.alternatives,
             "theta": self.model.theta.tolist(), "theta_sigma": np.sqrt(np.clip(np.diag(self.cov), 0, None)).tolist(),
         }
 
@@ -201,13 +235,18 @@ def _bic(cost: float, n: int, k: int) -> float:
 
 def fit_to_points(t: np.ndarray, X: np.ndarray, sigma_m: np.ndarray | None = None, ball_radius: float = 0.0364,
                   drag_k: float = 0.0, allow_bounce: bool = True, min_points: int = 6, max_rms_m: float = 0.05,
-                  drag_c: float = 0.0, force_bounce: bool | None = None, t0: float | None = None) -> FlightFit:
+                  drag_c: float = 0.0, force_bounce: bool | None = None, t0: float | None = None,
+                  drag_cd_prior: tuple[float, float] | None = None, swing_prior_sigma: float | None = None,
+                  lift_prior_sigma: float | None = None) -> FlightFit:
     """Fit the flight model to 3D points (multi-view reconstruction).
 
     ``sigma_m`` (per point) whitens the residuals; the parameter covariance is then scaled by the reduced
     chi-square but never below the stated sigmas, and the reported RMS is converted back to metres.
     ``force_bounce`` fits only the bounce (True) or no-bounce (False) model instead of choosing by BIC.
     ``t0`` fixes the parameter time origin (default: first point), so fits of perturbed data are comparable.
+    ``drag_cd_prior`` = (mean, sd) of Cd fits the drag coefficient per delivery instead of the fixed ``drag_c``.
+    ``swing_prior_sigma`` / ``lift_prior_sigma`` add the constant lateral / vertical accelerations of the
+    monocular model (zero-mean priors, m/s^2). All three need ``sigma_m`` so priors and data share units.
     """
     t, X = np.asarray(t, float), np.asarray(X, float)
     n = len(t)
@@ -222,17 +261,28 @@ def fit_to_points(t: np.ndarray, X: np.ndarray, sigma_m: np.ndarray | None = Non
     p0, v0 = sol[0], sol[1]
     fits = {}
     options = [force_bounce] if force_bounce is not None else ([False, True] if allow_bounce else [False])
+    drag_free = drag_cd_prior is not None
+    swing, lift = swing_prior_sigma is not None, lift_prior_sigma is not None
+    if (drag_free or swing or lift) and sigma_m is None:
+        raise ValueError("priors (drag/swing/lift) need per-point sigma_m so the prior and the data are weighted consistently")
+    mu_c = drag_cd_prior[0] * C_PER_CD if drag_free else 0.0
+    sd_c = drag_cd_prior[1] * C_PER_CD if drag_free else 1.0
     for bounce in options:
-        theta0 = np.concatenate([p0, v0] + ([v0 * np.array([1, 1, -0.6])] if bounce else []))
+        theta0 = np.concatenate([p0, v0] + ([v0 * np.array([1, 1, -0.6])] if bounce else []) + ([[0.0]] if swing else [])
+                                + ([[0.0]] if lift else []) + ([[mu_c]] if drag_free else []))
+        n_res = 3 * n + int(drag_free) + int(swing) + int(lift)
+        priors = drag_free or swing or lift
 
-        def resid(th, bounce=bounce):
-            m = FlightModel(th, t0, bounce, ball_radius, drag_k, drag_c)
+        def resid(th, bounce=bounce, n_res=n_res):
+            m = FlightModel(th, t0, bounce, ball_radius, drag_k, drag_c, lift=lift, swing=swing, drag_free=drag_free)
             if bounce and m.bounce_time() is None:
-                return np.full(3 * n, 1e3)
-            return ((m.position(t) - X) * w[:, None]).ravel()
+                return np.full(n_res, 1e3)
+            r = ((m.position(t) - X) * w[:, None]).ravel()
+            extra = ([m.a_swing / swing_prior_sigma] if swing else []) + ([m.a_lift / lift_prior_sigma] if lift else [])                 + ([(th[-1] - mu_c) / sd_c] if drag_free else [])
+            return np.append(r, extra) if extra else r
 
-        res = least_squares(resid, theta0, method="lm", x_scale="jac", max_nfev=4000)
-        model = FlightModel(res.x, t0, bounce, ball_radius, drag_k, drag_c)
+        res = least_squares(resid, theta0, method="trf" if priors else "lm", x_scale="jac", max_nfev=4000)
+        model = FlightModel(res.x, t0, bounce, ball_radius, drag_k, drag_c, lift=lift, swing=swing, drag_free=drag_free)
         if bounce and model.bounce_time() is None:
             continue
         fits["bounce" if bounce else "no_bounce"] = (res, model)
@@ -247,6 +297,10 @@ def fit_to_points(t: np.ndarray, X: np.ndarray, sigma_m: np.ndarray | None = Non
                       resid_scale=float(np.sqrt(np.mean(np.asarray(sigma_m, float) ** 2))))
     out.alternatives = {k: _bic(r.cost, 3 * n, len(m.theta)) for k, (r, m) in fits.items()}
     out.reasons.insert(0, f"Selected {best_name} model by BIC")
+    if drag_free:
+        info = drag_identifiability(out, sd_c)
+        out.reasons.append(f"Drag fitted per delivery: Cd {info['cd']:.3f} +/- {info['cd_sigma']:.3f} "
+                           f"({'constrained by the data' if info['identified'] else 'weakly identified, prior dominates'})")
     return out
 
 
@@ -280,13 +334,18 @@ def fit_to_pixels(cam: CameraModel, t: np.ndarray, uv: np.ndarray, sigma_px: flo
                   max_rms_px: float = 4.0, radius_px: np.ndarray | None = None, radius_sigma_px: float = 0.75,
                   bounce_retention_prior: tuple[float, float] | None = DEFAULT_BOUNCE_RETENTION,
                   drag_c: float = DEFAULT_DRAG_C, lift_prior_sigma: float | None = 3.0,
-                  swing_prior_sigma: float | None = 2.0) -> FlightFit:
+                  swing_prior_sigma: float | None = 2.0, drag_cd_prior: tuple[float, float] | None = None,
+                  swing_post_prior_sigma: float | None = None) -> FlightFit:
     """Monocular, physics-constrained reconstruction (APPROXIMATE).
 
     Depth information comes from (a) gravity, (b) the ground-contact constraint at the
     bounce, (c) optionally the apparent ball radius in pixels (depth = f * r / r_px) and
     (d) optionally a weak prior on along-pitch speed retained through the bounce.
     Each source that is used is listed in the returned reasons.
+
+    Optional refinements (off by default; see docs/EVALUATION.md section 13):
+    ``drag_cd_prior`` = (mean, sd) of the drag coefficient Cd fits drag per delivery instead of using
+    ``drag_c``; ``swing_post_prior_sigma`` gives the post-bounce lateral acceleration its own parameter.
     """
     t, uv = np.asarray(t, float), np.asarray(uv, float)
     n = len(t)
@@ -307,9 +366,13 @@ def fit_to_pixels(cam: CameraModel, t: np.ndarray, uv: np.ndarray, sigma_px: flo
 
     lift = lift_prior_sigma is not None
     swing = swing_prior_sigma is not None
+    drag_free = drag_cd_prior is not None
+    drag_mu_c = drag_cd_prior[0] * C_PER_CD if drag_free else drag_c
+    drag_sd_c = drag_cd_prior[1] * C_PER_CD if drag_free else 0.0
 
     def resid_parts(th, bounce):
-        m = FlightModel(th, t0, bounce, ball_radius, drag_k, drag_c, lift, swing)
+        sp = bounce and swing_post_prior_sigma is not None
+        m = FlightModel(th, t0, bounce, ball_radius, drag_k, drag_c, lift, swing, sp, drag_free)
         if bounce and m.bounce_time() is None:
             return None
         X = m.position(t)
@@ -329,12 +392,18 @@ def fit_to_pixels(cam: CameraModel, t: np.ndarray, uv: np.ndarray, sigma_px: flo
             parts.append(np.array([m.a_swing / swing_prior_sigma]))
         if lift:
             parts.append(np.array([m.a_lift / lift_prior_sigma]))
+        if sp:
+            parts.append(np.array([m.a_swing_post / swing_post_prior_sigma]))
+        if drag_free:
+            parts.append(np.array([(th[-1] - drag_mu_c) / drag_sd_c]))
         return parts
 
     n_extra = n if rad is not None else 0
     fits = {}
     for bounce in ([False, True] if allow_bounce else [False]):
-        n_res = 2 * n + n_extra + (1 if bounce and bounce_retention_prior else 0) + (1 if lift else 0) + (1 if swing else 0)
+        sp = bounce and swing_post_prior_sigma is not None
+        n_res = (2 * n + n_extra + (1 if bounce and bounce_retention_prior else 0) + (1 if lift else 0) + (1 if swing else 0)
+                 + (1 if sp else 0) + (1 if drag_free else 0))
 
         def resid(th, bounce=bounce, n_res=n_res):
             parts = resid_parts(th, bounce)
@@ -354,7 +423,8 @@ def fit_to_pixels(cam: CameraModel, t: np.ndarray, uv: np.ndarray, sigma_px: flo
             dt = max(t[k_end] - t0, 1e-3)
             v0 = (b - a) / dt
             v0[2] += 0.5 * G * dt  # undo gravity drop over the interval
-            theta0 = np.concatenate([a, v0] + ([v0 * np.array([1, 0.8, -0.5])] if bounce else []) + ([[0.0]] if swing else []) + ([[0.0]] if lift else []))
+            theta0 = np.concatenate([a, v0] + ([v0 * np.array([1, 0.8, -0.5])] if bounce else []) + ([[0.0]] if swing else [])
+                                    + ([[0.0]] if lift else []) + ([[0.0]] if sp else []) + ([[drag_mu_c]] if drag_free else []))
             try:
                 res = least_squares(resid, theta0, method="trf", x_scale="jac", max_nfev=3000)
             except (ValueError, np.linalg.LinAlgError):
@@ -363,7 +433,7 @@ def fit_to_pixels(cam: CameraModel, t: np.ndarray, uv: np.ndarray, sigma_px: flo
                 best = res
         if best is None:
             continue
-        model = FlightModel(best.x, t0, bounce, ball_radius, drag_k, drag_c, lift, swing)
+        model = FlightModel(best.x, t0, bounce, ball_radius, drag_k, drag_c, lift, swing, sp, drag_free)
         if bounce and model.bounce_time() is None:
             continue
         fits["bounce" if bounce else "no_bounce"] = (best, model)
@@ -390,8 +460,16 @@ def fit_to_pixels(cam: CameraModel, t: np.ndarray, uv: np.ndarray, sigma_px: flo
         out.reasons.append(f"Apparent ball radius used as a depth cue (sigma {radius_sigma_px}px)")
     if best_name == "bounce" and bounce_retention_prior is not None:
         out.reasons.append("Assumption: along-pitch speed retention through bounce ~ N({:.2f}, {:.2f})".format(*bounce_retention_prior))
-    if drag_c:
+    if drag_free:
+        info = drag_identifiability(out, drag_sd_c)
+        out.reasons.append(f"Drag fitted per delivery: Cd {info['cd']:.3f} +/- {info['cd_sigma']:.3f} "
+                           f"(prior {drag_cd_prior[0]} +/- {drag_cd_prior[1]}; "
+                           f"{'constrained by the data' if info['identified'] else 'weakly identified, prior dominates'})")
+    elif drag_c:
         out.reasons.append(f"Aerodynamic drag modelled with fixed coefficient c={drag_c:.4f}/m (Cd~0.4 assumed)")
+    if model.swing_post:
+        out.reasons.append(f"Post-bounce lateral acceleration fitted separately: {model.a_swing_post:.2f} m/s^2 "
+                           f"(prior 0 +/- {swing_post_prior_sigma})")
     if swing:
         out.reasons.append(f"Lateral swing/drift acceleration fitted: {model.a_swing:.2f} m/s^2 (prior 0 +/- {swing_prior_sigma})")
     if lift:

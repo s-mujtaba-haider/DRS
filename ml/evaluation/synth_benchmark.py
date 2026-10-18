@@ -52,6 +52,10 @@ class ClipResult:
     verdict: str | None = None
     p_hit: float | None = None
     projection_distance_m: float | None = None
+    true_cd: float | None = None
+    fitted_cd: float | None = None
+    fitted_cd_sigma: float | None = None
+    model_selected: str | None = None
     notes: list[str] = field(default_factory=list)
 
 
@@ -84,9 +88,10 @@ def true_crossing(times: np.ndarray, X: np.ndarray) -> tuple[float, np.ndarray] 
 
 def evaluate_clip(d: dict, impact_y: float = 1.5, pixel_noise: float = 1.0, seed: int = 0,
                   lbw_cfg: LbwConfig | None = None, use_radius: bool = True, radius_noise: float = 0.5,
-                  use_prior: bool = True, swing_sigma: float | None = None) -> ClipResult:
+                  use_prior: bool = True, swing_sigma: float | None = None, fit_kwargs: dict | None = None,
+                  true_cd: float | None = None, camera: CameraModel | None = None) -> ClipResult:
     rig = d["camera"]["rig"]
-    res = ClipResult(d["clip_id"], rig, "ok")
+    res = ClipResult(d["clip_id"], rig, "ok", true_cd=true_cd)
     frames = [f for f in d["frames"] if f["ball_in_scene"] and f["world_m"] is not None]
     if not frames:
         res.status = "no_ball_frames"
@@ -120,7 +125,7 @@ def evaluate_clip(d: dict, impact_y: float = 1.5, pixel_noise: float = 1.0, seed
     rng = np.random.default_rng(seed)
     uv = np.array([frames[i]["centre_px"] for i in before], float)
     uv = uv + rng.normal(0, pixel_noise, uv.shape) if pixel_noise > 0 else uv
-    cam = camera_from_clip(d)
+    cam = camera or camera_from_clip(d)
     radius = None
     if use_radius:
         radius = np.array([frames[i]["radius_px"] or np.nan for i in before], float)
@@ -129,11 +134,17 @@ def evaluate_clip(d: dict, impact_y: float = 1.5, pixel_noise: float = 1.0, seed
         fit = fit_to_pixels(cam, t[before], uv, sigma_px=max(pixel_noise, 0.5), ball_radius=r, radius_px=radius,
                             radius_sigma_px=max(radius_noise, 0.25),
                             bounce_retention_prior=(0.8, 0.15) if use_prior else None,
-                            swing_prior_sigma=swing_sigma)
+                            swing_prior_sigma=swing_sigma, **(fit_kwargs or {}))
     except InsufficientObservations as exc:
         res.status = "insufficient_observations"
         res.notes.append(str(exc))
         return res
+    res.model_selected = "bounce" if fit.model.bounce else "no_bounce"
+    if fit.model.drag_free:
+        from ml.trajectory.ballistic import C_PER_CD
+
+        res.fitted_cd = fit.model.drag_c_eff / C_PER_CD
+        res.fitted_cd_sigma = float(np.sqrt(max(fit.cov[-1, -1], 0.0))) / C_PER_CD
     out = analyze_lbw(fit, LbwFacts(), lbw_cfg or LbwConfig(n_samples=500), impact_time_s=t_imp,
                       calibration_validated=True)
     res.verdict = out.verdict.value
@@ -181,4 +192,60 @@ def summarize(results: list[ClipResult]) -> dict:
         "false_hit": sum(1 for r in definite if r.verdict == LbwVerdict.PROJECTED_TO_HIT.value and not r.true_hit),
         "false_miss": sum(1 for r in definite if r.verdict == LbwVerdict.PROJECTED_TO_MISS.value and r.true_hit),
         "by_rig": {rig: sum(1 for r in results if r.rig == rig) for rig in sorted({r.rig for r in results})},
+        "true_hits": sum(1 for r in verdicts if r.true_hit),
+        "true_hits_confirmed": sum(1 for r in verdicts if r.true_hit and r.verdict == LbwVerdict.PROJECTED_TO_HIT.value),
+        "drag_fit": _drag_summary(results),
     }
+
+
+def _drag_summary(results: list[ClipResult]) -> dict | None:
+    rows = [r for r in results if r.fitted_cd is not None and r.true_cd is not None]
+    if not rows:
+        return None
+    err = np.array([r.fitted_cd - r.true_cd for r in rows])
+    sd = np.array([r.fitted_cd_sigma for r in rows])
+    return {"n": len(rows), "cd_error_median_abs": float(np.median(np.abs(err))), "cd_bias": float(np.mean(err)),
+            "posterior_sd_median": float(np.median(sd)),
+            "within_2sd": float(np.mean(np.abs(err) <= 2 * sd))}
+
+
+def manifest_camera(row: dict) -> CameraModel:
+    """Camera of a cricket-synth manifest row (position, look-at, lens) in the DRS pitch frame.
+
+    Only the front-on rig has rendered labels; this lets the same simulated 3D trajectories be
+    re-projected into the other rigs' cameras. Camera roll (< 1 degree in the manifests) is ignored.
+    """
+    from ml.calibration.camera import look_at_camera
+
+    pos = np.asarray(row["cam_pos"], float) + np.array([0.0, HALF_L, 0.0])
+    look = np.asarray(row["cam_look"], float) + np.array([0.0, HALF_L, 0.0])
+    f_px = row["lens_mm"] / row["sensor_mm"] * row["res_x"]
+    cam = look_at_camera(f"synth:{row['camera']}:{row['clip_id']}", pos, look, f_px, row["res_x"], row["res_y"])
+    cam.validated = True
+    cam.assumptions = [f"Synthetic {row['camera']} camera from the cricket-synth manifest (exact)"]
+    cam.time_offset_ms = 0.0
+    return cam.model_copy(update={"camera_id": f"{row['camera']}@{row['fps']}"})
+
+
+def reproject_clip(d: dict, cam: CameraModel, rig: str) -> dict:
+    """Same simulated trajectory seen by ``cam``: exact projections, apparent radius, and the rig's frame rate.
+
+    Occlusion by players is not modelled (the original renders have no players either)."""
+    fps = int(str(cam.camera_id).rsplit("@", 1)[-1]) if "@" in cam.camera_id else d["fps"]
+    step = max(1, round(d["fps"] / fps))
+    out = {**d, "camera": {**d["camera"], "rig": rig}, "frames": []}
+    f_px = cam.K_np[0, 0]
+    for k, f in enumerate(d["frames"]):
+        if k % step:
+            continue
+        g = dict(f)
+        if f["world_m"] is not None:
+            X = np.asarray(f["world_m"], float) + np.array([0.0, HALF_L, 0.0])
+            depth = float((cam.R_np @ X + cam.t_np)[2])
+            uv = cam.project(X[None])[0] if depth > 0.1 else None
+            inside = uv is not None and 0 <= uv[0] < cam.image_width and 0 <= uv[1] < cam.image_height
+            g["centre_px"] = uv.tolist() if inside else None
+            g["radius_px"] = float(f_px * d["ball_radius_m"] / depth) if inside else None
+            g["visible"] = bool(inside)
+        out["frames"].append(g)
+    return out

@@ -49,6 +49,15 @@ class MultiViewConfig(BaseModel):
     max_sync_position_error_m: float = 0.03
     outlier_sigma: float = 4.0
     use_drag: bool = True
+    # Constant lateral (swing/drift) and vertical (lift) accelerations with zero-mean priors (m/s^2), as in
+    # the single-camera model; None = not modelled. On cricket-synth (richer physics: Magnus, seam, friction
+    # bounce) the drag-only fit made confident errors with 90% intervals covering 26% of truths; these terms
+    # plus a covariance inflation calibrated to ~90% coverage on clips 0-119 removed them on held-out clips
+    # (docs/EVALUATION.md section 13).
+    swing_prior_sigma: float | None = 2.0
+    lift_prior_sigma: float | None = 3.0
+    # Multi-view fits have a different error structure from monocular ones; None = use LbwConfig's.
+    covariance_inflation: float | None = 8.0
 
 
 class MultiViewDiagnostics(BaseModel):
@@ -125,15 +134,16 @@ def _reconstruct_and_fit(views, offsets, ref, mv, t_max_ms, force_bounce=None, t
     sig = np.array([max(math.sqrt(max(np.trace(np.array(p.cov)) / 3, 0.0)), mv.point_sigma_floor_m) for p in pts])
     drag_c = DEFAULT_DRAG_C if mv.use_drag else 0.0
     ball_r = BallSpec().radius_m
+    forces = dict(swing_prior_sigma=mv.swing_prior_sigma, lift_prior_sigma=mv.lift_prior_sigma)
     fit = fit_to_points(t, X, sig, ball_radius=ball_r, drag_c=drag_c, min_points=mv.min_points, force_bounce=force_bounce,
-                        t0=t0)
+                        t0=t0, **forces)
     keep = np.ones(len(t), bool)
     r = np.linalg.norm(fit.model.position(t) - X, axis=1)
     bad = (r > mv.outlier_sigma * sig) & (r > 3 * np.median(r))
     if bad.any() and (~bad).sum() >= mv.min_points:
         keep = ~bad
         fit = fit_to_points(t[keep], X[keep], sig[keep], ball_radius=ball_r, drag_c=drag_c, min_points=mv.min_points,
-                            force_bounce=fit.model.bounce if force_bounce is None else force_bounce, t0=fit.model.t0)
+                            force_bounce=fit.model.bounce if force_bounce is None else force_bounce, t0=fit.model.t0, **forces)
     return fit, rec, keep, n_interp
 
 
@@ -143,6 +153,8 @@ def analyze_lbw_multiview(views: list[ViewObservations], facts: LbwFacts, config
     """LBW from two or more calibrated, time-aligned cameras. ``impact_time_ms`` is on the shared clock."""
     cfg = config or LbwConfig()
     mv = mv or MultiViewConfig()
+    if mv.covariance_inflation is not None:
+        cfg = cfg.model_copy(update={"covariance_inflation": mv.covariance_inflation})
     usable = [v for v in views if len(v.t_ms) >= 3 and len(v.t_ms) == len(v.uv)]
     if len(usable) < 2:
         res = analyze_lbw(None, facts, cfg)

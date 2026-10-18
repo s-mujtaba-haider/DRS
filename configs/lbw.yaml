@@ -19,4 +19,7 @@ multiview:
   min_points: 6
   point_sigma_floor_m: 0.005
   outlier_sigma: 4.0
+  swing_prior_sigma: 2.0           # lateral swing/drift acceleration prior (m/s^2); docs/EVALUATION.md section 13
+  lift_prior_sigma: 3.0            # vertical lift acceleration prior (m/s^2)
+  covariance_inflation: 8.0        # multi-view only: ~90% interval coverage on cricket-synth clips 0-119
   use_drag: true
