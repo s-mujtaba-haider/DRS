@@ -42,7 +42,8 @@ These limitations are measured or known. They are not hypothetical.
 - These are synthetic results with an exactly known camera. Real calibration error, detector noise and motion blur will make results worse.
 
 ## Uncertainty calibration
-- The covariance inflation factor (×2, with the swing model) was tuned to reach about 90% interval coverage on one set of 120 synthetic clips. On a separate 120 clips coverage was 0.87.
+- **Single camera:** the covariance inflation factor (×2, with the swing model) was tuned to reach about 90% interval coverage on one set of 120 synthetic clips. On a second set of 120 clips coverage was 0.87, and on a third held-out set of 165 clips it was 0.82, so the intervals are somewhat too narrow.
+- **Multi-camera:** inflation is ×8 with swing and lift terms. Held-out coverage is 0.84 with 0 confident errors. The earlier ×2 drag-only default had a coverage of 0.26 and made confident errors (`EVALUATION.md` section 13).
 - It has not been validated on real deliveries.
 
 ## Rules layer
