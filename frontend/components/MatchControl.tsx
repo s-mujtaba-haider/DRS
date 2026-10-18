@@ -14,6 +14,7 @@ export const DECISION_LABEL: Record<DecisionType, string> = {
   run_out: "Run out",
   stumping: "Stumped",
   boundary: "Boundary",
+  no_ball: "No-ball check",
   other: "Other",
 };
 export function outcomeTone(o: string | null | undefined): Tone {
@@ -178,7 +179,7 @@ export default function MatchControl({ id }: { id: string }) {
                 </select>
               </label>
               <div className="flex flex-wrap gap-1">
-                {(Object.keys(DECISION_LABEL) as DecisionType[]).filter((d) => umpireRef || d !== "boundary").map((d) => (
+                {(Object.keys(DECISION_LABEL) as DecisionType[]).filter((d) => umpireRef || (d !== "boundary" && d !== "no_ball")).map((d) => (
                   <button type="button" key={d} onClick={() => setF({ ...f, decision_type: d })}
                     className={`rounded border px-2.5 py-1 ${f.decision_type === d ? "border-accent bg-accent/15 text-accent" : "border-line bg-panel-2 text-muted"}`}>
                     {DECISION_LABEL[d]}

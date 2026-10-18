@@ -24,11 +24,12 @@ from backend.app.database.models import DecisionAnalysis, LbwAnalysis, Match, Re
 
 router = APIRouter(prefix="/api", tags=["matches"])
 
-DecisionType = Literal["lbw", "caught", "run_out", "stumping", "boundary", "other"]
+DecisionType = Literal["lbw", "caught", "run_out", "stumping", "boundary", "no_ball", "other"]
 EVIDENCE_TYPES = {"lbw": LbwAnalysis, "decision": DecisionAnalysis}
 # Which stored analysis kinds may support which decision type.
-EVIDENCE_FOR = {"lbw": {"lbw", "contact", "audio_contact"}, "caught": {"contact", "catch", "audio_contact"}, "run_out": {"run_out", "wicket_break"},
-                "stumping": {"stumping", "wicket_break"}, "boundary": {"boundary", "catch"}, "other": None}
+EVIDENCE_FOR = {"lbw": {"lbw", "contact", "audio_contact", "no_ball"}, "caught": {"contact", "catch", "audio_contact", "no_ball"},
+                "run_out": {"run_out", "wicket_break"}, "stumping": {"stumping", "wicket_break", "no_ball"},
+                "no_ball": {"no_ball"}, "boundary": {"boundary", "catch"}, "other": None}
 
 
 @lru_cache
@@ -161,8 +162,8 @@ def create_review(match_id: str, body: ReviewCreate, s: Session = Depends(db)):
             raise HTTPException(422, "requested_by must be a team in this match or 'umpire'")
         if body.on_field == "NONE":
             raise HTTPException(422, "A player review challenges an on-field decision (OUT or NOT_OUT)")
-        if body.decision_type == "boundary":
-            raise HTTPException(422, "Boundary decisions are umpire referrals, not player reviews")
+        if body.decision_type in ("boundary", "no_ball"):
+            raise HTTPException(422, f"{body.decision_type.replace('_', ' ')} checks are umpire referrals, not player reviews")
         rules = _protocol(m.protocol_id).reviews
         if not rules.player_reviews_allowed:
             raise HTTPException(409, f"Protocol {m.protocol_id} does not allow player reviews")
@@ -268,13 +269,19 @@ def _evidence_status(decision_type: str, result: dict) -> tuple[str, list[str]]:
         return status, notes
     if decision_type == "boundary":
         return {"BOUNDARY_SIX": "SIX", "BOUNDARY_FOUR": "FOUR"}.get(status, status), notes
+    if decision_type == "no_ball":
+        # A no-ball check on a dismissal: a fair delivery lets the dismissal stand (OUT), a no ball does not.
+        return {"FAIR": "OUT", "NO_BALL": "NOT_OUT"}.get(status, status), notes
     if decision_type == "caught":
         notes.append("Catch analysis covers fielding and boundary conditions only; bat contact is judged separately")
         return {"CATCH_VALID": "CAUGHT", "CATCH_INVALID": "NOT_CAUGHT"}.get(status, status), notes
     return status, notes
 
 
-PRIMARY_KIND = {"lbw": "lbw", "run_out": "run_out", "stumping": "stumping", "boundary": "boundary", "caught": "catch"}
+PRIMARY_KIND = {"lbw": "lbw", "run_out": "run_out", "stumping": "stumping", "boundary": "boundary", "caught": "catch",
+                "no_ball": "no_ball"}
+# A no ball means the striker cannot be out LBW, caught, stumped or bowled (Laws 21.18, 32-36, 39).
+NO_BALL_NULLIFIES = {"lbw", "caught", "stumping", "no_ball"}
 
 
 @router.post("/reviews/{review_id}/recommend")
@@ -308,6 +315,17 @@ def recommend(review_id: str, s: Session = Depends(db)):
         rec["evidence_id"] = obj.id
         if r.decision_type == "boundary":
             rec["boundary_status"] = obj.result.get("status")
+    nb = [e for e in r.evidence if e["kind"] == "no_ball"]
+    if nb and r.decision_type in NO_BALL_NULLIFIES and r.decision_type != "no_ball":
+        nb_obj, _ = _load_evidence(s, nb[-1]["type"], nb[-1]["id"])
+        nb_status = nb_obj.result.get("status")
+        if nb_status == "NO_BALL":
+            rec["final_decision"] = "NOT_OUT"
+            rec["outcome"] = "OVERTURNED" if r.on_field == "OUT" else "UPHELD"
+            rec["reasons"] = [*rec.get("reasons", []), "No ball (Law 21.5): the striker cannot be out "
+                              f"{r.decision_type.replace('_', ' ')} off a no ball"]
+        elif nb_status != "FAIR":
+            rec["warnings"] = [*rec.get("warnings", []), f"No-ball check is {nb_status}: the umpire must decide it"]
     rec.update(advisory=True, computed_at=datetime.now(UTC).isoformat(), software_version=_software_version())
     r.recommendation = rec
     _log(s, r.id, "recommendation", rec, "system")

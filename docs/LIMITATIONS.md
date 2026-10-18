@@ -62,6 +62,11 @@ These limitations are measured or known. They are not hypothetical.
 - Manual crease lines are measured in image pixels, so perspective makes pixel distance non-uniform in metres. Metric distances need a calibration.
 - Tested on synthetic geometry and synthetic footage only. No labelled real run-out footage was available.
 
+## No-ball check
+- Foot positions are marked by the operator at the landing frame; the frame interval limits how exactly the landing moment is found. A foot can slide after landing, so the earliest mark is used.
+- A raised heel must be marked at ground level beneath it. In a manual (pixel) crease, a point above the ground is mis-measured.
+- The middle-stump-line side condition of Law 21.5.2 and the stated mode of delivery are operator facts.
+
 ## Boundary
 - Events are marked by the operator. Rope, ball and fielder contact are not detected automatically.
 - Image-plane rope geometry is only meaningful for points on the ground. A ball or fielder in the air projects across the rope.

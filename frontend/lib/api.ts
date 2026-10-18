@@ -342,7 +342,7 @@ export interface Match {
   created_at: string;
   reviews: { current_innings: number; teams: Record<string, TeamReviewCount> };
 }
-export type DecisionType = "lbw" | "caught" | "run_out" | "stumping" | "boundary" | "other";
+export type DecisionType = "lbw" | "caught" | "run_out" | "stumping" | "boundary" | "no_ball" | "other";
 export interface EvidenceRef {
   type: "lbw" | "decision";
   id: string;
@@ -542,6 +542,7 @@ export const api = {
     ),
   labelExport: (body: Record<string, unknown>) =>
     request<{ path: string; positives: number; negatives: number; next_step: string }>("/api/labeling/export", json(body)),
+  noBallAnalyze: (body: Record<string, unknown>) => request<DecisionAnalysis>("/api/noball/analyze", json(body)),
   audioContact: (body: Record<string, unknown>) => request<DecisionAnalysis>("/api/contact/audio", json(body)),
   lbwMultiview: (body: Record<string, unknown>) => request<LbwAnalysis>("/api/lbw/multiview", json(body)),
   trackClipGroup: (group: string) => request<{ queued: Job[]; skipped: unknown[] }>(`/api/clip-groups/${group}/track`, json({})),

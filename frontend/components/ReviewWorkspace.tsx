@@ -9,6 +9,7 @@ import BoundaryWorkspace from "@/components/BoundaryWorkspace";
 import CaptureClipButton from "@/components/CaptureClipButton";
 import { DECISION_LABEL, outcomeTone } from "@/components/MatchControl";
 import MultiviewLbwPanel from "@/components/MultiviewLbwPanel";
+import NoBallWorkspace from "@/components/NoBallWorkspace";
 import ReplayMonitor from "@/components/ReplayMonitor";
 import { Badge, Button, Empty, ErrorBox, KV, Panel } from "@/components/ui";
 import { api, urls, type DecisionAnalysis, type Job, type LbwAnalysis, type Match, type Review, type Video } from "@/lib/api";
@@ -123,6 +124,9 @@ export default function ReviewWorkspace({ id }: { id: string }) {
       )}
       {(review.decision_type === "lbw" || review.decision_type === "caught") && (
         <TrackingEvidence review={review} videos={byId} onAttach={attach} readOnly={!isOpen} />
+      )}
+      {video && ["no_ball", "lbw", "caught", "stumping"].includes(review.decision_type) && (
+        <NoBallWorkspace key={`nb-${video.id}`} video={video} readOnly={!isOpen} onAnalysis={(a) => attach("decision", a.id)} />
       )}
       {video && (review.decision_type === "caught" || review.decision_type === "lbw") && (
         <AudioEdgePanel key={`a-${video.id}`} video={video} readOnly={!isOpen} onAnalysis={(a) => attach("decision", a.id)} />

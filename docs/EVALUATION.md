@@ -359,9 +359,9 @@ An ignored 1%/frame zoom triples the error and halves the coverage of the uncert
 
 **Audio sync.** GCC-PHAT recovers a synthetic 123.375 ms offset to within 0.4 µs. File-based offsets come back within 0.2 ms, and pure noise returns `LOW_CONFIDENCE`. Not tested on real stadium audio.
 
-## 8. Run-out, stumping and boundary engines
+## 8. Run-out, stumping, no-ball and boundary engines
 
-- Covered by deterministic tests on synthetic geometry and footage: crease sign conventions at both ends, metric distance, near-line ambiguity, wicket-break detection on encoded video, timing-window logic, Law 30.1.2, Law 38/39 exceptions, Law 19 six/four, and the 2026 airborne-fielder rule.
+- Covered by deterministic tests on synthetic geometry and footage: crease sign conventions at both ends, metric distance, near-line ambiguity, wicket-break detection on encoded video, timing-window logic, Law 30.1.2, Law 38/39 exceptions, Law 19 six/four, the 2026 airborne-fielder rule, and Law 21.5 no-ball geometry (front foot behind or on the line, the near-line inconclusive case, back foot vs return crease seen from behind the bowler).
 - No labelled real footage was available, so **real-world accuracy is unknown**.
 - The engines' value is exact geometry and timing given correct marks. Their failure mode is wrong marks.
 

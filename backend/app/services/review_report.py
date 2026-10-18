@@ -84,6 +84,27 @@ def crease_frames(analysis: dict, video_path: Path) -> list[tuple[str, bytes]]:
     return out
 
 
+def no_ball_frames(analysis: dict, video_path: Path) -> list[tuple[str, bytes]]:
+    """Landing frames with the popping/return crease lines and the marked foot points."""
+    req, res = analysis["request"], analysis["result"]
+    marks = [("front", m) for m in req.get("front_marks", [])] + [("back", m) for m in req.get("back_marks", [])]
+    out = []
+    for which, m in marks[:MAX_FRAMES_PER_ANALYSIS]:
+        img = _frame(video_path, m["frame_index"])
+        if img is None:
+            continue
+        if res.get("crease_line_px"):
+            _line(img, *res["crease_line_px"], (248, 189, 56))
+        if res.get("return_crease_px"):
+            _line(img, *res["return_crease_px"], (238, 211, 34))
+        x, y = (int(round(v)) for v in m["point"])
+        cv2.circle(img, (x, y), max(5, img.shape[1] // 200), (249, 121, 232) if which == "front" else (36, 191, 251), 2, cv2.LINE_AA)
+        cap = f"frame {m['frame_index']} t={m['timestamp_ms']:.1f} ms: {which} foot ({res.get('status')})"
+        _label(img, cap)
+        out.append((cap, _png(img)))
+    return out
+
+
 def boundary_frames(analysis: dict, video_path: Path) -> list[tuple[str, bytes]]:
     req, res = analysis["request"], analysis["result"]
     rope = (req.get("rope") or {})
@@ -216,6 +237,8 @@ def build_review_report(pkg: dict, video_paths: dict[str, Path]) -> bytes:
                 frames = crease_frames(a, vp)
             elif vp is not None and kind in ("boundary", "catch"):
                 frames = boundary_frames(a, vp)
+            elif vp is not None and kind == "no_ball":
+                frames = no_ball_frames(a, vp)
         except Exception as exc:  # a missing frame never blocks the report
             story.append(Paragraph(f"Evidence frames unavailable: {exc}", small))
         for cap, png in frames:

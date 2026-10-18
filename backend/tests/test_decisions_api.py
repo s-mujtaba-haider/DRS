@@ -97,7 +97,7 @@ def test_runout_in_and_out_of_ground_and_review(client, video, match):
     rec = client.post(f"/api/reviews/{rv['id']}/recommend").json()["recommendation"]
     assert rec["final_decision"] == "OUT" and rec["evidence_id"] == out["id"] and rec["advisory"]
     pdf = client.get(f"/api/reviews/{rv['id']}/report.pdf")
-    assert pdf.status_code == 200 and pdf.content[:4] == b"%PDF" and len(pdf.content) > 20_000  # includes evidence frames
+    assert pdf.status_code == 200 and pdf.content[:4] == b"%PDF" and b"/Subtype /Image" in pdf.content  # evidence frames
 
     # Validation: crease needs both points; points must be in frame.
     bad = client.post("/api/runout/analyze", json={"video_id": video["id"], "dismissal": "run_out",
@@ -168,3 +168,29 @@ def test_audio_contact_endpoint(client, match, tmp_path):
     assert client.post(f"/api/reviews/{rv['id']}/evidence", json={"type": "decision", "id": r.json()["id"]}).status_code == 200
     silent = client.post("/api/contact/audio", json={"video_id": client.get("/api/videos").json()[-1]["id"]}).json()
     assert silent["result"]["status"] == "NO_AUDIO"
+
+
+def test_no_ball_check_nullifies_lbw(client, video, match):
+    crease = {"source": "manual", "p1": [0, 150], "p2": [319, 150], "behind_point": [160, 200], "end": "bowler"}
+    nb = client.post("/api/noball/analyze", json={"video_id": video["id"], "popping_crease": crease,
+                                                 "front_marks": [{"frame_index": 5, "timestamp_ms": 100, "point": [120, 140], "sigma_px": 1}]})
+    assert nb.status_code == 201, nb.text
+    assert nb.json()["result"]["status"] == "NO_BALL"
+    fair = client.post("/api/noball/analyze", json={"video_id": video["id"], "popping_crease": crease,
+                                                   "front_marks": [{"frame_index": 5, "timestamp_ms": 100, "point": [120, 165], "sigma_px": 1}]})
+    assert fair.json()["result"]["status"] == "FAIR"
+
+    rv = client.post(f"/api/matches/{match['id']}/reviews", json={"requested_by": "B", "decision_type": "lbw", "on_field": "OUT"}).json()
+    assert client.post(f"/api/reviews/{rv['id']}/evidence", json={"type": "decision", "id": nb.json()["id"]}).status_code == 200
+    rec = client.post(f"/api/reviews/{rv['id']}/recommend").json()["recommendation"]
+    assert rec["final_decision"] == "NOT_OUT" and rec["outcome"] == "OVERTURNED"
+    assert any("No ball" in x for x in rec["reasons"])
+    client.post(f"/api/reviews/{rv['id']}/withdraw", json={"reason": "test"})
+
+    assert client.post(f"/api/matches/{match['id']}/reviews", json={"requested_by": "A", "decision_type": "no_ball", "on_field": "OUT"}).status_code == 422
+    chk = client.post(f"/api/matches/{match['id']}/reviews", json={"requested_by": "umpire", "decision_type": "no_ball", "on_field": "OUT"}).json()
+    client.post(f"/api/reviews/{chk['id']}/evidence", json={"type": "decision", "id": fair.json()["id"]})
+    rec2 = client.post(f"/api/reviews/{chk['id']}/recommend").json()["recommendation"]
+    assert rec2["final_decision"] == "OUT"  # fair delivery: the dismissal stands
+    pdf = client.get(f"/api/reviews/{chk['id']}/report.pdf")
+    assert pdf.status_code == 200 and b"/Subtype /Image" in pdf.content  # annotated landing frame embedded

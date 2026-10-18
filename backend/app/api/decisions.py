@@ -213,3 +213,52 @@ def audio_contact(body: AudioContactRequest, s: Session = Depends(db), cfg: Sett
     res = analyze_video_audio(path, center_ms=body.center_ms, half_window_ms=body.half_window_ms, frame_times_ms=frame_times,
                               min_snr_db=body.min_snr_db, highpass_hz=body.highpass_hz)
     return _store(s, "audio_contact", v.id, None, body.model_dump(mode="json"), res.model_dump(mode="json"))
+
+
+# ----------------------------------------------------------------- no ball
+class ReturnCreaseSpec(BaseModel):
+    p1: tuple[float, float]
+    p2: tuple[float, float]
+    inside_point: tuple[float, float] = Field(description="any image point between the return crease and the middle stump")
+
+
+class NoBallRequest(BaseModel):
+    video_id: str
+    popping_crease: CreaseSpec
+    front_marks: list[dict] = Field(min_length=1, max_length=200)
+    return_crease: ReturnCreaseSpec | None = None
+    back_marks: list[dict] = Field(default_factory=list, max_length=200)
+    facts: dict = Field(default_factory=dict)
+    decision_confidence: float = Field(0.95, ge=0.5, lt=1.0)
+
+
+@router.post("/noball/analyze", status_code=201)
+def noball_analyze(body: NoBallRequest, s: Session = Depends(db)):
+    """Bowler's front-foot / back-foot no-ball check (Law 21.5) from marked foot positions."""
+    from ml.noball import FootMark, NoBallFacts, analyze_no_ball
+    from ml.runout.crease import CreaseGeometryError, crease_from_camera, crease_from_points
+
+    v = get_or_404(s, Video, body.video_id)
+    pc = body.popping_crease
+    try:
+        if pc.source == "calibration":
+            line = crease_from_camera(_camera(s, pc.calibration_id), pc.end or "bowler")
+        else:
+            line = crease_from_points(pc.p1, pc.p2, pc.behind_point, pc.end or "bowler")
+        ret = None
+        if body.return_crease is not None:
+            ret = crease_from_points(body.return_crease.p1, body.return_crease.p2, body.return_crease.inside_point)
+        front = [FootMark.model_validate(m) for m in body.front_marks]
+        back = [FootMark.model_validate(m) for m in body.back_marks]
+        facts = NoBallFacts.model_validate(body.facts)
+    except (ValidationError, CreaseGeometryError, ValueError) as exc:
+        raise HTTPException(422, str(exc)) from exc
+    w, h = _video_size(v)
+    if any(not (0 <= m.point[0] <= w and 0 <= m.point[1] <= h) for m in front + back):
+        raise HTTPException(422, "foot mark outside the frame")
+    res = analyze_no_ball(line, front, ret, back, facts, decision_confidence=body.decision_confidence)
+    out = res.model_dump(mode="json")
+    out["crease_line_px"] = [list(line.p1), list(line.p2)]
+    if ret is not None:
+        out["return_crease_px"] = [list(ret.p1), list(ret.p2)]
+    return _store(s, "no_ball", v.id, pc.calibration_id, body.model_dump(mode="json"), out)
