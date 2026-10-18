@@ -417,6 +417,24 @@ An ignored 1%/frame zoom triples the error and halves the coverage of the uncert
 - **An undeclared 2 ms error is not detected.** Verdicts stayed correct in this set because a 2 cm stump-plane shift rarely crosses the decision boundary, but nothing in the reconstruction (including reprojection error) reveals the error. The declared sync uncertainty must come from the hardware, not be assumed.
 - **Synthetic only:** exact calibration, a known detector-free track, and no motion blur or occlusion. Real-world accuracy is unknown.
 
+## 12. Audio edge transients (real broadcast audio, unlabelled)
+
+`scripts/evaluate_audio_transients.py` runs the transient detector on 60 `hf-cricket-delivery-videos` clips (44.1 kHz AAC, about 6 s each). Settings: high-pass 2 kHz; at least 15 dB above the noise floor; rise time ≤ 4 ms. Raw output: `audio_transients_broadcast.json`.
+
+| Measure | Value |
+|---|---|
+| Clips with audio | 60 / 60 |
+| Clips with at least one transient | 14 |
+| Transients per clip, median / p90 | 0 / 1 |
+| Total transients (SNR threshold 10 / 15 / 20 dB) | 16 / 16 / 17 |
+| Runtime | 3.7 s for all 60 clips (CPU) |
+
+- **Detector behaviour:** it rarely fires on ordinary broadcast audio (commentary, crowd), and its output barely changes with the threshold, because the 4 × MAD noise term dominates.
+- **No contact labels exist**, so whether the transients that do fire are bat-ball contacts is **unknown**, and so is the miss rate on fine edges.
+- **Synthetic tests:**
+  - A 7 kHz click is located within 1 ms. A slow 220 Hz sound is rejected by the rise-time test.
+  - Through an AAC-encoded MP4 the click is found 2.5 ms early (encoder priming), one reason the API warns that the audio/video offset is unknown.
+
 ## 6. Not measured (no ground truth available)
 
 - Detection metrics on real cricket footage.

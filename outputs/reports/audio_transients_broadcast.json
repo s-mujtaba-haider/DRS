@@ -1,0 +1,644 @@
+{
+ "summary": {
+  "clips": 60,
+  "with_audio": 60,
+  "clips_with_transient": 14,
+  "transients_per_clip_median": 0.0,
+  "transients_per_clip_p90": 1.0,
+  "transients_per_second_median": 0.0,
+  "seconds": 3.7,
+  "caveat": "No contact labels: this is the detector's firing rate on broadcast audio, not edge accuracy."
+ },
+ "clips": [
+  {
+   "file": "video001.mp4",
+   "status": "NO_TRANSIENT",
+   "duration_s": 6.010875,
+   "n_transients": 0,
+   "per_second": 0.0,
+   "noise_floor_db": -35.11,
+   "snr_db": [],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video002.mp4",
+   "status": "NO_TRANSIENT",
+   "duration_s": 8.0018125,
+   "n_transients": 0,
+   "per_second": 0.0,
+   "noise_floor_db": -34.93,
+   "snr_db": [],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video003.mp4",
+   "status": "NO_TRANSIENT",
+   "duration_s": 5.999979166666667,
+   "n_transients": 0,
+   "per_second": 0.0,
+   "noise_floor_db": -39.18,
+   "snr_db": [],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video004.mp4",
+   "status": "NO_TRANSIENT",
+   "duration_s": 7.010979166666667,
+   "n_transients": 0,
+   "per_second": 0.0,
+   "noise_floor_db": -43.36,
+   "snr_db": [],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video005.mp4",
+   "status": "NO_TRANSIENT",
+   "duration_s": 5.001979166666667,
+   "n_transients": 0,
+   "per_second": 0.0,
+   "noise_floor_db": -38.76,
+   "snr_db": [],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video006.mp4",
+   "status": "NO_TRANSIENT",
+   "duration_s": 4.017,
+   "n_transients": 0,
+   "per_second": 0.0,
+   "noise_floor_db": -43.11,
+   "snr_db": [],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video007.mp4",
+   "status": "NO_TRANSIENT",
+   "duration_s": 4.010979166666666,
+   "n_transients": 0,
+   "per_second": 0.0,
+   "noise_floor_db": -37.83,
+   "snr_db": [],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video008.mp4",
+   "status": "NO_TRANSIENT",
+   "duration_s": 5.999979166666667,
+   "n_transients": 0,
+   "per_second": 0.0,
+   "noise_floor_db": -36.06,
+   "snr_db": [],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video009.mp4",
+   "status": "TRANSIENTS_FOUND",
+   "duration_s": 4.016,
+   "n_transients": 1,
+   "per_second": 0.24900398406374502,
+   "noise_floor_db": -47.41,
+   "snr_db": [
+    38.5
+   ],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video010.mp4",
+   "status": "TRANSIENTS_FOUND",
+   "duration_s": 4.003895833333334,
+   "n_transients": 1,
+   "per_second": 0.2497567473346272,
+   "noise_floor_db": -45.0,
+   "snr_db": [
+    36.8
+   ],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video011.mp4",
+   "status": "TRANSIENTS_FOUND",
+   "duration_s": 5.019,
+   "n_transients": 1,
+   "per_second": 0.19924287706714486,
+   "noise_floor_db": -43.27,
+   "snr_db": [
+    36.5
+   ],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video012.mp4",
+   "status": "TRANSIENTS_FOUND",
+   "duration_s": 4.010979166666666,
+   "n_transients": 1,
+   "per_second": 0.24931568039807409,
+   "noise_floor_db": -43.24,
+   "snr_db": [
+    28.6
+   ],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video013.mp4",
+   "status": "NO_TRANSIENT",
+   "duration_s": 4.003979166666666,
+   "n_transients": 0,
+   "per_second": 0.0,
+   "noise_floor_db": -41.74,
+   "snr_db": [],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video014.mp4",
+   "status": "NO_TRANSIENT",
+   "duration_s": 8.012979166666668,
+   "n_transients": 0,
+   "per_second": 0.0,
+   "noise_floor_db": -40.26,
+   "snr_db": [],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video015.mp4",
+   "status": "TRANSIENTS_FOUND",
+   "duration_s": 4.005,
+   "n_transients": 1,
+   "per_second": 0.24968789013732834,
+   "noise_floor_db": -47.42,
+   "snr_db": [
+    35.8
+   ],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video016.mp4",
+   "status": "NO_TRANSIENT",
+   "duration_s": 7.016,
+   "n_transients": 0,
+   "per_second": 0.0,
+   "noise_floor_db": -45.95,
+   "snr_db": [],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video017.mp4",
+   "status": "NO_TRANSIENT",
+   "duration_s": 6.011979166666667,
+   "n_transients": 0,
+   "per_second": 0.0,
+   "noise_floor_db": -41.08,
+   "snr_db": [],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video018.mp4",
+   "status": "NO_TRANSIENT",
+   "duration_s": 5.003979166666667,
+   "n_transients": 0,
+   "per_second": 0.0,
+   "noise_floor_db": -43.63,
+   "snr_db": [],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video019.mp4",
+   "status": "TRANSIENTS_FOUND",
+   "duration_s": 4.507833333333333,
+   "n_transients": 1,
+   "per_second": 0.22183606314933266,
+   "noise_floor_db": -43.97,
+   "snr_db": [
+    31.7
+   ],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video020.mp4",
+   "status": "TRANSIENTS_FOUND",
+   "duration_s": 4.011979166666666,
+   "n_transients": 1,
+   "per_second": 0.24925353758275998,
+   "noise_floor_db": -42.36,
+   "snr_db": [
+    35.0
+   ],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video021.mp4",
+   "status": "TRANSIENTS_FOUND",
+   "duration_s": 5.004791666666667,
+   "n_transients": 1,
+   "per_second": 0.19980851683803022,
+   "noise_floor_db": -42.32,
+   "snr_db": [
+    31.9
+   ],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video022.mp4",
+   "status": "TRANSIENTS_FOUND",
+   "duration_s": 4.999979166666667,
+   "n_transients": 1,
+   "per_second": 0.20000083333680557,
+   "noise_floor_db": -46.26,
+   "snr_db": [
+    33.3
+   ],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video023.mp4",
+   "status": "NO_TRANSIENT",
+   "duration_s": 5.015770833333333,
+   "n_transients": 0,
+   "per_second": 0.0,
+   "noise_floor_db": -40.14,
+   "snr_db": [],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video024.mp4",
+   "status": "NO_TRANSIENT",
+   "duration_s": 6.004979166666667,
+   "n_transients": 0,
+   "per_second": 0.0,
+   "noise_floor_db": -42.96,
+   "snr_db": [],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video025.mp4",
+   "status": "NO_TRANSIENT",
+   "duration_s": 6.0189375,
+   "n_transients": 0,
+   "per_second": 0.0,
+   "noise_floor_db": -48.47,
+   "snr_db": [],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video026.mp4",
+   "status": "TRANSIENTS_FOUND",
+   "duration_s": 5.010979166666667,
+   "n_transients": 2,
+   "per_second": 0.399123591114511,
+   "noise_floor_db": -48.49,
+   "snr_db": [
+    29.1,
+    30.0
+   ],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video027.mp4",
+   "status": "NO_TRANSIENT",
+   "duration_s": 5.001979166666667,
+   "n_transients": 0,
+   "per_second": 0.0,
+   "noise_floor_db": -42.02,
+   "snr_db": [],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video028.mp4",
+   "status": "TRANSIENTS_FOUND",
+   "duration_s": 6.008,
+   "n_transients": 1,
+   "per_second": 0.16644474034620507,
+   "noise_floor_db": -38.19,
+   "snr_db": [
+    24.7
+   ],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video029.mp4",
+   "status": "NO_TRANSIENT",
+   "duration_s": 6.0209375,
+   "n_transients": 0,
+   "per_second": 0.0,
+   "noise_floor_db": -36.71,
+   "snr_db": [],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video030.mp4",
+   "status": "NO_TRANSIENT",
+   "duration_s": 5.019,
+   "n_transients": 0,
+   "per_second": 0.0,
+   "noise_floor_db": -45.49,
+   "snr_db": [],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video031.mp4",
+   "status": "NO_TRANSIENT",
+   "duration_s": 6.003979166666667,
+   "n_transients": 0,
+   "per_second": 0.0,
+   "noise_floor_db": -41.16,
+   "snr_db": [],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video032.mp4",
+   "status": "NO_TRANSIENT",
+   "duration_s": 9.013979166666665,
+   "n_transients": 0,
+   "per_second": 0.0,
+   "noise_floor_db": -50.37,
+   "snr_db": [],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video033.mp4",
+   "status": "NO_TRANSIENT",
+   "duration_s": 9.011979166666666,
+   "n_transients": 0,
+   "per_second": 0.0,
+   "noise_floor_db": -45.78,
+   "snr_db": [],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video034.mp4",
+   "status": "NO_TRANSIENT",
+   "duration_s": 12.006,
+   "n_transients": 0,
+   "per_second": 0.0,
+   "noise_floor_db": -41.33,
+   "snr_db": [],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video035.mp4",
+   "status": "NO_TRANSIENT",
+   "duration_s": 9.005,
+   "n_transients": 0,
+   "per_second": 0.0,
+   "noise_floor_db": -49.48,
+   "snr_db": [],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video036.mp4",
+   "status": "NO_TRANSIENT",
+   "duration_s": 9.001979166666667,
+   "n_transients": 0,
+   "per_second": 0.0,
+   "noise_floor_db": -44.01,
+   "snr_db": [],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video037.mp4",
+   "status": "NO_TRANSIENT",
+   "duration_s": 8.001979166666667,
+   "n_transients": 0,
+   "per_second": 0.0,
+   "noise_floor_db": -49.02,
+   "snr_db": [],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video038.mp4",
+   "status": "NO_TRANSIENT",
+   "duration_s": 9.005,
+   "n_transients": 0,
+   "per_second": 0.0,
+   "noise_floor_db": -47.3,
+   "snr_db": [],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video039.mp4",
+   "status": "NO_TRANSIENT",
+   "duration_s": 9.016,
+   "n_transients": 0,
+   "per_second": 0.0,
+   "noise_floor_db": -50.94,
+   "snr_db": [],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video040.mp4",
+   "status": "NO_TRANSIENT",
+   "duration_s": 7.000979166666667,
+   "n_transients": 0,
+   "per_second": 0.0,
+   "noise_floor_db": -53.87,
+   "snr_db": [],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video041.mp4",
+   "status": "NO_TRANSIENT",
+   "duration_s": 5.011979166666667,
+   "n_transients": 0,
+   "per_second": 0.0,
+   "noise_floor_db": -44.44,
+   "snr_db": [],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video042.mp4",
+   "status": "NO_TRANSIENT",
+   "duration_s": 7.009,
+   "n_transients": 0,
+   "per_second": 0.0,
+   "noise_floor_db": -46.34,
+   "snr_db": [],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video043.mp4",
+   "status": "NO_TRANSIENT",
+   "duration_s": 6.016,
+   "n_transients": 0,
+   "per_second": 0.0,
+   "noise_floor_db": -49.73,
+   "snr_db": [],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video044.mp4",
+   "status": "NO_TRANSIENT",
+   "duration_s": 7.019,
+   "n_transients": 0,
+   "per_second": 0.0,
+   "noise_floor_db": -43.22,
+   "snr_db": [],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video045.mp4",
+   "status": "NO_TRANSIENT",
+   "duration_s": 6.016,
+   "n_transients": 0,
+   "per_second": 0.0,
+   "noise_floor_db": -45.58,
+   "snr_db": [],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video046.mp4",
+   "status": "NO_TRANSIENT",
+   "duration_s": 6.021979166666667,
+   "n_transients": 0,
+   "per_second": 0.0,
+   "noise_floor_db": -44.69,
+   "snr_db": [],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video047.mp4",
+   "status": "NO_TRANSIENT",
+   "duration_s": 7.003979166666667,
+   "n_transients": 0,
+   "per_second": 0.0,
+   "noise_floor_db": -47.18,
+   "snr_db": [],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video048.mp4",
+   "status": "NO_TRANSIENT",
+   "duration_s": 7.010875,
+   "n_transients": 0,
+   "per_second": 0.0,
+   "noise_floor_db": -51.48,
+   "snr_db": [],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video049.mp4",
+   "status": "TRANSIENTS_FOUND",
+   "duration_s": 7.009,
+   "n_transients": 2,
+   "per_second": 0.28534741047224993,
+   "noise_floor_db": -57.05,
+   "snr_db": [
+    39.7,
+    32.5
+   ],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video050.mp4",
+   "status": "NO_TRANSIENT",
+   "duration_s": 7.012770833333333,
+   "n_transients": 0,
+   "per_second": 0.0,
+   "noise_floor_db": -49.74,
+   "snr_db": [],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video051.mp4",
+   "status": "NO_TRANSIENT",
+   "duration_s": 7.012958333333333,
+   "n_transients": 0,
+   "per_second": 0.0,
+   "noise_floor_db": -41.67,
+   "snr_db": [],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video052.mp4",
+   "status": "NO_TRANSIENT",
+   "duration_s": 6.012979166666667,
+   "n_transients": 0,
+   "per_second": 0.0,
+   "noise_floor_db": -45.43,
+   "snr_db": [],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video053.mp4",
+   "status": "NO_TRANSIENT",
+   "duration_s": 5.020979166666667,
+   "n_transients": 0,
+   "per_second": 0.0,
+   "noise_floor_db": -44.41,
+   "snr_db": [],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video054.mp4",
+   "status": "TRANSIENTS_FOUND",
+   "duration_s": 6.709979166666667,
+   "n_transients": 1,
+   "per_second": 0.1490317592888701,
+   "noise_floor_db": -56.02,
+   "snr_db": [
+    37.5
+   ],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video055.mp4",
+   "status": "NO_TRANSIENT",
+   "duration_s": 6.017,
+   "n_transients": 0,
+   "per_second": 0.0,
+   "noise_floor_db": -50.49,
+   "snr_db": [],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video056.mp4",
+   "status": "NO_TRANSIENT",
+   "duration_s": 9.010979166666665,
+   "n_transients": 0,
+   "per_second": 0.0,
+   "noise_floor_db": -47.41,
+   "snr_db": [],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video057.mp4",
+   "status": "NO_TRANSIENT",
+   "duration_s": 7.012875,
+   "n_transients": 0,
+   "per_second": 0.0,
+   "noise_floor_db": -42.77,
+   "snr_db": [],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video058.mp4",
+   "status": "TRANSIENTS_FOUND",
+   "duration_s": 6.017,
+   "n_transients": 1,
+   "per_second": 0.16619577862722285,
+   "noise_floor_db": -50.36,
+   "snr_db": [
+    33.0
+   ],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video059.mp4",
+   "status": "NO_TRANSIENT",
+   "duration_s": 9.020854166666666,
+   "n_transients": 0,
+   "per_second": 0.0,
+   "noise_floor_db": -56.69,
+   "snr_db": [],
+   "highpass_hz": 2000.0
+  },
+  {
+   "file": "video060.mp4",
+   "status": "NO_TRANSIENT",
+   "duration_s": 12.012979166666666,
+   "n_transients": 0,
+   "per_second": 0.0,
+   "noise_floor_db": -46.78,
+   "snr_db": [],
+   "highpass_hz": 2000.0
+  }
+ ]
+}

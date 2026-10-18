@@ -542,6 +542,7 @@ export const api = {
     ),
   labelExport: (body: Record<string, unknown>) =>
     request<{ path: string; positives: number; negatives: number; next_step: string }>("/api/labeling/export", json(body)),
+  audioContact: (body: Record<string, unknown>) => request<DecisionAnalysis>("/api/contact/audio", json(body)),
   lbwMultiview: (body: Record<string, unknown>) => request<LbwAnalysis>("/api/lbw/multiview", json(body)),
   trackClipGroup: (group: string) => request<{ queued: Job[]; skipped: unknown[] }>(`/api/clip-groups/${group}/track`, json({})),
   creaseProposals: (body: Record<string, unknown>) => request<CreaseProposals>("/api/runout/proposals", json(body)),

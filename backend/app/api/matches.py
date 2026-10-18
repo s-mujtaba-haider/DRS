@@ -27,7 +27,7 @@ router = APIRouter(prefix="/api", tags=["matches"])
 DecisionType = Literal["lbw", "caught", "run_out", "stumping", "boundary", "other"]
 EVIDENCE_TYPES = {"lbw": LbwAnalysis, "decision": DecisionAnalysis}
 # Which stored analysis kinds may support which decision type.
-EVIDENCE_FOR = {"lbw": {"lbw", "contact"}, "caught": {"contact", "catch"}, "run_out": {"run_out", "wicket_break"},
+EVIDENCE_FOR = {"lbw": {"lbw", "contact", "audio_contact"}, "caught": {"contact", "catch", "audio_contact"}, "run_out": {"run_out", "wicket_break"},
                 "stumping": {"stumping", "wicket_break"}, "boundary": {"boundary", "catch"}, "other": None}
 
 

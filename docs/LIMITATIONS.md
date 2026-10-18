@@ -67,6 +67,15 @@ These limitations are measured or known. They are not hypothetical.
 - Image-plane rope geometry is only meaningful for points on the ground. A ball or fielder in the air projects across the rope.
 - Six vs four needs the "struck by the bat" fact; otherwise the result is `INCONCLUSIVE` with `boundary_scored=true`.
 
+## Audio edge evidence
+- Transients are candidates only. Bat on pad, bat on ground, ball on pad or glove, shoes and stump-mic handling all produce them.
+- No transient does not mean no edge: a faint edge can be inaudible, masked, or removed by lossy compression.
+- Audio timing relative to the frames is uncertain, for three reasons:
+  - the container's audio/video offset is unknown;
+  - AAC encoder priming adds an offset (2.5 ms in our test);
+  - sound takes about 2.9 ms per metre from the bat to the microphone.
+- Not validated against labelled edges.
+
 ## Live capture and synchronisation
 - **Software synchronisation only.** Frames are timestamped when they arrive at the PC, not at exposure, so each camera's transport latency is unknown and not compensated. The sync uncertainty is reported as one frame interval plus measured arrival jitter (10–33 ms at 30–100 fps).
   - On the synthetic two-camera rig this means about 3.5 cm of 3D error per ms and 8–15 cm stump-plane error (`EVALUATION.md` §7).
@@ -76,7 +85,7 @@ These limitations are measured or known. They are not hypothetical.
 - Audio sync (GCC-PHAT) is tested on synthetic signals only. The audio-to-video mux offset inside each file is unknown, so audio alignment is not frame alignment.
 
 ## Not implemented
-Hardware-triggered or PTP camera timestamps; audio (snicko); thermal; bat detection; pad and body segmentation; automatic crease detection on real footage; automatic batter/bat grounding detection; broadcast graphics output; user accounts and roles.
+Hardware-triggered or PTP camera timestamps; validated audio edge detection (an experimental transient detector exists, unvalidated); thermal; bat detection; pad and body segmentation; automatic crease detection on real footage; automatic batter/bat grounding detection; broadcast graphics output; user accounts and roles.
 
 ## Automatic calibration from stumps (experimental)
 - The stumps detector was trained on **one match**. It finds both wickets in only 7 of 18 held-out frames that show both, and its box edges are off by more than 7 px in 10% of cases.

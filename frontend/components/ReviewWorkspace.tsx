@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 
 import CreaseWorkspace from "@/components/CreaseWorkspace";
+import AudioEdgePanel from "@/components/AudioEdgePanel";
 import BoundaryWorkspace from "@/components/BoundaryWorkspace";
 import CaptureClipButton from "@/components/CaptureClipButton";
 import { DECISION_LABEL, outcomeTone } from "@/components/MatchControl";
@@ -122,6 +123,9 @@ export default function ReviewWorkspace({ id }: { id: string }) {
       )}
       {(review.decision_type === "lbw" || review.decision_type === "caught") && (
         <TrackingEvidence review={review} videos={byId} onAttach={attach} readOnly={!isOpen} />
+      )}
+      {video && (review.decision_type === "caught" || review.decision_type === "lbw") && (
+        <AudioEdgePanel key={`a-${video.id}`} video={video} readOnly={!isOpen} onAnalysis={(a) => attach("decision", a.id)} />
       )}
       {review.decision_type === "lbw" && (
         <MultiviewLbwPanel review={review} videos={byId} onAttach={(aid) => attach("lbw", aid)} readOnly={!isOpen} />

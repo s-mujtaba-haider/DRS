@@ -11,7 +11,7 @@ This guide covers running the system during a live match. At club or research le
 | **Run out / stumping** | Frame-accurate replay, crease line (clicked or from calibration), wicket-break candidate detection, per-frame in/out-of-ground measurement with uncertainty, Law 29/30/38/39 checklist, and a timeline of grounding against the break window | The geometry is exact for what the operator marks. The limit is frame rate: at 50 fps a 20 ms gap can hide the moment of grounding, and the engine then says `INCONCLUSIVE` (the batter gets the benefit of the doubt only if the official decides so). Use 100–240 fps side-on cameras on the creases. |
 | **Boundary / catch near the rope** | Replay, rope tracing, an event sequence (ball grounds, fielder touches, airborne contacts, rope contact), and Law 19 / 19.5.2 (2026) and Law 33 interpretation | Marked events are interpreted exactly. Image-space rope geometry is only valid for points **on the ground**. Needs a camera along the rope. |
 | **LBW** | Ball tracking, calibration, monocular 3D flight fit, projected path with uncertainty, Law 36 checks, and the protocol's umpire's-call logic | **Experimental.** Synthetic benchmark only; often `INCONCLUSIVE` by design. Treat it as supporting evidence, not as a Hawk-Eye equivalent. |
-| **Caught (edge)** | Replay, deflection candidates (≥ 100 fps), catch-near-boundary conditions | No audio edge detection (no validated synchronised audio). The official judges the edge from the replays. |
+| **Caught (edge)** | Replay, deflection candidates (≥ 100 fps), catch-near-boundary conditions, and **audio transients** on the frame timeline (frames above an audio-energy strip) | Audio transients are unvalidated candidates; the audio-to-frame timing is uncertain by several ms. The official judges the edge from replays and sound together. A microphone near the stumps helps most. |
 
 ## Equipment
 
@@ -93,4 +93,4 @@ Better: add a side-on camera at the non-striker's end and one camera per boundar
   - Hardware-triggered or PTP cameras are the fix (`CAMERA_HARDWARE.md`).
 - **No broadcast-style graphics.** The console is for the official, not for the TV feed.
 - **One operator, one review at a time per team.**
-- **Video only.** No audio snickometer.
+- **Audio:** an experimental transient detector only, not a validated snickometer.

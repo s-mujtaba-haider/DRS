@@ -148,3 +148,23 @@ def test_boundary_six_and_review(client, video, match):
 
     bad = client.post("/api/boundary/analyze", json={"rope": rope, "events": [{"kind": "teleport", "timestamp_ms": 1}]})
     assert bad.status_code == 422
+
+
+def test_audio_contact_endpoint(client, match, tmp_path):
+    import sys
+    from pathlib import Path
+
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "tests"))
+    from test_audio_contact import write_av_clip
+
+    p = write_av_clip(tmp_path / "edge.mp4", click_ms=600.0)
+    with open(p, "rb") as fh:
+        v = client.post("/api/videos", files={"file": ("edge.mp4", fh, "video/mp4")}).json()
+    r = client.post("/api/contact/audio", json={"video_id": v["id"], "center_ms": 600, "half_window_ms": 300})
+    assert r.status_code == 201, r.text
+    res = r.json()["result"]
+    assert res["status"] == "TRANSIENTS_FOUND" and res["transients"][0]["nearest_frame_index"] in (29, 30)
+    rv = client.post(f"/api/matches/{match['id']}/reviews", json={"requested_by": "A", "decision_type": "caught", "on_field": "NOT_OUT"}).json()
+    assert client.post(f"/api/reviews/{rv['id']}/evidence", json={"type": "decision", "id": r.json()["id"]}).status_code == 200
+    silent = client.post("/api/contact/audio", json={"video_id": client.get("/api/videos").json()[-1]["id"]}).json()
+    assert silent["result"]["status"] == "NO_AUDIO"

@@ -17,7 +17,7 @@ An independent, locally-run research system for cricket ball tracking and **expe
 | Multi-view triangulation (sync association, consensus, covariance) | Implemented and tested on synthetic geometry. No real multi-view data processed. |
 | 3D flight model (gravity, drag, lift, bounce; monocular and multi-view fits) | Implemented. Benchmarked on synthetic deliveries. |
 | Experimental LBW engine (Monte Carlo, Law 36 rules layer, unknowns stay unknown) | Implemented. Benchmarked on synthetic data only. |
-| Contact (edge) analysis | Experimental: trajectory-deflection candidates only. Returns `INCONCLUSIVE` below 100 fps. |
+| Contact (edge) analysis | Experimental: trajectory-deflection candidates (`INCONCLUSIVE` below 100 fps) and audio transients aligned to frames. Not validated against labelled edges (`docs/EVALUATION.md` §12). |
 | Run-out and stumping (crease geometry, wicket-break candidates, frame-interval timing logic, Laws 29/30/38/39) | Implemented. Tested on synthetic geometry and footage. Evidence comes from operator-marked frames; the engine says `INCONCLUSIVE` when grounding and the break fall in the same inter-frame gap. |
 | Boundary and catch-near-boundary (rope geometry, event sequence, Law 19 incl. 2026 19.5.2, Law 33) | Implemented. Tested on synthetic sequences. Image-space rope geometry is valid only for ground contacts. |
 | DRS protocol engine (versioned ICC Test/ODI/T20I 2025 and club configs; umpire's call, review counts) | Implemented and tested. Some protocol values are from secondary sources and are listed as `unverified` in each config. |

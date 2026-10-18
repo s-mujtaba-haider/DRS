@@ -185,3 +185,31 @@ def boundary_analyze(body: BoundaryRequest, s: Session = Depends(db)):
     res = fn(events, rope, facts, BoundaryConfig(decision_confidence=body.decision_confidence))
     return _store(s, body.analysis, body.video_id, body.calibration_id, body.model_dump(mode="json"),
                   res.model_dump(mode="json"))
+
+
+# -------------------------------------------------------------- audio edge
+class AudioContactRequest(BaseModel):
+    video_id: str
+    center_ms: float | None = Field(None, description="analyse around this time (video axis); default whole clip")
+    half_window_ms: float = Field(400.0, gt=10, le=10000)
+    min_snr_db: float = Field(15.0, ge=3, le=60)
+    highpass_hz: float = Field(2000.0, ge=200, le=20000)
+
+
+@router.post("/contact/audio", status_code=201)
+def audio_contact(body: AudioContactRequest, s: Session = Depends(db), cfg: Settings = Depends(settings)):
+    """Experimental edge evidence: sharp audio transients placed on the video's frame timeline."""
+    from ml.contact_analysis.audio import analyze_video_audio
+    from ml.video.ingest import iter_frames
+
+    v = get_or_404(s, Video, body.video_id)
+    path = cfg.videos_dir / v.stored_name
+    frame_times = None
+    if body.center_ms is not None and v.meta.get("nominal_fps"):
+        fps = float(v.meta["nominal_fps"])
+        first = max(0, int((body.center_ms - body.half_window_ms) / 1000 * fps) - 5)
+        n = int(2 * body.half_window_ms / 1000 * fps) + 10
+        frame_times = [(r.index, r.timestamp_ms) for r in iter_frames(path, start_frame=first, max_frames=min(n, 2000))]
+    res = analyze_video_audio(path, center_ms=body.center_ms, half_window_ms=body.half_window_ms, frame_times_ms=frame_times,
+                              min_snr_db=body.min_snr_db, highpass_hz=body.highpass_hz)
+    return _store(s, "audio_contact", v.id, None, body.model_dump(mode="json"), res.model_dump(mode="json"))
