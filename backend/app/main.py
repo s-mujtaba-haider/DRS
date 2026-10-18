@@ -17,7 +17,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from backend.app.api import analysis, jobs, system, videos
+from backend.app.api import analysis, capture, decisions, jobs, matches, system, videos
 from backend.app.core.config import get_settings
 from backend.app.database.models import init_db
 from backend.app.workers.jobs import JobManager
@@ -49,7 +49,13 @@ async def lifespan(app: FastAPI):
     n = app.state.jobs.recover()
     if n:
         logging.getLogger("drs").warning("marked %d stale job(s) as interrupted", n)
+    app.state.capture = None
+    app.state.capture_cfg = {"root": s.capture_dir, "process_per_camera": s.capture_process_per_camera,
+                             "recorder": {"retention_s": s.capture_retention_s, "max_disk_mb": s.capture_max_disk_mb,
+                                          "encoder": s.capture_encoder}}
     yield
+    if app.state.capture is not None:
+        app.state.capture.stop_all()
     app.state.jobs.shutdown()
 
 
@@ -80,5 +86,5 @@ async def request_id_mw(request: Request, call_next):
     return response
 
 
-for r in (system.router, videos.router, jobs.router, analysis.router):
+for r in (system.router, videos.router, jobs.router, analysis.router, matches.router, decisions.router, capture.router):
     app.include_router(r)

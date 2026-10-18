@@ -1,0 +1,10 @@
+# Experimental boundary / boundary-catch engine (keys map to ml.boundary.rules.BoundaryConfig).
+# Rules: MCC Laws of Cricket, 2017 Code 4th Edition (2026), Laws 19 and 33, including the revised
+# Law 19.5.2 (airborne fielders; adopted in ICC playing conditions from June 2025).
+#   https://www.lords.org/mcc/the-laws-of-cricket
+# Trace the INNER (pitch-side) edge of the rope: touching the rope counts as beyond (Laws 19.2.3, 19.4.1, 19.5.1).
+decision_confidence: 0.95   # P(inside) >= 0.95 -> INSIDE; <= 0.05 -> BEYOND; otherwise AMBIGUOUS
+default_sigma_px: 3.0       # image-point localisation sigma
+default_sigma_m: 0.03       # ground-point localisation sigma (world rope)
+boundary_6_allowance: 6     # Law 19.6.2 defaults; may be agreed differently before the toss
+boundary_4_allowance: 4

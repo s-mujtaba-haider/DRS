@@ -14,11 +14,16 @@
 | Reconstruction | `ml/reconstruction/triangulation.py` | Time-synchronised association, DLT plus Gauss–Newton, view-consensus rejection, ray-angle conditioning, covariance |
 | LBW | `ml/lbw/` | `geometry.py` (pure geometry, Monte Carlo), `rules.py` (Law 36 checks), `engine.py` (verdict, downgrades, uncertainty) |
 | Contact | `ml/contact_analysis/deflection.py` | Trajectory-deflection candidates with alternative explanations |
+| Run-out / stumping | `ml/runout/` | `crease.py` (crease line from calibration or clicks, signed metric/pixel distance with uncertainty), `events.py` (wicket-break candidate detection), `engine.py` (frame-interval timing logic), `rules.py` (Laws 29, 30, 38, 39) |
+| Boundary | `ml/boundary/` | `geometry.py` (rope polyline, image/world), `events.py` (typed event sequence), `rules.py` (Law 19 incl. 19.5.2, Law 33 catch conditions) |
+| DRS protocol | `ml/protocol/`, `configs/drs_protocol/*.yaml` | Versioned competition protocols: review allowance, umpire's call, wicket zone; maps evidence to advisory review outcomes |
+| Capture | `ml/capture/` | Camera sources (OpenCV / synthetic), per-camera recorder (raw H.264 segments + JSONL commit log), rolling buffer, clip export with per-frame host timing, process-per-camera mode |
+| Synchronisation | `ml/synchronization/` | Audio GCC-PHAT offsets, visual-event interval matching, applying offsets to `CameraModel` |
 | Evaluation | `ml/evaluation/` | Synthetic generator, cricket-synth benchmark, detection metrics |
 | Datasets | `ml/datasets/yolo_tools.py` | Validation, dHash duplicate detection, sequence-level splits, provenance, cricket-synth conversion |
 | Pipeline | `ml/pipeline.py` | Streaming end-to-end run with progress and cancellation hooks |
-| Backend | `backend/app/` | FastAPI routers (`system`, `videos`, `jobs`, `analysis`), SQLAlchemy models, `JobManager` thread pool, services (LBW glue, PDF) |
-| Frontend | `frontend/` | Next.js app router pages plus components (`TrackingWorkspace`, `LbwWorkspace`, `Trajectory3D`) |
+| Backend | `backend/app/` | FastAPI routers (`system`, `videos`, `jobs`, `analysis`, `matches`, `decisions`, `capture`), SQLAlchemy models (incl. `Match`, `Review`, append-only `ReviewEvent`, `DecisionAnalysis`), `JobManager` thread pool, services (LBW glue, PDF) |
+| Frontend | `frontend/` | Next.js app router pages plus components (`TrackingWorkspace`, `LbwWorkspace`, `Trajectory3D`, `MatchControl`, `ReviewWorkspace`, `CreaseWorkspace`, `BoundaryWorkspace`, `FrameViewer`) and the live capture page |
 
 The frontend only talks to the REST API (`frontend/lib/api.ts`). It never touches ML internals.
 
@@ -53,8 +58,33 @@ This frame matches the cricket-synth dataset after shifting y by half the pitch 
 
 `TrackPoint.kind` is one of `observed`, `filtered`, `interpolated`, `predicted` or `manual`. The UI, CSV, annotated video and 3D view all use the same colour code. Manual annotations live in a separate table and never modify the job's stored outputs.
 
+## Data flow for a match review
+
+1. `POST /api/capture/start` starts one recorder per camera. All cameras share one host clock, and segments roll over on disk.
+2. `POST /api/matches/{id}/reviews` opens a review. It checks the team's remaining reviews and refuses a second open review for the same team.
+3. `POST /api/capture/clip` with a `review_id` exports the last N seconds from every camera. Each clip becomes a `Video` with `meta.capture` (time offset and sync uncertainty) and a sidecar timing file.
+4. Evidence endpoints store their request and result as `DecisionAnalysis` rows:
+   - `/api/wicket-break/detect`, `/api/runout/analyze`, `/api/boundary/analyze`;
+   - LBW keeps its own table.
+5. `POST /api/reviews/{id}/evidence` attaches an analysis. The kind is checked against the decision type.
+6. `POST /api/reviews/{id}/recommend` applies the match protocol and stores an advisory recommendation.
+7. `POST /api/reviews/{id}/decide` records the human decision and outcome, which updates the review counts.
+8. `GET /api/reviews/{id}/package` exports the match, protocol, videos (SHA-256, capture timing), analyses and the audit log.
+
+Every state change appends a `ReviewEvent` row.
+
+## Time conventions
+
+- **Video timestamps:** milliseconds from the container PTS (`timestamp_source = container_pts`).
+- **Captured clips:**
+  - PTS come from the host arrival time, relative to the clip start.
+  - `meta.capture.time_offset_ms` maps the clip time onto the clip group's shared clock (ms since the export window start).
+  - `meta.capture.sync_uncertainty_ms` is one frame interval plus the measured arrival jitter. It is software sync, never hardware.
+- **Sync results:** `t_reference = t_other + offset_ms`.
+
 ## Extending
 
 - **A new detector:** implement `detect_batch(images, infos) -> list[list[Detection]]` and register it in `ml/pipeline.build_detector`.
-- **A new decision module** (run-out, stumping, boundary): add `ml/<module>/` with a geometry/evidence layer and a rules layer, as LBW does. Then add a backend router and a UI tab.
-- **Multi-camera ingestion:** the calibration and triangulation layers already support it (`/api/reconstruction/triangulate`). What's missing is per-camera job orchestration and synchronisation estimation (see the roadmap).
+- **A new decision module:** add `ml/<module>/` with a geometry/evidence layer and a rules layer (as LBW, run-out and boundary do). Store results through a `DecisionAnalysis` endpoint and map its status in `matches._evidence_status`.
+- **A new competition protocol:** add a YAML file under `configs/drs_protocol/` with sources and an `unverified` list. No code change is needed.
+- **Hardware-synchronised cameras:** implement a `FrameSource` that returns exposure timestamps (PTP or trigger counter) in `RawFrame.host_ns`/`backend_frame`, and mark the export `hardware_sync`.

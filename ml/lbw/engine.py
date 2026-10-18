@@ -62,6 +62,9 @@ class LbwResult(BaseModel):
     impact_time_s: float | None
     impact_time_source: str | None
     wicket_projection: WicketProjection | None
+    # Centre-of-ball / any-part zone probabilities for pitching and impact, plus impact distances. Consumed by
+    # the DRS protocol layer (ml.protocol) for umpire's-call style tests; None when not computable.
+    zone_probabilities: dict | None = None
     predicted_path: list[list[float]] = Field(default_factory=list, description="[t, x, y, z] from impact to stumps")
     observed_path_fit: list[list[float]] = Field(default_factory=list, description="[t, x, y, z] over observed span")
     measurement_uncertainty: dict = Field(default_factory=dict)
@@ -73,6 +76,67 @@ class LbwResult(BaseModel):
     calibration_validated: bool = False
     engine_version: str = ENGINE_VERSION
     disclaimer: str = DISCLAIMER
+
+
+def pitch_y_samples(models, impact_time_s: float) -> np.ndarray:
+    ys = []
+    for m in models:
+        t = m.bounce_time()
+        ys.append(m.position(t)[0][1] if t is not None and t <= impact_time_s else np.nan)
+    return np.asarray(ys)
+
+
+def _frac(mask: np.ndarray, n: int) -> float:
+    return float(mask.sum() / n)
+
+
+def _summary(v: np.ndarray) -> dict | None:
+    v = v[np.isfinite(v)]
+    if not len(v):
+        return None
+    return {"mean": float(v.mean()), "p05": float(np.percentile(v, 5)), "p95": float(np.percentile(v, 95)), "n_valid": int(len(v))}
+
+
+def zone_probabilities(pitch_x: np.ndarray | None, impact_x: np.ndarray, impact_y: np.ndarray, pitch_y: np.ndarray | None,
+                       half_width: float, radius: float, handed: str | None) -> dict:
+    """Zone fractions over Monte Carlo samples (denominator = all samples; non-finite samples count in none).
+
+    pitching: by ball centre (in line / outside off / outside leg).
+    impact: centre in line; any part in line (centre within half_width + radius); no part in line, split by side.
+    Off/leg splits need batter handedness and are None otherwise.
+    """
+    off = None if handed is None else (1.0 if handed == "right" else -1.0)
+    out: dict = {"half_width_m": half_width, "ball_radius_m": radius, "handedness": handed}
+    if pitch_x is not None and np.isfinite(pitch_x).any():
+        n = len(pitch_x)
+        fin = np.isfinite(pitch_x)
+        out["pitching"] = {
+            "centre_in_line": _frac(fin & (np.abs(np.nan_to_num(pitch_x)) <= half_width), n),
+            "centre_outside_off": None if off is None else _frac(fin & (off * np.nan_to_num(pitch_x) > half_width), n),
+            "centre_outside_leg": None if off is None else _frac(fin & (off * np.nan_to_num(pitch_x) < -half_width), n),
+            "n_valid": int(fin.sum()), "n_samples": n,
+        }
+    else:
+        out["pitching"] = None
+    n = len(impact_x)
+    fin = np.isfinite(impact_x)
+    ax = np.abs(np.nan_to_num(impact_x, nan=1e9))
+    sx = np.nan_to_num(impact_x, nan=0.0)
+    out["impact"] = {
+        "centre_in_line": _frac(fin & (ax <= half_width), n),
+        "any_part_in_line": _frac(fin & (ax <= half_width + radius), n),
+        "umpires_call_band_off": None if off is None else _frac(fin & (off * sx > half_width) & (off * sx <= half_width + radius), n),
+        "umpires_call_band_leg": None if off is None else _frac(fin & (off * sx < -half_width) & (off * sx >= -(half_width + radius)), n),
+        "no_part_outside_off": None if off is None else _frac(fin & (off * sx > half_width + radius), n),
+        "no_part_outside_leg": None if off is None else _frac(fin & (off * sx < -(half_width + radius)), n),
+        "n_valid": int(fin.sum()), "n_samples": n,
+    }
+    out["impact_distance_from_stumps_m"] = _summary(np.asarray(impact_y, dtype=float))
+    if pitch_y is not None:
+        out["pitch_to_impact_m"] = _summary(np.asarray(pitch_y, dtype=float) - np.asarray(impact_y, dtype=float))
+    else:
+        out["pitch_to_impact_m"] = None
+    return out
 
 
 def analyze_lbw(
@@ -132,6 +196,9 @@ def analyze_lbw(
     impact_x = np.asarray([m.position(impact_time_s)[0][0] for m in models])
 
     proj = project_to_wicket(fit, impact_time_s, wicket, cfg.n_samples)
+    impact_y = np.asarray([m.position(impact_time_s)[0][1] for m in models])
+    zone_p = zone_probabilities(pitch_x, impact_x, impact_y, pitch_y_samples(models, impact_time_s) if pitched else None,
+                                wicket.half_width_m, ball.radius_m, facts.batter_handedness)
     p_hit = proj.p_hit
 
     # Model-uncertainty probe: same observations interpreted with an alternative drag assumption.
@@ -219,7 +286,7 @@ def analyze_lbw(
     return LbwResult(
         verdict=verdict, p_hit=p_hit, rules_summary=summary, rule_checks=checks,
         pitching_point=pitch_est, impact_point=impact_est, impact_time_s=impact_time_s, impact_time_source=impact_src,
-        wicket_projection=proj, predicted_path=predicted, observed_path_fit=observed, measurement_uncertainty=meas_unc,
+        wicket_projection=proj, zone_probabilities=zone_p, predicted_path=predicted, observed_path_fit=observed, measurement_uncertainty=meas_unc,
         model_uncertainty=model_unc, input_quality=input_quality, reasons=reasons + fit.reasons, warnings=warnings,
         reconstruction_mode=fit.mode, calibration_validated=calibration_validated,
     )

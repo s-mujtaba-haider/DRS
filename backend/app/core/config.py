@@ -23,6 +23,10 @@ class Settings(BaseSettings):
     default_device: str = "auto"
     max_frames_per_job: int = 3000
     log_level: str = "INFO"
+    capture_retention_s: float = 300.0
+    capture_max_disk_mb: int = 20000
+    capture_encoder: str = "auto"  # auto = h264_nvenc if it opens, else libx264, else mpeg4
+    capture_process_per_camera: bool = False  # True scales better for 2+ high-rate cameras (see EVALUATION.md)
 
     @property
     def videos_dir(self) -> Path:
@@ -31,6 +35,10 @@ class Settings(BaseSettings):
     @property
     def jobs_dir(self) -> Path:
         return self.storage_dir / "jobs"
+
+    @property
+    def capture_dir(self) -> Path:
+        return self.storage_dir / "capture"
 
     @property
     def db_url(self) -> str:

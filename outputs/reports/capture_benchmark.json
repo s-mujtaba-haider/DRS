@@ -1,0 +1,1041 @@
+{
+  "measured_at_utc": "2026-10-18T07:13:00.276586+00:00",
+  "platform": "Windows-11-10.0.26300-SP0",
+  "processor": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
+  "opencv": "5.0.0",
+  "note": "SyntheticSource frames (temporal sensor-like noise, sigma ~4 levels) paced on the host clock; counts cover the measurement window after a 1 s warm-up; CPU is the sum over the parent and camera processes in percent of one logical core and includes synthetic frame generation and BGR->YUV conversion. Real cameras add driver/USB/network cost and real scenes change the bitrate.",
+  "devices_probe": [
+    {
+      "index": 0,
+      "opened": true,
+      "read_ok": true,
+      "width": 640,
+      "height": 480,
+      "fps": -1.0
+    }
+  ],
+  "rows": [
+    {
+      "width": 1280,
+      "height": 720,
+      "nominal_fps": 50.0,
+      "encoder": "h264_nvenc",
+      "cameras": 1,
+      "mode": "threads",
+      "texture": "noise",
+      "seconds": 5.0,
+      "measured_fps": [
+        50.0
+      ],
+      "frames_captured": [
+        250
+      ],
+      "frames_encoded": [
+        250
+      ],
+      "source_dropped_est": [
+        0
+      ],
+      "queue_dropped": [
+        0
+      ],
+      "encode_ms_per_frame": [
+        2.07
+      ],
+      "arrival_jitter_ms": [
+        2.26
+      ],
+      "process_cpu_percent_of_one_core": 48.9,
+      "logical_cpus": 16,
+      "synthetic_generation_ms_per_frame": 0.64,
+      "recorded_mbit_per_s_per_camera": 62.7
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "nominal_fps": 50.0,
+      "encoder": "h264_nvenc",
+      "cameras": 1,
+      "mode": "process_per_camera",
+      "texture": "noise",
+      "seconds": 5.0,
+      "measured_fps": [
+        50.0
+      ],
+      "frames_captured": [
+        252
+      ],
+      "frames_encoded": [
+        251
+      ],
+      "source_dropped_est": [
+        0
+      ],
+      "queue_dropped": [
+        0
+      ],
+      "encode_ms_per_frame": [
+        1.85
+      ],
+      "arrival_jitter_ms": [
+        2.274
+      ],
+      "process_cpu_percent_of_one_core": 61.6,
+      "logical_cpus": 16,
+      "synthetic_generation_ms_per_frame": 0.37,
+      "recorded_mbit_per_s_per_camera": 60.9
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "nominal_fps": 100.0,
+      "encoder": "h264_nvenc",
+      "cameras": 1,
+      "mode": "threads",
+      "texture": "noise",
+      "seconds": 5.0,
+      "measured_fps": [
+        100.0
+      ],
+      "frames_captured": [
+        501
+      ],
+      "frames_encoded": [
+        500
+      ],
+      "source_dropped_est": [
+        0
+      ],
+      "queue_dropped": [
+        0
+      ],
+      "encode_ms_per_frame": [
+        1.97
+      ],
+      "arrival_jitter_ms": [
+        0.534
+      ],
+      "process_cpu_percent_of_one_core": 136.9,
+      "logical_cpus": 16,
+      "synthetic_generation_ms_per_frame": 0.38,
+      "recorded_mbit_per_s_per_camera": 124.1
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "nominal_fps": 100.0,
+      "encoder": "h264_nvenc",
+      "cameras": 1,
+      "mode": "process_per_camera",
+      "texture": "noise",
+      "seconds": 5.0,
+      "measured_fps": [
+        100.0
+      ],
+      "frames_captured": [
+        504
+      ],
+      "frames_encoded": [
+        503
+      ],
+      "source_dropped_est": [
+        0
+      ],
+      "queue_dropped": [
+        0
+      ],
+      "encode_ms_per_frame": [
+        2.18
+      ],
+      "arrival_jitter_ms": [
+        0.844
+      ],
+      "process_cpu_percent_of_one_core": 97.5,
+      "logical_cpus": 16,
+      "synthetic_generation_ms_per_frame": 0.36,
+      "recorded_mbit_per_s_per_camera": 123.3
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "nominal_fps": 120.0,
+      "encoder": "h264_nvenc",
+      "cameras": 1,
+      "mode": "threads",
+      "texture": "noise",
+      "seconds": 5.0,
+      "measured_fps": [
+        120.0
+      ],
+      "frames_captured": [
+        601
+      ],
+      "frames_encoded": [
+        601
+      ],
+      "source_dropped_est": [
+        0
+      ],
+      "queue_dropped": [
+        0
+      ],
+      "encode_ms_per_frame": [
+        1.9
+      ],
+      "arrival_jitter_ms": [
+        0.01
+      ],
+      "process_cpu_percent_of_one_core": 91.9,
+      "logical_cpus": 16,
+      "synthetic_generation_ms_per_frame": 0.36,
+      "recorded_mbit_per_s_per_camera": 148.2
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "nominal_fps": 120.0,
+      "encoder": "h264_nvenc",
+      "cameras": 1,
+      "mode": "process_per_camera",
+      "texture": "noise",
+      "seconds": 5.0,
+      "measured_fps": [
+        120.0
+      ],
+      "frames_captured": [
+        605
+      ],
+      "frames_encoded": [
+        606
+      ],
+      "source_dropped_est": [
+        0
+      ],
+      "queue_dropped": [
+        0
+      ],
+      "encode_ms_per_frame": [
+        1.77
+      ],
+      "arrival_jitter_ms": [
+        0.001
+      ],
+      "process_cpu_percent_of_one_core": 80.9,
+      "logical_cpus": 16,
+      "synthetic_generation_ms_per_frame": 0.37,
+      "recorded_mbit_per_s_per_camera": 144.6
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "nominal_fps": 50.0,
+      "encoder": "h264_nvenc",
+      "cameras": 1,
+      "mode": "threads",
+      "texture": "noise",
+      "seconds": 5.0,
+      "measured_fps": [
+        50.0
+      ],
+      "frames_captured": [
+        250
+      ],
+      "frames_encoded": [
+        250
+      ],
+      "source_dropped_est": [
+        0
+      ],
+      "queue_dropped": [
+        0
+      ],
+      "encode_ms_per_frame": [
+        3.48
+      ],
+      "arrival_jitter_ms": [
+        2.19
+      ],
+      "process_cpu_percent_of_one_core": 76.2,
+      "logical_cpus": 16,
+      "synthetic_generation_ms_per_frame": 0.87,
+      "recorded_mbit_per_s_per_camera": 144.6
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "nominal_fps": 50.0,
+      "encoder": "h264_nvenc",
+      "cameras": 1,
+      "mode": "process_per_camera",
+      "texture": "noise",
+      "seconds": 5.0,
+      "measured_fps": [
+        50.0
+      ],
+      "frames_captured": [
+        251
+      ],
+      "frames_encoded": [
+        251
+      ],
+      "source_dropped_est": [
+        0
+      ],
+      "queue_dropped": [
+        0
+      ],
+      "encode_ms_per_frame": [
+        3.41
+      ],
+      "arrival_jitter_ms": [
+        2.386
+      ],
+      "process_cpu_percent_of_one_core": 92.2,
+      "logical_cpus": 16,
+      "synthetic_generation_ms_per_frame": 0.77,
+      "recorded_mbit_per_s_per_camera": 140.9
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "nominal_fps": 100.0,
+      "encoder": "h264_nvenc",
+      "cameras": 1,
+      "mode": "threads",
+      "texture": "noise",
+      "seconds": 5.0,
+      "measured_fps": [
+        100.0
+      ],
+      "frames_captured": [
+        500
+      ],
+      "frames_encoded": [
+        500
+      ],
+      "source_dropped_est": [
+        0
+      ],
+      "queue_dropped": [
+        0
+      ],
+      "encode_ms_per_frame": [
+        3.47
+      ],
+      "arrival_jitter_ms": [
+        0.61
+      ],
+      "process_cpu_percent_of_one_core": 151.2,
+      "logical_cpus": 16,
+      "synthetic_generation_ms_per_frame": 0.8,
+      "recorded_mbit_per_s_per_camera": 286.0
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "nominal_fps": 100.0,
+      "encoder": "h264_nvenc",
+      "cameras": 1,
+      "mode": "process_per_camera",
+      "texture": "noise",
+      "seconds": 5.0,
+      "measured_fps": [
+        100.0
+      ],
+      "frames_captured": [
+        503
+      ],
+      "frames_encoded": [
+        503
+      ],
+      "source_dropped_est": [
+        0
+      ],
+      "queue_dropped": [
+        0
+      ],
+      "encode_ms_per_frame": [
+        3.34
+      ],
+      "arrival_jitter_ms": [
+        1.119
+      ],
+      "process_cpu_percent_of_one_core": 183.4,
+      "logical_cpus": 16,
+      "synthetic_generation_ms_per_frame": 0.76,
+      "recorded_mbit_per_s_per_camera": 277.2
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "nominal_fps": 120.0,
+      "encoder": "h264_nvenc",
+      "cameras": 1,
+      "mode": "threads",
+      "texture": "noise",
+      "seconds": 5.0,
+      "measured_fps": [
+        120.0
+      ],
+      "frames_captured": [
+        600
+      ],
+      "frames_encoded": [
+        601
+      ],
+      "source_dropped_est": [
+        0
+      ],
+      "queue_dropped": [
+        0
+      ],
+      "encode_ms_per_frame": [
+        3.13
+      ],
+      "arrival_jitter_ms": [
+        0.001
+      ],
+      "process_cpu_percent_of_one_core": 212.2,
+      "logical_cpus": 16,
+      "synthetic_generation_ms_per_frame": 0.75,
+      "recorded_mbit_per_s_per_camera": 343.3
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "nominal_fps": 120.0,
+      "encoder": "h264_nvenc",
+      "cameras": 1,
+      "mode": "process_per_camera",
+      "texture": "noise",
+      "seconds": 5.0,
+      "measured_fps": [
+        120.0
+      ],
+      "frames_captured": [
+        603
+      ],
+      "frames_encoded": [
+        603
+      ],
+      "source_dropped_est": [
+        0
+      ],
+      "queue_dropped": [
+        0
+      ],
+      "encode_ms_per_frame": [
+        3.24
+      ],
+      "arrival_jitter_ms": [
+        0.001
+      ],
+      "process_cpu_percent_of_one_core": 250.0,
+      "logical_cpus": 16,
+      "synthetic_generation_ms_per_frame": 0.72,
+      "recorded_mbit_per_s_per_camera": 332.1
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "nominal_fps": 100.0,
+      "encoder": "h264_nvenc",
+      "cameras": 2,
+      "mode": "process_per_camera",
+      "texture": "noise",
+      "seconds": 5.0,
+      "measured_fps": [
+        100.0,
+        100.0
+      ],
+      "frames_captured": [
+        503,
+        501
+      ],
+      "frames_encoded": [
+        502,
+        501
+      ],
+      "source_dropped_est": [
+        0,
+        0
+      ],
+      "queue_dropped": [
+        0,
+        0
+      ],
+      "encode_ms_per_frame": [
+        4.11,
+        4.55
+      ],
+      "arrival_jitter_ms": [
+        1.228,
+        1.214
+      ],
+      "process_cpu_percent_of_one_core": 350.3,
+      "logical_cpus": 16,
+      "synthetic_generation_ms_per_frame": 0.83,
+      "recorded_mbit_per_s_per_camera": 278.7
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "nominal_fps": 100.0,
+      "encoder": "h264_nvenc",
+      "cameras": 3,
+      "mode": "process_per_camera",
+      "texture": "noise",
+      "seconds": 5.0,
+      "measured_fps": [
+        100.0,
+        100.0,
+        100.0
+      ],
+      "frames_captured": [
+        514,
+        509,
+        507
+      ],
+      "frames_encoded": [
+        502,
+        497,
+        499
+      ],
+      "source_dropped_est": [
+        0,
+        0,
+        0
+      ],
+      "queue_dropped": [
+        0,
+        0,
+        0
+      ],
+      "encode_ms_per_frame": [
+        9.66,
+        9.69,
+        9.63
+      ],
+      "arrival_jitter_ms": [
+        1.157,
+        1.272,
+        1.277
+      ],
+      "process_cpu_percent_of_one_core": 565.0,
+      "logical_cpus": 16,
+      "synthetic_generation_ms_per_frame": 0.71,
+      "recorded_mbit_per_s_per_camera": 269.6
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "nominal_fps": 50.0,
+      "encoder": "libx264",
+      "cameras": 1,
+      "mode": "threads",
+      "texture": "noise",
+      "seconds": 5.0,
+      "measured_fps": [
+        50.0
+      ],
+      "frames_captured": [
+        250
+      ],
+      "frames_encoded": [
+        251
+      ],
+      "source_dropped_est": [
+        0
+      ],
+      "queue_dropped": [
+        0
+      ],
+      "encode_ms_per_frame": [
+        4.37
+      ],
+      "arrival_jitter_ms": [
+        0.097
+      ],
+      "process_cpu_percent_of_one_core": 178.4,
+      "logical_cpus": 16,
+      "synthetic_generation_ms_per_frame": 0.34,
+      "recorded_mbit_per_s_per_camera": 112.9
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "nominal_fps": 50.0,
+      "encoder": "libx264",
+      "cameras": 1,
+      "mode": "process_per_camera",
+      "texture": "noise",
+      "seconds": 5.0,
+      "measured_fps": [
+        50.0
+      ],
+      "frames_captured": [
+        250
+      ],
+      "frames_encoded": [
+        251
+      ],
+      "source_dropped_est": [
+        0
+      ],
+      "queue_dropped": [
+        0
+      ],
+      "encode_ms_per_frame": [
+        4.34
+      ],
+      "arrival_jitter_ms": [
+        0.156
+      ],
+      "process_cpu_percent_of_one_core": 176.9,
+      "logical_cpus": 16,
+      "synthetic_generation_ms_per_frame": 0.35,
+      "recorded_mbit_per_s_per_camera": 108.8
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "nominal_fps": 100.0,
+      "encoder": "libx264",
+      "cameras": 1,
+      "mode": "threads",
+      "texture": "noise",
+      "seconds": 5.0,
+      "measured_fps": [
+        100.0
+      ],
+      "frames_captured": [
+        500
+      ],
+      "frames_encoded": [
+        500
+      ],
+      "source_dropped_est": [
+        0
+      ],
+      "queue_dropped": [
+        0
+      ],
+      "encode_ms_per_frame": [
+        4.18
+      ],
+      "arrival_jitter_ms": [
+        0.191
+      ],
+      "process_cpu_percent_of_one_core": 293.8,
+      "logical_cpus": 16,
+      "synthetic_generation_ms_per_frame": 0.36,
+      "recorded_mbit_per_s_per_camera": 150.1
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "nominal_fps": 100.0,
+      "encoder": "libx264",
+      "cameras": 1,
+      "mode": "process_per_camera",
+      "texture": "noise",
+      "seconds": 5.0,
+      "measured_fps": [
+        100.0
+      ],
+      "frames_captured": [
+        501
+      ],
+      "frames_encoded": [
+        501
+      ],
+      "source_dropped_est": [
+        0
+      ],
+      "queue_dropped": [
+        0
+      ],
+      "encode_ms_per_frame": [
+        3.78
+      ],
+      "arrival_jitter_ms": [
+        0.266
+      ],
+      "process_cpu_percent_of_one_core": 264.1,
+      "logical_cpus": 16,
+      "synthetic_generation_ms_per_frame": 0.35,
+      "recorded_mbit_per_s_per_camera": 145.0
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "nominal_fps": 120.0,
+      "encoder": "libx264",
+      "cameras": 1,
+      "mode": "threads",
+      "texture": "noise",
+      "seconds": 5.0,
+      "measured_fps": [
+        120.0
+      ],
+      "frames_captured": [
+        600
+      ],
+      "frames_encoded": [
+        601
+      ],
+      "source_dropped_est": [
+        0
+      ],
+      "queue_dropped": [
+        0
+      ],
+      "encode_ms_per_frame": [
+        3.73
+      ],
+      "arrival_jitter_ms": [
+        0.0
+      ],
+      "process_cpu_percent_of_one_core": 371.9,
+      "logical_cpus": 16,
+      "synthetic_generation_ms_per_frame": 0.34,
+      "recorded_mbit_per_s_per_camera": 178.7
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "nominal_fps": 120.0,
+      "encoder": "libx264",
+      "cameras": 1,
+      "mode": "process_per_camera",
+      "texture": "noise",
+      "seconds": 5.0,
+      "measured_fps": [
+        120.0
+      ],
+      "frames_captured": [
+        603
+      ],
+      "frames_encoded": [
+        603
+      ],
+      "source_dropped_est": [
+        0
+      ],
+      "queue_dropped": [
+        0
+      ],
+      "encode_ms_per_frame": [
+        3.71
+      ],
+      "arrival_jitter_ms": [
+        0.001
+      ],
+      "process_cpu_percent_of_one_core": 348.4,
+      "logical_cpus": 16,
+      "synthetic_generation_ms_per_frame": 0.37,
+      "recorded_mbit_per_s_per_camera": 172.8
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "nominal_fps": 50.0,
+      "encoder": "libx264",
+      "cameras": 1,
+      "mode": "threads",
+      "texture": "noise",
+      "seconds": 5.0,
+      "measured_fps": [
+        50.0
+      ],
+      "frames_captured": [
+        250
+      ],
+      "frames_encoded": [
+        250
+      ],
+      "source_dropped_est": [
+        0
+      ],
+      "queue_dropped": [
+        0
+      ],
+      "encode_ms_per_frame": [
+        7.99
+      ],
+      "arrival_jitter_ms": [
+        0.179
+      ],
+      "process_cpu_percent_of_one_core": 353.3,
+      "logical_cpus": 16,
+      "synthetic_generation_ms_per_frame": 0.79,
+      "recorded_mbit_per_s_per_camera": 244.8
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "nominal_fps": 50.0,
+      "encoder": "libx264",
+      "cameras": 1,
+      "mode": "process_per_camera",
+      "texture": "noise",
+      "seconds": 5.0,
+      "measured_fps": [
+        50.0
+      ],
+      "frames_captured": [
+        252
+      ],
+      "frames_encoded": [
+        252
+      ],
+      "source_dropped_est": [
+        0
+      ],
+      "queue_dropped": [
+        0
+      ],
+      "encode_ms_per_frame": [
+        8.56
+      ],
+      "arrival_jitter_ms": [
+        0.181
+      ],
+      "process_cpu_percent_of_one_core": 335.3,
+      "logical_cpus": 16,
+      "synthetic_generation_ms_per_frame": 0.87,
+      "recorded_mbit_per_s_per_camera": 237.4
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "nominal_fps": 100.0,
+      "encoder": "libx264",
+      "cameras": 1,
+      "mode": "threads",
+      "texture": "noise",
+      "seconds": 5.0,
+      "measured_fps": [
+        100.0
+      ],
+      "frames_captured": [
+        501
+      ],
+      "frames_encoded": [
+        501
+      ],
+      "source_dropped_est": [
+        0
+      ],
+      "queue_dropped": [
+        0
+      ],
+      "encode_ms_per_frame": [
+        8.55
+      ],
+      "arrival_jitter_ms": [
+        0.331
+      ],
+      "process_cpu_percent_of_one_core": 612.2,
+      "logical_cpus": 16,
+      "synthetic_generation_ms_per_frame": 0.73,
+      "recorded_mbit_per_s_per_camera": 329.1
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "nominal_fps": 100.0,
+      "encoder": "libx264",
+      "cameras": 1,
+      "mode": "process_per_camera",
+      "texture": "noise",
+      "seconds": 5.0,
+      "measured_fps": [
+        100.0
+      ],
+      "frames_captured": [
+        503
+      ],
+      "frames_encoded": [
+        504
+      ],
+      "source_dropped_est": [
+        0
+      ],
+      "queue_dropped": [
+        0
+      ],
+      "encode_ms_per_frame": [
+        8.66
+      ],
+      "arrival_jitter_ms": [
+        0.384
+      ],
+      "process_cpu_percent_of_one_core": 624.1,
+      "logical_cpus": 16,
+      "synthetic_generation_ms_per_frame": 0.76,
+      "recorded_mbit_per_s_per_camera": 319.5
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "nominal_fps": 120.0,
+      "encoder": "libx264",
+      "cameras": 1,
+      "mode": "threads",
+      "texture": "noise",
+      "seconds": 5.0,
+      "measured_fps": [
+        119.98
+      ],
+      "frames_captured": [
+        601
+      ],
+      "frames_encoded": [
+        562
+      ],
+      "source_dropped_est": [
+        0
+      ],
+      "queue_dropped": [
+        0
+      ],
+      "encode_ms_per_frame": [
+        8.35
+      ],
+      "arrival_jitter_ms": [
+        0.386
+      ],
+      "process_cpu_percent_of_one_core": 738.1,
+      "logical_cpus": 16,
+      "synthetic_generation_ms_per_frame": 0.74,
+      "recorded_mbit_per_s_per_camera": 370.6
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "nominal_fps": 120.0,
+      "encoder": "libx264",
+      "cameras": 1,
+      "mode": "process_per_camera",
+      "texture": "noise",
+      "seconds": 5.0,
+      "measured_fps": [
+        120.0
+      ],
+      "frames_captured": [
+        609
+      ],
+      "frames_encoded": [
+        542
+      ],
+      "source_dropped_est": [
+        0
+      ],
+      "queue_dropped": [
+        11
+      ],
+      "encode_ms_per_frame": [
+        8.94
+      ],
+      "arrival_jitter_ms": [
+        0.531
+      ],
+      "process_cpu_percent_of_one_core": 662.8,
+      "logical_cpus": 16,
+      "synthetic_generation_ms_per_frame": 0.87,
+      "recorded_mbit_per_s_per_camera": 343.8
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "nominal_fps": 100.0,
+      "encoder": "libx264",
+      "cameras": 2,
+      "mode": "process_per_camera",
+      "texture": "noise",
+      "seconds": 5.0,
+      "measured_fps": [
+        102.52,
+        102.93
+      ],
+      "frames_captured": [
+        498,
+        496
+      ],
+      "frames_encoded": [
+        304,
+        304
+      ],
+      "source_dropped_est": [
+        5,
+        7
+      ],
+      "queue_dropped": [
+        153,
+        151
+      ],
+      "encode_ms_per_frame": [
+        15.31,
+        15.25
+      ],
+      "arrival_jitter_ms": [
+        1.573,
+        1.493
+      ],
+      "process_cpu_percent_of_one_core": 856.8,
+      "logical_cpus": 16,
+      "synthetic_generation_ms_per_frame": 0.8,
+      "recorded_mbit_per_s_per_camera": 220.5
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "nominal_fps": 100.0,
+      "encoder": "libx264",
+      "cameras": 3,
+      "mode": "process_per_camera",
+      "texture": "noise",
+      "seconds": 5.0,
+      "measured_fps": [
+        100.8,
+        101.76,
+        100.43
+      ],
+      "frames_captured": [
+        510,
+        507,
+        489
+      ],
+      "frames_encoded": [
+        211,
+        209,
+        203
+      ],
+      "source_dropped_est": [
+        22,
+        22,
+        27
+      ],
+      "queue_dropped": [
+        283,
+        278,
+        264
+      ],
+      "encode_ms_per_frame": [
+        22.86,
+        22.59,
+        22.49
+      ],
+      "arrival_jitter_ms": [
+        2.361,
+        2.462,
+        2.452
+      ],
+      "process_cpu_percent_of_one_core": 1010.6,
+      "logical_cpus": 16,
+      "synthetic_generation_ms_per_frame": 0.73,
+      "recorded_mbit_per_s_per_camera": 174.0
+    }
+  ]
+}

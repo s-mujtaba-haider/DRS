@@ -1,0 +1,27 @@
+# Live capture settings (keys map to ml.capture.recorder.RecorderConfig and ml.capture.sources.make_source).
+# All cameras share one host clock (time.perf_counter_ns). This is software synchronisation:
+# arrival time, not exposure time, and camera-specific latency is not compensated.
+recorder:
+  segment_s: 2.0          # raw H.264 segment length; each starts with an IDR frame
+  retention_s: 300.0      # rolling buffer kept on disk per camera
+  max_disk_mb: 20000      # per camera; oldest segments are deleted first
+  queue_size: 64          # frames buffered between capture and encoder; overflow is dropped and counted
+  encoder: auto           # auto = h264_nvenc if it opens, else libx264, else mpeg4
+storage_dir: storage/capture
+cameras:
+  # Examples; replace with your devices. type: opencv (device index, file, rtsp/http URL) or synthetic.
+  - camera_id: end_on
+    type: synthetic
+    width: 1280
+    height: 720
+    fps: 50
+  # - camera_id: side_on
+  #   type: opencv
+  #   uri: 0                # USB device index, or "rtsp://user@host/stream"
+  #   width: 1920
+  #   height: 1080
+  #   fps: 60
+export:
+  pre_s: 6.0              # seconds before the export request
+  codec: libx264
+  crf: 12

@@ -104,3 +104,22 @@ def test_side_probabilities():
     assert sp["in_line"] == pytest.approx(1 / 3)
     assert sp["outside_off"] == pytest.approx(1 / 3)
     assert sp["outside_leg"] == pytest.approx(1 / 3)
+
+
+def test_engine_output_feeds_drs_protocol():
+    from ml.protocol import ReviewOutcome, lbw_review, load_protocol
+
+    proto = load_protocol("icc_test_2025")
+    hw = WicketSpec().half_width_m
+    d = make_delivery(line_x=0.0, end_x=0.0, pitch_y=4.0)
+    res = analyze_lbw(_exact_fit(d), FACTS, impact_time_s=d.impact_time, calibration_validated=True)
+    zp = res.zone_probabilities
+    assert zp["impact"]["centre_in_line"] > 0.99 and zp["pitching"]["centre_outside_leg"] < 0.01
+    assert res.wicket_projection.p_centre_in_zone_by_height["top_of_bails"] > 0.99
+    dec = lbw_review(proto, "NOT_OUT", res.model_dump(mode="json"))
+    assert dec.outcome == ReviewOutcome.OVERTURNED and dec.final_decision == "OUT"
+    # Clipping the outside of off stump (centre just outside the zone): umpire's call, decision stands.
+    d = make_delivery(line_x=0.0, end_x=hw + 0.02, pitch_y=4.0)
+    res = analyze_lbw(_exact_fit(d), FACTS, impact_time_s=d.impact_time, calibration_validated=True)
+    dec = lbw_review(proto, "OUT", res.model_dump(mode="json"))
+    assert dec.outcome == ReviewOutcome.UMPIRES_CALL and dec.final_decision == "OUT" and dec.review_retained

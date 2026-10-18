@@ -1,0 +1,28 @@
+# Generic protocol for club / development matches with this system's own cameras.
+# No umpire's-call band: a component is decided on "any part of the ball", as Law 36 states it.
+# Organisers should set the review allowance for their competition.
+id: club_no_umpires_call
+name: Club review (no umpire's call)
+version: "1.0"
+format: generic
+effective_from: "2026-10-01"
+sources:
+  - title: "MCC Laws of Cricket 2026 edition (in force Oct 2026) - Law 36 Leg before wicket"
+    url: https://lawsofcricket.lords.org/laws-of-cricket/appeals-dismissals/leg-before-wicket
+  - title: "MCC, Ten major changes to the Laws for the 2026 edition"
+    url: https://www.lords.org/getmedia/72990a68-98cd-4c6e-89ac-a2dce54533ad/Ten-major-changes-to-Laws-for-2026-edition_5.pdf
+unverified:
+  - "Not a published competition protocol: a configurable default for organisers."
+reviews:
+  player_reviews_allowed: true
+  unsuccessful_reviews_per_innings: 1
+  top_up_after_overs: null
+  umpires_call_retains_review: false
+  request_time_limit_s: 15
+  not_reviewable_by_players: [timed_out]
+lbw:
+  umpires_call_enabled: false
+  wicket_zone_height: top_of_bails
+  min_component_confidence: 0.95
+  distance_rule:
+    enabled: false

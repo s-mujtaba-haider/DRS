@@ -1,0 +1,36 @@
+# DRS protocol: ICC men's Test playing conditions as applied from the 2025-27 WTC cycle.
+# Machine-readable summary for the experimental protocol layer (ml/protocol). Not the official text.
+id: icc_test_2025
+name: ICC men's Test match DRS (2025 playing conditions)
+version: "2025.1"
+format: test
+effective_from: "2025-06-17"
+sources:
+  - title: "ICC: Several changes made to ICC playing conditions (27 Jun 2025) - wicket zone = actual outline of stumps and bails; Test changes from 17 Jun 2025"
+    url: https://www.icc-cricket.com/news/several-changes-made-to-icc-playing-conditions
+  - title: "ICC men's Test Appendix D, Protocol 3 Player Review (2017 text): 15 s request limit, centre-of-ball criteria, umpire's call, 300 cm / 250 cm + 40 cm distance rules"
+    url: https://www.icc-cricket.com/news/mens-test-match-appendix-d-decision-review-system-drs-and-third-umpire-protocol-3-player-review
+  - title: "Wikipedia, Decision Review System: three unsuccessful reviews per Test innings (COVID-era increase made permanent); 80-over top-up ended 2017"
+    url: https://en.wikipedia.org/wiki/Decision_Review_System
+  - title: "cricket.com.au, Umpire's call explained (16 Mar 2022): no umpire's call for pitching; zone to top of bails since Apr 2021; distance rules"
+    url: https://www.cricket.com.au/news/3319658/umpires-call-explained-why-is-that-not-out-lbw-cricket-law-drs-decision-review-system-pitching-outside-leg-impact-in-line
+unverified:
+  - "Three unsuccessful reviews per Test innings is from secondary sources; the 2025 Appendix D text was not retrieved."
+  - "The 300 cm and 250 cm + 40 cm distance rules are in the 2017 Appendix D text and 2022 reporting; continued force after the 2025 changes is unverified."
+  - "'Actual outline of the stumps and bails' is modelled as the rectangle from ground to top of bails between the outer stump edges."
+reviews:
+  player_reviews_allowed: true
+  unsuccessful_reviews_per_innings: 3
+  top_up_after_overs: null
+  umpires_call_retains_review: true
+  request_time_limit_s: 15
+  not_reviewable_by_players: [timed_out]
+lbw:
+  umpires_call_enabled: true
+  wicket_zone_height: top_of_bails
+  min_component_confidence: 0.95
+  distance_rule:
+    enabled: true
+    impact_distance_m: 3.0
+    extended_impact_distance_m: 2.5
+    extended_max_pitch_to_impact_m: 0.4

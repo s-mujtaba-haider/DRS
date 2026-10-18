@@ -33,6 +33,9 @@ class WicketProjection(BaseModel):
     crossing_time_s: PointEstimate | None
     p_hit: float | None  # fraction of samples whose ball volume intersects the wicket
     p_centre_in_zone: float | None  # fraction with ball centre inside the wicket outline
+    # P(centre inside the zone) for alternative zone heights used by different DRS protocol versions:
+    # "top_of_bails" (= p_centre_in_zone) and "top_of_stumps". Protocol layer only (ml.protocol).
+    p_centre_in_zone_by_height: dict[str, float] | None = None
     p_below_ground: float  # samples whose projection reached ground before the stumps
     n_samples: int
     projection_distance_m: float | None
@@ -106,6 +109,7 @@ def project_to_wicket(fit: FlightFit, impact_time_s: float, wicket: WicketSpec, 
     # Reference only: ICC playing conditions (from June/July 2025) define the wicket zone as the
     # outline of stumps and bails; ball-tracking 'umpire's call' depends on whether the centre is inside it.
     centre_in = (np.abs(Cv[:, 0]) <= hw) & (Cv[:, 1] >= 0) & (Cv[:, 1] <= top)
+    centre_in_stumps = (np.abs(Cv[:, 0]) <= hw) & (Cv[:, 1] >= 0) & (Cv[:, 1] <= wicket.stump_height_m)
     # Samples that never reach the stumps (e.g. ball moving away) count as misses.
     p_hit = float(hit.sum() / n_samples)
     nominal_tc = time_at_plane_y(fit.model, 0.0, impact_time_s)
@@ -118,5 +122,7 @@ def project_to_wicket(fit: FlightFit, impact_time_s: float, wicket: WicketSpec, 
         dist = float(math.dist(imp, p))
     return WicketProjection(crossing=_estimate(Cv), crossing_time_s=_estimate(np.asarray(times)[valid]),
                             p_hit=p_hit, p_centre_in_zone=float(centre_in.sum() / n_samples),
+                            p_centre_in_zone_by_height={"top_of_bails": float(centre_in.sum() / n_samples),
+                                                        "top_of_stumps": float(centre_in_stumps.sum() / n_samples)},
                             p_below_ground=below / n_samples, n_samples=n_samples, projection_distance_m=dist,
                             nominal_crossing_xz=nominal)

@@ -1,0 +1,16 @@
+# Experimental run-out / stumping crease engine (keys map to ml.runout.engine.CreaseConfig).
+# Rules: MCC Laws of Cricket, 2017 Code 4th Edition (2026), Laws 7.3, 29, 30, 38, 39.
+#   https://www.lords.org/mcc/the-laws-of-cricket
+# The popping crease is the BACK edge of the marking (Law 7.3); a point on the line is not behind it.
+decision_confidence: 0.95        # P(behind) >= 0.95 -> BEHIND; <= 0.05 -> NOT_BEHIND; otherwise AMBIGUOUS
+default_point_sigma_px: 2.0      # localisation sigma for operator-clicked bat-tip / foot points
+max_frame_gap_warn_ms: 10.0      # warn when observations are further apart (below ~100 fps)
+max_break_interval_warn_ms: 20.0 # warn when the wicket-break window is wider than this
+wicket_break_detection:          # ml.runout.events.detect_wicket_break keyword arguments
+  n_reference: 5                 # first frames must show the intact wicket
+  bails_band_frac: 0.3           # top fraction of the ROI holding the bails
+  persist_frames: 3              # consecutive changed frames required (rejects a passing ball)
+  min_pixel_diff: 25.0           # grey levels; floor for the per-pixel change threshold
+  min_roi_frac: 0.03             # floor: fraction of changed ROI pixels
+  min_bails_frac: 0.02           # floor: fraction of changed pixels in the bails band
+  noise_k: 6.0                   # thresholds = noise_k x reference-frame noise

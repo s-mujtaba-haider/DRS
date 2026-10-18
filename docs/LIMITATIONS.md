@@ -53,10 +53,30 @@ These limitations are measured or known. They are not hypothetical.
   - interception by the person;
   - genuine attempt to play.
 - The off side is taken from user-entered handedness. Switch hits are not handled.
-- Competition-specific DRS protocol (umpire's call thresholds, review counts) is **not** implemented as a decision. `p_centre_in_zone` is reported for reference only.
+- The competition DRS protocol (umpire's call, review counts) is implemented in `ml/protocol`, but **only as an advisory recommendation**; a human records every decision. Some protocol values (review counts, the 300 cm / 250 cm + 40 cm distance rules after 2025) come from secondary sources and are listed as `unverified` in each config. The 2025 "actual outline of stumps and bails" wicket zone is modelled as a rectangle up to the top of the bails.
+
+## Run-out and stumping
+- Batter and bat positions are **marked by the operator**. There is no bat-tip, foot or grounding detector yet. The engine's job is to make the marking frame-exact and the timing logic rigorous, not to see the bat.
+- The wicket-break detector is a **candidate** only. A glove resting on the stumps, camera motion, or a bail disturbed but not removed all look like a break. It is never marked confirmed: the operator confirms complete removal (Law 29.1). The region of interest is fixed in the image, so camera motion invalidates it.
+- Timing is quantised by the frame rate. At 25–50 fps the inter-frame gap is 20–40 ms. When grounding and the break fall in the same gap, the result is `INCONCLUSIVE`.
+- Manual crease lines are measured in image pixels, so perspective makes pixel distance non-uniform in metres. Metric distances need a calibration.
+- Tested on synthetic geometry and synthetic footage only. No labelled real run-out footage was available.
+
+## Boundary
+- Events are marked by the operator. Rope, ball and fielder contact are not detected automatically.
+- Image-plane rope geometry is only meaningful for points on the ground. A ball or fielder in the air projects across the rope.
+- Six vs four needs the "struck by the bat" fact; otherwise the result is `INCONCLUSIVE` with `boundary_scored=true`.
+
+## Live capture and synchronisation
+- **Software synchronisation only.** Frames are timestamped when they arrive at the PC, not at exposure, so each camera's transport latency is unknown and not compensated. The sync uncertainty is reported as one frame interval plus measured arrival jitter (10–33 ms at 30–100 fps).
+  - On the synthetic two-camera rig this means about 3.5 cm of 3D error per ms and 8–15 cm stump-plane error (`EVALUATION.md` §7).
+  - Reprojection error does **not** reveal sync error.
+- OpenCV's backend timestamps on Windows (MSMF) tick at 33.3 ms and are not trusted. Webcams often deliver less than their declared rate; this is detected and flagged.
+- Capture throughput was measured with synthetic frames on one PC. Real cameras (USB bandwidth, GigE packet loss) were not tested beyond one 640×480 / 1280×720 webcam. The GeForce NVENC session limit was not measured.
+- Audio sync (GCC-PHAT) is tested on synthetic signals only. The audio-to-video mux offset inside each file is unknown, so audio alignment is not frame alignment.
 
 ## Not implemented
-Run-out, stumping and boundary analysis; synchronised multi-camera ingestion; audio (snicko); thermal; bat detection; pad and body segmentation; automatic crease detection.
+Hardware-triggered or PTP camera timestamps; audio (snicko); thermal; bat detection; pad and body segmentation; automatic crease detection on real footage; automatic batter/bat grounding detection; broadcast graphics output; user accounts and roles.
 
 ## Automatic calibration from stumps (experimental)
 - The stumps detector was trained on **one match**. It finds both wickets in only 7 of 18 held-out frames that show both, and its box edges are off by more than 7 px in 10% of cases.

@@ -56,6 +56,15 @@ Health and docs:
 - http://127.0.0.1:8100/api/system/status (GPU, torch, models)
 - http://127.0.0.1:8100/docs (OpenAPI)
 
+Live capture settings (optional, environment variables or `.env`):
+
+| Variable | Default | Meaning |
+|---|---|---|
+| `DRS_CAPTURE_PROCESS_PER_CAMERA` | `false` | Record each camera in its own process (recommended for 2+ cameras at ≥ 100 fps) |
+| `DRS_CAPTURE_ENCODER` | `auto` | `auto` (NVENC if available, else libx264), `h264_nvenc`, `libx264` or `mpeg4` |
+| `DRS_CAPTURE_RETENTION_S` | `300` | Rolling buffer per camera, in seconds |
+| `DRS_CAPTURE_MAX_DISK_MB` | `20000` | Disk cap per camera |
+
 Frontend (port 3100, chosen to avoid the common default 3000):
 
 ```powershell

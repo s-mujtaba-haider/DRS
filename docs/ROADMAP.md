@@ -16,7 +16,8 @@ Ordered by expected impact on real-footage usefulness.
    - Filter by shot type (pitch view vs. replay or crowd); `suksham-cricket-frames` provides labels for this.
    - Detect bowl release using the DeepSportradar set, which is non-commercial.
 5. **Multi-camera workflow.**
-   - Per-camera jobs, then estimate synchronisation offsets (audio cross-correlation or visual events).
+   - Done: synchronised capture on one host clock, clip export per review, and audio/event sync estimation (`/api/sync/*`).
+   - Next: hardware sync (PTP or trigger) for real rigs; run per-camera tracking jobs for a clip group automatically.
    - Associate tracks across cameras and feed them to `/api/reconstruction/triangulate`, then `fit_to_points`.
    - Validate on `kaggle-wide-balls-2view` (front and side views plus calibration material).
 6. **Physics refinement.**
@@ -26,9 +27,20 @@ Ordered by expected impact on real-footage usefulness.
 7. **Contact analysis.**
    - Bat detection and segmentation, plus contact-region tracking.
    - Synchronised audio only with genuine high-rate audio and validation data.
-8. **Run-out and stumping.** Crease geometry, bat and foot localisation, wicket-break timing, and a frame-accurate review timeline. These need high-frame-rate side-on footage to be meaningful.
-9. **Boundary analysis.** Rope detection, field geometry, and fielder-ball-rope interaction evidence.
+8. **Run-out and stumping.**
+   - Done: crease geometry, wicket-break candidates, the timing engine, Law 38/39 rules and the review UI.
+   - Next: a bat-tip and foot keypoint detector to propose marks; break detection that follows camera motion; evaluation on labelled high-frame-rate side-on footage.
+9. **Boundary analysis.**
+   - Done: rope geometry, the event-sequence Law 19/33 engine and its UI.
+   - Next: rope segmentation and fielder pose, so events are proposed rather than hand-marked.
 10. **Performance.**
     - TensorRT FP16 engine export for the trained detector.
     - Overlap decoding and inference (decoding already runs at 245–770 fps on the CPU).
     - Use NVDEC where available.
+11. **Match-day hardening.**
+    - Done: matches, reviews, protocol engine, audit log, evidence packages and live capture.
+    - Next:
+      - Role-based login for operator vs third umpire.
+      - PDF review report.
+      - A large replay-monitor view for the third umpire.
+      - A rehearsal mode that replays recorded matches through capture.

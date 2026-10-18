@@ -43,6 +43,8 @@ export interface VideoMeta {
   height: number;
   nominal_fps: number | null;
   frame_count_declared: number | null;
+  frame_count_decoded?: number | null;
+  capture?: { camera_id: string; clip_group: string; time_offset_ms: number | null; sync_uncertainty_ms: number | null; hardware_sync: boolean; missing_frames: number | null };
   duration_s: number | null;
   variable_frame_rate: boolean | null;
   pts_delta_ms_mean: number | null;
@@ -292,6 +294,132 @@ export interface DatasetEntry {
   download_note?: string;
 }
 
+
+// ---------------------------------------------------------------- match day
+export interface ProtocolSummary {
+  id: string;
+  name: string;
+  version: string;
+  [k: string]: unknown;
+}
+export interface TeamReviewCount {
+  unsuccessful_used: number;
+  remaining: number | null;
+  retained_umpires_call: number;
+}
+export interface Match {
+  id: string;
+  name: string;
+  team_a: string;
+  team_b: string;
+  protocol_id: string;
+  venue: string | null;
+  match_date: string | null;
+  status: "live" | "completed" | "abandoned";
+  current_innings: number;
+  batting_team: string | null;
+  officials: Record<string, string>;
+  created_at: string;
+  reviews: { current_innings: number; teams: Record<string, TeamReviewCount> };
+}
+export type DecisionType = "lbw" | "caught" | "run_out" | "stumping" | "boundary" | "other";
+export interface EvidenceRef {
+  type: "lbw" | "decision";
+  id: string;
+  kind: string;
+  attached_at: string;
+}
+export interface Recommendation {
+  outcome: "UPHELD" | "OVERTURNED" | "UMPIRES_CALL" | "INCONCLUSIVE";
+  final_decision: string;
+  review_retained: boolean | null;
+  reasons: string[];
+  warnings: string[];
+  components?: { name?: string; id?: string; status?: string; umpires_call?: boolean; evidence?: string; [k: string]: unknown }[];
+  protocol_id: string;
+  boundary_status?: string;
+  computed_at: string;
+  [k: string]: unknown;
+}
+export interface ReviewEvent {
+  id: string;
+  action: string;
+  actor: string;
+  payload: Record<string, unknown>;
+  created_at: string;
+}
+export interface Review {
+  id: string;
+  match_id: string;
+  seq: number;
+  innings: number;
+  over_ball: string | null;
+  requested_by: string;
+  kind: "player" | "umpire";
+  decision_type: DecisionType;
+  on_field: "OUT" | "NOT_OUT" | "NONE";
+  batter: string | null;
+  bowler: string | null;
+  video_ids: string[];
+  evidence: EvidenceRef[];
+  recommendation: Recommendation | null;
+  status: "open" | "decided" | "withdrawn";
+  final_decision: string | null;
+  outcome: string | null;
+  decided_by: string | null;
+  notes: string | null;
+  created_at: string;
+  decided_at: string | null;
+  events?: ReviewEvent[];
+}
+export interface DecisionAnalysis {
+  id: string;
+  kind: string;
+  video_id: string | null;
+  calibration_id: string | null;
+  request: Record<string, unknown>;
+  result: Record<string, unknown> & { status?: string; reasons?: string[]; warnings?: string[] };
+  created_at: string;
+}
+
+export interface CaptureCamera {
+  camera_id: string;
+  source: string;
+  running: boolean;
+  width: number | null;
+  height: number | null;
+  nominal_fps: number | null;
+  measured_fps: number | null;
+  rate_mismatch?: boolean;
+  frames_captured: number;
+  frames_encoded: number;
+  source_dropped_est: number;
+  late_arrivals?: number;
+  queue_dropped: number;
+  encoder: string | null;
+  encoder_backlog: number;
+  encode_ms_per_frame: number | null;
+  arrival_jitter_ms: number | null;
+  last_frame_age_s: number | null;
+  buffer_span_s: number | null;
+  disk_bytes: number;
+  disk_free_bytes?: number | null;
+  error: string | null;
+}
+export interface CaptureStatus {
+  sync_method: string;
+  hardware_sync: boolean;
+  mode?: string;
+  cameras: CaptureCamera[];
+}
+export interface ClipResult {
+  clip_group: string;
+  videos: Video[];
+  failed: Record<string, string>;
+  sync: { method: string; hardware_sync: boolean; max_sync_uncertainty_ms: number; note: string } | null;
+  warnings: string[];
+}
+
 // ---------------------------------------------------------------- calls
 export const api = {
   health: () => request<{ status: string }>("/api/health"),
@@ -339,6 +467,33 @@ export const api = {
   lbwList: (jobId: string) => request<LbwAnalysis[]>(`/api/lbw?job_id=${jobId}`),
   lbwAnalyze: (body: Record<string, unknown>) => request<LbwAnalysis>("/api/lbw/analyze", json(body)),
   contact: (jobId: string) => request<Record<string, unknown>>("/api/contact/analyze", json({ job_id: jobId })),
+  protocols: () => request<ProtocolSummary[]>("/api/protocols"),
+  protocol: (id: string) => request<Record<string, unknown>>(`/api/protocols/${id}`),
+  matches: () => request<Match[]>("/api/matches"),
+  match: (id: string) => request<Match>(`/api/matches/${id}`),
+  createMatch: (body: Record<string, unknown>) => request<Match>("/api/matches", json(body)),
+  updateMatch: (id: string, body: Record<string, unknown>) =>
+    request<Match>(`/api/matches/${id}`, { ...json(body), method: "PATCH" }),
+  reviews: (matchId: string) => request<Review[]>(`/api/matches/${matchId}/reviews`),
+  createReview: (matchId: string, body: Record<string, unknown>) => request<Review>(`/api/matches/${matchId}/reviews`, json(body)),
+  review: (id: string) => request<Review>(`/api/reviews/${id}`),
+  addReviewVideo: (id: string, videoId: string) => request<Review>(`/api/reviews/${id}/videos`, json({ video_id: videoId })),
+  attachEvidence: (id: string, type: "lbw" | "decision", evidenceId: string) =>
+    request<Review>(`/api/reviews/${id}/evidence`, json({ type, id: evidenceId })),
+  recommend: (id: string) => request<Review>(`/api/reviews/${id}/recommend`, { method: "POST" }),
+  decide: (id: string, body: Record<string, unknown>) => request<Review>(`/api/reviews/${id}/decide`, json(body)),
+  withdraw: (id: string, reason: string) => request<Review>(`/api/reviews/${id}/withdraw`, json({ reason })),
+  detectWicketBreak: (body: Record<string, unknown>) => request<DecisionAnalysis>("/api/wicket-break/detect", json(body)),
+  runoutAnalyze: (body: Record<string, unknown>) => request<DecisionAnalysis>("/api/runout/analyze", json(body)),
+  boundaryAnalyze: (body: Record<string, unknown>) => request<DecisionAnalysis>("/api/boundary/analyze", json(body)),
+  captureStatus: () => request<CaptureStatus>("/api/capture/status"),
+  captureStart: (body: Record<string, unknown>) => request<CaptureStatus>("/api/capture/start", json(body)),
+  captureStop: (cameraId?: string) => request<CaptureStatus>(`/api/capture/stop${cameraId ? `?camera_id=${encodeURIComponent(cameraId)}` : ""}`, { method: "POST" }),
+  captureClip: (body: Record<string, unknown>) => request<ClipResult>("/api/capture/clip", json(body)),
+  syncAudio: (body: Record<string, unknown>) => request<Record<string, unknown>>("/api/sync/audio", json(body)),
+  syncEvents: (body: Record<string, unknown>) => request<Record<string, unknown>>("/api/sync/events", json(body)),
+  decisionAnalysis: (id: string) => request<DecisionAnalysis>(`/api/decision-analyses/${id}`),
+  decisionAnalyses: (videoId?: string) => request<DecisionAnalysis[]>(`/api/decision-analyses${videoId ? `?video_id=${videoId}` : ""}`),
 };
 
 export const urls = {
@@ -348,4 +503,6 @@ export const urls = {
   report: (jobId: string) => `${API_BASE}/api/analysis/jobs/${jobId}/report.pdf`,
   exportJson: (jobId: string) => `${API_BASE}/api/analysis/jobs/${jobId}/export.json`,
   docs: () => `${API_BASE}/docs`,
+  capturePreview: (cameraId: string, n: number) => `${API_BASE}/api/capture/preview/${encodeURIComponent(cameraId)}?n=${n}`,
+  reviewPackage: (reviewId: string) => `${API_BASE}/api/reviews/${reviewId}/package`,
 };

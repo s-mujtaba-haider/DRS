@@ -18,7 +18,12 @@ An independent, locally-run research system for cricket ball tracking and **expe
 | 3D flight model (gravity, drag, lift, bounce; monocular and multi-view fits) | Implemented. Benchmarked on synthetic deliveries. |
 | Experimental LBW engine (Monte Carlo, Law 36 rules layer, unknowns stay unknown) | Implemented. Benchmarked on synthetic data only. |
 | Contact (edge) analysis | Experimental: trajectory-deflection candidates only. Returns `INCONCLUSIVE` below 100 fps. |
-| Run-out, stumping, boundary | **Planned.** Not implemented (see `docs/ROADMAP.md`). |
+| Run-out and stumping (crease geometry, wicket-break candidates, frame-interval timing logic, Laws 29/30/38/39) | Implemented. Tested on synthetic geometry and footage. Evidence comes from operator-marked frames; the engine says `INCONCLUSIVE` when grounding and the break fall in the same inter-frame gap. |
+| Boundary and catch-near-boundary (rope geometry, event sequence, Law 19 incl. 2026 19.5.2, Law 33) | Implemented. Tested on synthetic sequences. Image-space rope geometry is valid only for ground contacts. |
+| DRS protocol engine (versioned ICC Test/ODI/T20I 2025 and club configs; umpire's call, review counts) | Implemented and tested. Some protocol values are from secondary sources and are listed as `unverified` in each config. |
+| Match-day console (matches, reviews, evidence, advisory recommendation, human decision, audit log, evidence package) | Implemented and tested, and checked in the browser end to end. See `docs/MATCH_DAY.md`. |
+| Live multi-camera capture (rolling disk buffer, NVENC, preview, instant clip export with per-frame capture timing) | Implemented. Measured: 3 × 1080p100 on this PC with NVENC in process mode (`docs/EVALUATION.md` §7). **Software sync only.** |
+| Multi-camera time sync (audio GCC-PHAT, visual-event interval matching) | Implemented. Tested on synthetic signals. Not validated on real multi-camera footage. |
 | Web console (dashboard, upload/jobs, frame-accurate review, corrections, calibration, LBW, 3D, reports) | Implemented. Type-checked, linted and production-built. |
 | Backend API (FastAPI, background jobs, SQLite, PDF/JSON/CSV exports) | Implemented and tested |
 
@@ -29,7 +34,8 @@ frontend/  Next.js 16 + React 19 + TypeScript + Tailwind, three.js (r3f), rechar
    |  REST (JSON, multipart upload, Range video streaming)
 backend/   FastAPI + SQLAlchemy (SQLite) + background job manager                    :8100
    |  python calls
-ml/        video | detection | tracking | trajectory | calibration | reconstruction | lbw | contact_analysis | evaluation | datasets
+ml/        video | capture | synchronization | detection | tracking | trajectory | calibration | reconstruction
+           lbw | runout | boundary | protocol | contact_analysis | evaluation | datasets
 scripts/   CLI: download/validate/prepare datasets, train/evaluate detector, run tracking/analysis, calibrate, benchmark
 ```
 
@@ -71,6 +77,11 @@ Full instructions, Docker GPU option and troubleshooting are in [`docs/INSTALLAT
 
 ## Using the console
 
+**At a match:** follow [`docs/MATCH_DAY.md`](docs/MATCH_DAY.md). In short: *Live capture* starts the cameras, *Match day* creates the match, and each review clips the last seconds of every camera. The operator marks the evidence and computes the advisory recommendation; the third umpire records the decision.
+
+**Offline analysis of a single clip:**
+
+
 1. **New analysis.** Upload a video, inspect its metadata and warnings, choose a detector, and start. Progress can be cancelled.
 2. **Session › Tracking.**
    - Frame-accurate playback (`←`/`→` step, space play/pause, 0.1–1× speed) with overlays.
@@ -100,6 +111,10 @@ python scripts\calibrate_cameras.py intrinsics|pose|landmarks|auto ...
 python scripts\run_drs_analysis.py VIDEO --out DIR --camera camera.json --impact-frame N --handedness right
 python scripts\evaluate_trajectory_synth.py --limit 120 [--offset 120]
 python scripts\benchmark_inference.py VIDEO
+python scripts\capture_cameras.py probe|record|benchmark ...    # live capture without the web console
+python scripts\estimate_sync.py audio|events ... [--apply-to camera.json]
+python scripts\evaluate_sync_sensitivity.py
+python scripts\analyze_runout.py detect|analyze ...
 ```
 
 ## The cricket ball detector
@@ -115,7 +130,7 @@ The biggest remaining gain is **broadcast-domain training data**:
 ## Tests
 
 ```powershell
-.\.venv\Scripts\python -m pytest            # ML + API: 70+ tests (synthetic fixtures)
+.\.venv\Scripts\python -m pytest            # ML + API (synthetic fixtures)
 .\.venv\Scripts\ruff check ml backend scripts tests
 cd frontend; npx tsc --noEmit; npm run lint; npm run build
 ```
@@ -124,6 +139,9 @@ Synthetic tests verify that the implementation behaves as designed. They don't e
 
 ## Documentation
 
+- [Match-day operation](docs/MATCH_DAY.md)
+- [International DRS requirements](docs/INTERNATIONAL_DRS_REQUIREMENTS.md)
+- [Camera hardware](docs/CAMERA_HARDWARE.md)
 - [Architecture](docs/ARCHITECTURE.md)
 - [Installation](docs/INSTALLATION.md)
 - [Datasets](docs/DATASETS.md)

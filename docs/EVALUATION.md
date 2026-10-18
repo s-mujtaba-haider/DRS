@@ -4,7 +4,7 @@ Every number here was measured in this repository on 2026-10-12. The raw outputs
 
 ## 1. Automated tests
 
-- `pytest`: 84 tests, all passing. They cover:
+- `pytest`: 163 tests, all passing (2026-10-18). Besides the areas below, they cover the match/review API, protocol engine, run-out/stumping/boundary engines and endpoints, live capture through the API, and synchronisation. The earlier set covers:
   - video metadata, frame extraction, and empty or invalid files;
   - the detection schema, NMS, tiling, the motion detector and missing-weights errors;
   - Kalman initialisation, missing frames, outlier rejection, static clutter and camera cuts;
@@ -322,6 +322,48 @@ An ignored 1%/frame zoom triples the error and halves the coverage of the uncert
 - Decoding runs at 245 fps (Docker) to 770 fps (native) for 1080p H.264.
 - **End-to-end throughput** for hybrid detection, tracking and 1080p annotated-video rendering is about 10 fps in Docker. With the motion heuristic only it is about 18 fps (native CPU).
 - The pipeline is offline and not real-time. Rendering and motion candidates, not the GPU, are the bottleneck.
+
+## 7. Live capture and synchronisation (synthetic sources, this PC)
+
+**Capture throughput.**
+- Setup: synthetic frames with sensor-like noise, 5 s after a 1 s warm-up, on a Ryzen 7 7700 + RTX 3080 Ti.
+- Raw output: `outputs/reports/capture_benchmark.json` (`scripts/capture_cameras.py benchmark`).
+
+| Encoder / mode | Config | Frames dropped | Encode ms/frame |
+|---|---|---|---|
+| NVENC, threads | 720p at 50/100/120 fps | 0 | 1.8–2.2 |
+| NVENC, threads | 1080p at 50/100/120 fps | 0 | 3.1–3.5 |
+| NVENC, process per camera | 2 × 1080p100 | 0 | 4.1–4.6 |
+| NVENC, process per camera | 3 × 1080p100 | 0 queue drops, near the limit | 9.7 |
+| libx264 | 1080p100, 1 camera | 0 | 8.6 |
+| libx264 | 2 × 1080p100 | 304 | 15.3 |
+
+- **Bitrate:** about 35 MB/s per 1080p100 camera on noisy content.
+- **Timing:** exported clips reproduce the recorded host arrival times to within 0.006 ms.
+- **Webcam:** one physical webcam declared 30 fps but delivered about 15 fps. The mismatch is detected and flagged.
+- **Late arrivals:** in an end-to-end run through the API (two synthetic cameras, 50 + 100 fps, alongside the web server), about 1–2% of frames arrived more than 1.5 intervals late because of host scheduling stalls.
+  - These frames were not lost: the device frame counter was contiguous, and no frames were missing from the clip.
+  - They are now reported as `late_arrivals` instead of drops.
+  - Their arrival times are still delayed, which is one more reason software sync is approximate.
+
+**Sync sensitivity.**
+- Setup: synthetic end-on + side-on 1080p rig, ball at about 37 m/s, triangulated with a given sync error, flight-model fit, projected to the stump plane. Script: `scripts/evaluate_sync_sensitivity.py`; output: `sync_sensitivity.json`.
+- 3D position error grows by about 3.54 cm per ms of sync error, regardless of frame rate.
+- Stump-plane error at 100 fps with 1 px noise (median of 20 runs):
+
+| Sync error | 0 ms | 1 ms | 2 ms | 5 ms | 10 ms | 20 ms |
+|---|---|---|---|---|---|---|
+| Stump-plane error | 1.1 cm | 1.8 cm | 2.5 cm | 4.7 cm | 8.2 cm | 14.7 cm |
+
+- Reprojection error stays near 1–2.5 px at these errors, so **it cannot detect sync error**.
+
+**Audio sync.** GCC-PHAT recovers a synthetic 123.375 ms offset to within 0.4 µs. File-based offsets come back within 0.2 ms, and pure noise returns `LOW_CONFIDENCE`. Not tested on real stadium audio.
+
+## 8. Run-out, stumping and boundary engines
+
+- Covered by deterministic tests on synthetic geometry and footage: crease sign conventions at both ends, metric distance, near-line ambiguity, wicket-break detection on encoded video, timing-window logic, Law 30.1.2, Law 38/39 exceptions, Law 19 six/four, and the 2026 airborne-fielder rule.
+- No labelled real footage was available, so **real-world accuracy is unknown**.
+- The engines' value is exact geometry and timing given correct marks. Their failure mode is wrong marks.
 
 ## 6. Not measured (no ground truth available)
 
