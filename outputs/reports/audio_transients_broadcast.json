@@ -2,11 +2,11 @@
  "summary": {
   "clips": 60,
   "with_audio": 60,
-  "clips_with_transient": 14,
+  "clips_with_transient": 25,
   "transients_per_clip_median": 0.0,
-  "transients_per_clip_p90": 1.0,
+  "transients_per_clip_p90": 5.200000000000003,
   "transients_per_second_median": 0.0,
-  "seconds": 3.7,
+  "seconds": 4.7,
   "caveat": "No contact labels: this is the detector's firing rate on broadcast audio, not edge accuracy."
  },
  "clips": [
@@ -22,42 +22,63 @@
   },
   {
    "file": "video002.mp4",
-   "status": "NO_TRANSIENT",
+   "status": "TRANSIENTS_FOUND",
    "duration_s": 8.0018125,
-   "n_transients": 0,
-   "per_second": 0.0,
+   "n_transients": 2,
+   "per_second": 0.24994337220473486,
    "noise_floor_db": -34.93,
-   "snr_db": [],
+   "snr_db": [
+    26.2,
+    21.9
+   ],
    "highpass_hz": 2000.0
   },
   {
    "file": "video003.mp4",
-   "status": "NO_TRANSIENT",
+   "status": "TRANSIENTS_FOUND",
    "duration_s": 5.999979166666667,
-   "n_transients": 0,
-   "per_second": 0.0,
+   "n_transients": 8,
+   "per_second": 1.333337962979038,
    "noise_floor_db": -39.18,
-   "snr_db": [],
+   "snr_db": [
+    30.1,
+    20.6,
+    20.5,
+    22.8,
+    23.0,
+    22.5,
+    27.0,
+    21.6
+   ],
    "highpass_hz": 2000.0
   },
   {
    "file": "video004.mp4",
-   "status": "NO_TRANSIENT",
+   "status": "TRANSIENTS_FOUND",
    "duration_s": 7.010979166666667,
-   "n_transients": 0,
-   "per_second": 0.0,
+   "n_transients": 4,
+   "per_second": 0.5705337164625721,
    "noise_floor_db": -43.36,
-   "snr_db": [],
+   "snr_db": [
+    32.5,
+    29.9,
+    29.8,
+    28.3
+   ],
    "highpass_hz": 2000.0
   },
   {
    "file": "video005.mp4",
-   "status": "NO_TRANSIENT",
+   "status": "TRANSIENTS_FOUND",
    "duration_s": 5.001979166666667,
-   "n_transients": 0,
-   "per_second": 0.0,
+   "n_transients": 3,
+   "per_second": 0.599762593973219,
    "noise_floor_db": -38.76,
-   "snr_db": [],
+   "snr_db": [
+    26.0,
+    23.5,
+    22.9
+   ],
    "highpass_hz": 2000.0
   },
   {
@@ -106,11 +127,15 @@
    "file": "video010.mp4",
    "status": "TRANSIENTS_FOUND",
    "duration_s": 4.003895833333334,
-   "n_transients": 1,
-   "per_second": 0.2497567473346272,
+   "n_transients": 5,
+   "per_second": 1.2487837366731358,
    "noise_floor_db": -45.0,
    "snr_db": [
-    36.8
+    36.8,
+    30.5,
+    25.3,
+    25.8,
+    30.1
    ],
    "highpass_hz": 2000.0
   },
@@ -150,12 +175,14 @@
   },
   {
    "file": "video014.mp4",
-   "status": "NO_TRANSIENT",
+   "status": "TRANSIENTS_FOUND",
    "duration_s": 8.012979166666668,
-   "n_transients": 0,
-   "per_second": 0.0,
+   "n_transients": 1,
+   "per_second": 0.12479752900892561,
    "noise_floor_db": -40.26,
-   "snr_db": [],
+   "snr_db": [
+    27.2
+   ],
    "highpass_hz": 2000.0
   },
   {
@@ -172,22 +199,27 @@
   },
   {
    "file": "video016.mp4",
-   "status": "NO_TRANSIENT",
+   "status": "TRANSIENTS_FOUND",
    "duration_s": 7.016,
-   "n_transients": 0,
-   "per_second": 0.0,
+   "n_transients": 1,
+   "per_second": 0.14253135689851767,
    "noise_floor_db": -45.95,
-   "snr_db": [],
+   "snr_db": [
+    33.2
+   ],
    "highpass_hz": 2000.0
   },
   {
    "file": "video017.mp4",
-   "status": "NO_TRANSIENT",
+   "status": "TRANSIENTS_FOUND",
    "duration_s": 6.011979166666667,
-   "n_transients": 0,
-   "per_second": 0.0,
+   "n_transients": 2,
+   "per_second": 0.3326691501342805,
    "noise_floor_db": -41.08,
-   "snr_db": [],
+   "snr_db": [
+    29.4,
+    24.5
+   ],
    "highpass_hz": 2000.0
   },
   {
@@ -204,11 +236,12 @@
    "file": "video019.mp4",
    "status": "TRANSIENTS_FOUND",
    "duration_s": 4.507833333333333,
-   "n_transients": 1,
-   "per_second": 0.22183606314933266,
+   "n_transients": 2,
+   "per_second": 0.4436721262986653,
    "noise_floor_db": -43.97,
    "snr_db": [
-    31.7
+    31.7,
+    25.7
    ],
    "highpass_hz": 2000.0
   },
@@ -240,11 +273,13 @@
    "file": "video022.mp4",
    "status": "TRANSIENTS_FOUND",
    "duration_s": 4.999979166666667,
-   "n_transients": 1,
-   "per_second": 0.20000083333680557,
+   "n_transients": 3,
+   "per_second": 0.6000025000104167,
    "noise_floor_db": -46.26,
    "snr_db": [
-    33.3
+    25.9,
+    33.3,
+    28.3
    ],
    "highpass_hz": 2000.0
   },
@@ -270,67 +305,96 @@
   },
   {
    "file": "video025.mp4",
-   "status": "NO_TRANSIENT",
+   "status": "TRANSIENTS_FOUND",
    "duration_s": 6.0189375,
-   "n_transients": 0,
-   "per_second": 0.0,
+   "n_transients": 7,
+   "per_second": 1.1629959606658151,
    "noise_floor_db": -48.47,
-   "snr_db": [],
+   "snr_db": [
+    40.8,
+    31.3,
+    30.2,
+    31.9,
+    34.7,
+    31.1,
+    31.9
+   ],
    "highpass_hz": 2000.0
   },
   {
    "file": "video026.mp4",
    "status": "TRANSIENTS_FOUND",
    "duration_s": 5.010979166666667,
-   "n_transients": 2,
-   "per_second": 0.399123591114511,
+   "n_transients": 10,
+   "per_second": 1.995617955572555,
    "noise_floor_db": -48.49,
    "snr_db": [
+    25.2,
     29.1,
-    30.0
+    28.4,
+    38.8,
+    30.0,
+    30.0,
+    25.5,
+    28.4,
+    24.3,
+    25.3
    ],
    "highpass_hz": 2000.0
   },
   {
    "file": "video027.mp4",
-   "status": "NO_TRANSIENT",
+   "status": "TRANSIENTS_FOUND",
    "duration_s": 5.001979166666667,
-   "n_transients": 0,
-   "per_second": 0.0,
+   "n_transients": 4,
+   "per_second": 0.7996834586309586,
    "noise_floor_db": -42.02,
-   "snr_db": [],
+   "snr_db": [
+    28.2,
+    27.5,
+    30.3,
+    27.5
+   ],
    "highpass_hz": 2000.0
   },
   {
    "file": "video028.mp4",
    "status": "TRANSIENTS_FOUND",
    "duration_s": 6.008,
-   "n_transients": 1,
-   "per_second": 0.16644474034620507,
+   "n_transients": 2,
+   "per_second": 0.33288948069241014,
    "noise_floor_db": -38.19,
    "snr_db": [
-    24.7
+    24.7,
+    23.8
    ],
    "highpass_hz": 2000.0
   },
   {
    "file": "video029.mp4",
-   "status": "NO_TRANSIENT",
+   "status": "TRANSIENTS_FOUND",
    "duration_s": 6.0209375,
-   "n_transients": 0,
-   "per_second": 0.0,
+   "n_transients": 1,
+   "per_second": 0.16608709191882495,
    "noise_floor_db": -36.71,
-   "snr_db": [],
+   "snr_db": [
+    24.0
+   ],
    "highpass_hz": 2000.0
   },
   {
    "file": "video030.mp4",
-   "status": "NO_TRANSIENT",
+   "status": "TRANSIENTS_FOUND",
    "duration_s": 5.019,
-   "n_transients": 0,
-   "per_second": 0.0,
+   "n_transients": 4,
+   "per_second": 0.7969715082685794,
    "noise_floor_db": -45.49,
-   "snr_db": [],
+   "snr_db": [
+    38.0,
+    19.5,
+    23.1,
+    24.9
+   ],
    "highpass_hz": 2000.0
   },
   {
@@ -517,12 +581,21 @@
    "file": "video049.mp4",
    "status": "TRANSIENTS_FOUND",
    "duration_s": 7.009,
-   "n_transients": 2,
-   "per_second": 0.28534741047224993,
+   "n_transients": 11,
+   "per_second": 1.5694107575973748,
    "noise_floor_db": -57.05,
    "snr_db": [
     39.7,
-    32.5
+    32.5,
+    34.1,
+    34.4,
+    34.6,
+    39.5,
+    34.6,
+    33.8,
+    32.6,
+    34.2,
+    35.1
    ],
    "highpass_hz": 2000.0
   },
@@ -570,11 +643,24 @@
    "file": "video054.mp4",
    "status": "TRANSIENTS_FOUND",
    "duration_s": 6.709979166666667,
-   "n_transients": 1,
-   "per_second": 0.1490317592888701,
+   "n_transients": 14,
+   "per_second": 2.0864446300441815,
    "noise_floor_db": -56.02,
    "snr_db": [
-    37.5
+    37.5,
+    33.5,
+    31.0,
+    31.9,
+    30.9,
+    31.8,
+    28.9,
+    30.5,
+    29.7,
+    29.5,
+    32.4,
+    29.1,
+    30.4,
+    34.3
    ],
    "highpass_hz": 2000.0
   },
@@ -612,11 +698,23 @@
    "file": "video058.mp4",
    "status": "TRANSIENTS_FOUND",
    "duration_s": 6.017,
-   "n_transients": 1,
-   "per_second": 0.16619577862722285,
+   "n_transients": 13,
+   "per_second": 2.160545122153897,
    "noise_floor_db": -50.36,
    "snr_db": [
-    33.0
+    33.0,
+    24.9,
+    24.4,
+    26.6,
+    26.1,
+    30.3,
+    24.8,
+    24.6,
+    27.8,
+    25.1,
+    24.5,
+    23.5,
+    24.4
    ],
    "highpass_hz": 2000.0
   },

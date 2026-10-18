@@ -77,3 +77,11 @@ def test_video_file_with_audio(tmp_path):
     assert r.status == "TRANSIENTS_FOUND"
     assert min(abs(t.t_ms - 600.0) for t in r.transients) < 30.0  # AAC priming delay shifts audio slightly
     assert r.sample_rate_hz == SR
+
+
+def test_noise_blip_before_onset_does_not_inflate_rise_time():
+    x = _signal(click_ms=(500.0,), speech=False)
+    k = int(0.4935 * SR)  # a small blip 6.5 ms before the click (as on real broadcast audio)
+    x[k:k + 30] += 0.02 * np.sin(2 * np.pi * 6000 * np.arange(30) / SR)
+    r = analyze_audio_transients(x, SR, 0.0)
+    assert any(abs(t.t_ms - 500.0) < 1.5 and t.rise_ms <= 2.0 for t in r.transients)

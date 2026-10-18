@@ -119,12 +119,16 @@ def analyze_audio_transients(
         lo = max(0, a - int(10 / dt))
         base = float(np.median(db[lo: a])) if a > lo else floor
         amp = db[pk] - base
-        # rise: from 10% to 90% of the (dB) rise before the peak
-        pre = db[lo: pk + 1]
-        r10 = np.argmax(pre >= base + 0.1 * amp)
-        r90 = np.argmax(pre >= base + 0.9 * amp)
-        rise = max(0.0, (r90 - r10) * dt)
-        onset_ms = t0 + (lo + r10) * dt
+        # Rise time: walk back from the peak to the last 10% crossing (an earlier noise blip must not
+        # count as the onset), then forward to the first 90% crossing.
+        j10 = pk
+        while j10 > lo and db[j10 - 1] >= base + 0.1 * amp:
+            j10 -= 1
+        j90 = j10
+        while j90 < pk and db[j90] < base + 0.9 * amp:
+            j90 += 1
+        rise = max(0.0, (j90 - j10) * dt)
+        onset_ms = t0 + j10 * dt
         if rise > max_rise_ms:
             continue  # slow build-up: speech, crowd or wind rather than an impact
         tr = AudioTransient(t_ms=round(onset_ms, 2), snr_db=round(float(db[pk] - floor), 1), rise_ms=round(rise, 2),

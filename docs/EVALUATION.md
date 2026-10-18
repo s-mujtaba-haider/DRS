@@ -424,16 +424,28 @@ An ignored 1%/frame zoom triples the error and halves the coverage of the uncert
 | Measure | Value |
 |---|---|
 | Clips with audio | 60 / 60 |
-| Clips with at least one transient | 14 |
-| Transients per clip, median / p90 | 0 / 1 |
-| Total transients (SNR threshold 10 / 15 / 20 dB) | 16 / 16 / 17 |
-| Runtime | 3.7 s for all 60 clips (CPU) |
+| Clips with at least one transient | 25 |
+| Transients per clip, median / p90 | 0 / 5.2 |
+| Runtime | 4.7 s for all 60 clips (CPU) |
 
-- **Detector behaviour:** it rarely fires on ordinary broadcast audio (commentary, crowd), and its output barely changes with the threshold, because the 4 × MAD noise term dominates.
-- **No contact labels exist**, so whether the transients that do fire are bat-ball contacts is **unknown**, and so is the miss rate on fine edges.
-- **Synthetic tests:**
-  - A 7 kHz click is located within 1 ms. A slow 220 Hz sound is rejected by the rise-time test.
-  - Through an AAC-encoded MP4 the click is found 2.5 ms early (encoder priming), one reason the API warns that the audio/video offset is unknown.
+**A bug found on real audio and fixed.**
+- The first version measured rise time from the *first* 10% crossing in the 10 ms before the peak. An earlier noise blip therefore inflated the rise time, and real impacts were rejected.
+- Example: `video001` has a 35 dB, 3 ms impact at 969 ms that was missed.
+- Rise time is now measured back from the peak, and a regression test covers this. The earlier figure of 14 clips with a transient came from the buggy version.
+
+**Qualitative check** (not a measurement):
+- For 8 clips with 1–2 transients, the frame nearest the first transient was inspected.
+- In 7 the batter is at or just after the stroke, consistent with bat-ball contact within a frame or two.
+- In 1 (`video014`) the frame shows a fielder diving, a ground-contact sound and one of the documented alternative explanations.
+- Clips with many transients (up to about 5) carry crowd or stadium noise.
+
+**What this cannot tell:**
+- **No contact labels exist**, so edge precision and recall, especially for faint edges, are **unknown**.
+- Broadcast audio is mixed and compressed; a stump microphone recorded at ≥ 48 kHz would be the real input.
+
+**Synthetic tests:**
+- A 7 kHz click is located within 1 ms. A slow 220 Hz sound is rejected by the rise-time test. A noise blip 6.5 ms before an onset no longer inflates the rise time.
+- Through an AAC-encoded MP4 the click is found 2.5 ms early (encoder priming), one reason the API warns that the audio/video offset is unknown.
 
 ## 6. Not measured (no ground truth available)
 
