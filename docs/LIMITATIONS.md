@@ -75,7 +75,7 @@ These limitations are measured or known. They are not hypothetical.
 ## Audio edge evidence
 - Transients are candidates only. Bat on pad, bat on ground, ball on pad or glove, shoes and stump-mic handling all produce them.
 - No transient does not mean no edge: a faint edge can be inaudible, masked, or removed by lossy compression.
-- Audio timing relative to the frames is uncertain, for three reasons:
+- With a capture microphone, audio is placed on the cameras' host clock: about 0.1 ms with WASAPI ADC timestamps, about 2 ms with callback timestamps, plus the camera's own sync uncertainty. For uploaded files, audio timing relative to the frames is uncertain, for three reasons:
   - the container's audio/video offset is unknown;
   - AAC encoder priming adds an offset (2.5 ms in our test);
   - sound takes about 2.9 ms per metre from the bat to the microphone.

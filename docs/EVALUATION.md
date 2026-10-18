@@ -346,6 +346,17 @@ An ignored 1%/frame zoom triples the error and halves the coverage of the uncert
   - They are now reported as `late_arrivals` instead of drops.
   - Their arrival times are still delayed, which is one more reason software sync is approximate.
 
+**Microphone capture on the shared clock.**
+- Measured on this PC: 4 s recordings, export window fitted with the nominal sample rate.
+
+| Device / host API | Timestamp basis | Block-time residual | Offset uncertainty |
+|---|---|---|---|
+| UGREEN camera mic, WASAPI, 48 kHz | PortAudio ADC time | 0.64 ms | 0.11 ms |
+| L30 PRO mic, MME, 44.1 kHz | callback arrival | 11.2 ms | 1.7 ms |
+
+- **Synthetic clicks** with 2 ms reported-timestamp jitter: every click is placed within 1.5 ms of its true host time after export.
+- **What this does not include:** the microphone's own latency and the sound's travel time (about 2.9 ms per metre). Using WASAPI devices is recommended.
+
 **Sync sensitivity.**
 - Setup: synthetic end-on + side-on 1080p rig, ball at about 37 m/s, triangulated with a given sync error, flight-model fit, projected to the stump plane. Script: `scripts/evaluate_sync_sensitivity.py`; output: `sync_sensitivity.json`.
 - 3D position error grows by about 3.54 cm per ms of sync error, regardless of frame rate.

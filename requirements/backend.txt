@@ -12,3 +12,4 @@ av>=13.0
 pyyaml>=6.0
 opencv-python-headless>=4.10
 huggingface_hub>=0.24
+sounddevice>=0.5  # optional: microphone capture (PortAudio)

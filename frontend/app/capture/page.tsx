@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import CaptureClipButton from "@/components/CaptureClipButton";
 import { Badge, Button, Empty, ErrorBox, Panel, fmt } from "@/components/ui";
-import { api, urls, type CaptureStatus, type Video } from "@/lib/api";
+import { api, urls, type AudioDevice, type CaptureStatus, type Video } from "@/lib/api";
 
 interface Row { camera_id: string; type: "opencv" | "synthetic" | "video"; uri: string; width: string; height: string; fps: string; video_id?: string }
 const input = "w-full rounded border border-line bg-panel-2 px-2 py-1 text-sm";
@@ -28,8 +28,11 @@ export default function CapturePage() {
   const [tick, setTick] = useState(0);
   const [retention, setRetention] = useState("300");
   const [videos, setVideos] = useState<Video[]>([]);
+  const [devices, setDevices] = useState<AudioDevice[]>([]);
+  const [mic, setMic] = useState<string>("off");
   useEffect(() => {
     api.videos().then(setVideos).catch(() => undefined);
+    api.audioDevices().then((d) => setDevices(d.filter((x) => x.index !== undefined))).catch(() => undefined);
   }, []);
 
   // localStorage is only readable after hydration, so the saved rows load in an effect.
@@ -72,7 +75,9 @@ export default function CapturePage() {
               fps: r.fps ? Number(r.fps) : undefined,
             },
       );
-      setStatus(await api.captureStart({ cameras: cams, retention_s: Number(retention) || undefined }));
+      const audio =
+        mic === "off" ? undefined : mic === "synthetic" ? { type: "synthetic" } : { type: "device", device: Number(mic), sample_rate: 48000 };
+      setStatus(await api.captureStart({ cameras: cams, audio, retention_s: Number(retention) || undefined }));
     } catch (e) {
       setError(e);
     } finally {
@@ -136,6 +141,24 @@ export default function CapturePage() {
               ))}
             </tbody>
           </table>
+        </div>
+        <div className="mt-3 flex flex-wrap items-center gap-2 text-sm">
+          <span className="text-muted">Microphone (stump mic) on the same clock:</span>
+          <select className="rounded border border-line bg-panel-2 px-2 py-1" value={mic} onChange={(e) => setMic(e.target.value)} aria-label="Microphone">
+            <option value="off">off</option>
+            {devices.map((d) => (
+              <option key={d.index} value={String(d.index)}>
+                {d.name} · {d.host_api}{d.recommended ? " (recommended: ADC timestamps)" : ""}
+              </option>
+            ))}
+            <option value="synthetic">synthetic test clicks</option>
+          </select>
+          {status?.audio && (
+            <span className={`tabular text-xs ${status.audio.error ? "text-bad" : "text-muted"}`}>
+              {status.audio.running ? "recording" : "stopped"} · level {status.audio.level_dbfs ?? "n/a"} dBFS · {status.audio.timestamp_basis} timestamps ·
+              {" "}{status.audio.overflows} overflows{status.audio.error ? ` · ${status.audio.error}` : ""}
+            </span>
+          )}
         </div>
         <div className="mt-2">
           <Button onClick={() => setRows([...rows, { camera_id: `cam${rows.length + 1}`, type: "opencv", uri: String(rows.length), width: "1280", height: "720", fps: "60" }])}>Add camera</Button>

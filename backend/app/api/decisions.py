@@ -210,8 +210,23 @@ def audio_contact(body: AudioContactRequest, s: Session = Depends(db), cfg: Sett
         first = max(0, int((body.center_ms - body.half_window_ms) / 1000 * fps) - 5)
         n = int(2 * body.half_window_ms / 1000 * fps) + 10
         frame_times = [(r.index, r.timestamp_ms) for r in iter_frames(path, start_frame=first, max_frames=min(n, 2000))]
-    res = analyze_video_audio(path, center_ms=body.center_ms, half_window_ms=body.half_window_ms, frame_times_ms=frame_times,
-                              min_snr_db=body.min_snr_db, highpass_hz=body.highpass_hz)
+    cap_audio = (v.meta.get("capture") or {}).get("audio")
+    if cap_audio and (cfg.videos_dir / cap_audio["file"]).is_file():
+        # Microphone recorded on the cameras' host clock: alignment is known, not a container guess.
+        from ml.contact_analysis.audio import analyze_audio_transients
+        from ml.synchronization.sync import load_audio
+
+        x, _ = load_audio(str(cfg.videos_dir / cap_audio["file"]), sample_rate=48000)
+        a0 = float(cap_audio["offset_ms"])
+        win = (body.center_ms - body.half_window_ms, body.center_ms + body.half_window_ms) if body.center_ms is not None else None
+        note = (f"Capture microphone aligned on the shared host clock (+/-{cap_audio['uncertainty_ms']:.1f} ms incl. camera sync, "
+                f"timestamps from {cap_audio.get('timestamp_basis') or 'unknown'}); microphone latency not included")
+        res = analyze_audio_transients(x, 48000, a0, win, frame_times_ms=frame_times, min_snr_db=body.min_snr_db,
+                                       highpass_hz=body.highpass_hz, source_rate=int(cap_audio["sample_rate"]), timing_note=note)
+        res.reasons.append("Source: capture microphone (not the video file's audio track)")
+    else:
+        res = analyze_video_audio(path, center_ms=body.center_ms, half_window_ms=body.half_window_ms, frame_times_ms=frame_times,
+                                  min_snr_db=body.min_snr_db, highpass_hz=body.highpass_hz)
     return _store(s, "audio_contact", v.id, None, body.model_dump(mode="json"), res.model_dump(mode="json"))
 
 

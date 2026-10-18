@@ -24,7 +24,8 @@ export default function AudioEdgePanel({ video, readOnly, onAnalysis }: { video:
   const [res, setRes] = useState<AudioResult | null>(null);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<unknown>(null);
-  const hasAudio = video.meta.has_audio;
+  const capAudio = video.meta.capture?.audio;
+  const hasAudio = video.meta.has_audio || !!capAudio;
 
   const run = async () => {
     setBusy(true);
@@ -54,7 +55,12 @@ export default function AudioEdgePanel({ video, readOnly, onAnalysis }: { video:
 
   return (
     <Panel title="Edge evidence: frames + audio (experimental)">
-      {!hasAudio && <div className="mb-2 text-sm text-warn">This video has no audio track. Use a camera with a microphone near the stumps.</div>}
+      {!hasAudio && <div className="mb-2 text-sm text-warn">No audio for this replay. Record a stump microphone in Live capture so clips carry clock-aligned audio.</div>}
+      {capAudio && (
+        <div className="mb-2 text-xs text-muted">
+          Capture microphone, aligned on the shared clock (±{capAudio.uncertainty_ms.toFixed(1)} ms, {capAudio.timestamp_basis ?? "unknown"} timestamps).
+        </div>
+      )}
       <FrameViewer videoId={video.id} width={video.meta.width} height={video.meta.height}
         frameCount={video.meta.frame_count_decoded ?? video.meta.frame_count_declared} frame={frame} setFrame={setFrame} onFrameInfo={setInfo} />
       <div className="mt-2 flex flex-wrap items-center gap-2 text-sm">

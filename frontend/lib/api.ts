@@ -64,7 +64,15 @@ export interface VideoMeta {
   nominal_fps: number | null;
   frame_count_declared: number | null;
   frame_count_decoded?: number | null;
-  capture?: { camera_id: string; clip_group: string; time_offset_ms: number | null; sync_uncertainty_ms: number | null; hardware_sync: boolean; missing_frames: number | null };
+  capture?: {
+    camera_id: string;
+    clip_group: string;
+    time_offset_ms: number | null;
+    sync_uncertainty_ms: number | null;
+    hardware_sync: boolean;
+    missing_frames: number | null;
+    audio?: { file: string; offset_ms: number; sample_rate: number; uncertainty_ms: number; timestamp_basis: string | null };
+  };
   duration_s: number | null;
   variable_frame_rate: boolean | null;
   pts_delta_ms_mean: number | null;
@@ -426,11 +434,30 @@ export interface CaptureCamera {
   disk_free_bytes?: number | null;
   error: string | null;
 }
+export interface CaptureAudio {
+  source: string;
+  running: boolean;
+  sample_rate: number;
+  seconds: number;
+  level_dbfs: number | null;
+  overflows: number;
+  timestamp_basis: string | null;
+  last_block_age_s: number | null;
+  error: string | null;
+}
+export interface AudioDevice {
+  index: number;
+  name: string;
+  host_api: string;
+  default_sample_rate: number;
+  recommended: boolean;
+}
 export interface CaptureStatus {
   sync_method: string;
   hardware_sync: boolean;
   mode?: string;
   cameras: CaptureCamera[];
+  audio?: CaptureAudio | null;
 }
 export interface ClipResult {
   clip_group: string;
@@ -528,6 +555,7 @@ export const api = {
   detectWicketBreak: (body: Record<string, unknown>) => request<DecisionAnalysis>("/api/wicket-break/detect", json(body)),
   runoutAnalyze: (body: Record<string, unknown>) => request<DecisionAnalysis>("/api/runout/analyze", json(body)),
   boundaryAnalyze: (body: Record<string, unknown>) => request<DecisionAnalysis>("/api/boundary/analyze", json(body)),
+  audioDevices: () => request<AudioDevice[]>("/api/capture/audio-devices"),
   captureStatus: () => request<CaptureStatus>("/api/capture/status"),
   captureStart: (body: Record<string, unknown>) => request<CaptureStatus>("/api/capture/start", json(body)),
   captureStop: (cameraId?: string) => request<CaptureStatus>(`/api/capture/stop${cameraId ? `?camera_id=${encodeURIComponent(cameraId)}` : ""}`, { method: "POST" }),

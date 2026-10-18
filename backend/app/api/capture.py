@@ -71,9 +71,23 @@ class CameraSpec(BaseModel):
         return v
 
 
+class AudioSpec(BaseModel):
+    type: Literal["device", "synthetic"] = "device"
+    device: int | None = Field(None, description="PortAudio input index (GET /api/capture/audio-devices); None = default")
+    sample_rate: int = Field(48000, ge=8000, le=192000)
+
+
 class CaptureStart(BaseModel):
-    cameras: list[CameraSpec] = Field(min_length=1, max_length=8)
+    cameras: list[CameraSpec] = Field(default_factory=list, max_length=8)
+    audio: AudioSpec | None = None
     retention_s: float | None = Field(None, ge=10, le=3600)
+
+
+@router.get("/capture/audio-devices")
+def audio_devices():
+    from ml.capture.audio import list_input_devices
+
+    return list_input_devices()
 
 
 def _spec(c: CameraSpec, s: Session, cfg: Settings) -> dict:
@@ -97,6 +111,8 @@ def _spec(c: CameraSpec, s: Session, cfg: Settings) -> dict:
 def capture_start(body: CaptureStart, request: Request, s: Session = Depends(db), cfg: Settings = Depends(settings)):
     if len({c.camera_id for c in body.cameras}) != len(body.cameras):
         raise HTTPException(422, "camera_id values must be unique")
+    if not body.cameras and body.audio is None:
+        raise HTTPException(422, "Give at least one camera or an audio source")
     specs = [_spec(c, s, cfg) for c in body.cameras]
     with _LOCK:
         mgr = _manager(request, create=True)
@@ -110,7 +126,16 @@ def capture_start(body: CaptureStart, request: Request, s: Session = Depends(db)
 
             rec_cfg = replace(mgr.cfg, retention_s=body.retention_s)
         try:
-            mgr.start_cameras(specs, rec_cfg)
+            if specs:
+                mgr.start_cameras(specs, rec_cfg)
+            if body.audio is not None:
+                from ml.capture.audio import SoundDeviceSource, SyntheticAudioSource
+
+                src = (SyntheticAudioSource(sample_rate=body.audio.sample_rate) if body.audio.type == "synthetic"
+                       else SoundDeviceSource(body.audio.device, body.audio.sample_rate))
+                mgr.start_audio(src)
+        except HTTPException:
+            raise
         except Exception as exc:  # device open / encoder failures are user-facing
             raise HTTPException(422, f"Could not start capture: {type(exc).__name__}: {exc}") from exc
     return mgr.status()
@@ -160,7 +185,8 @@ class ClipRequest(BaseModel):
     label: str | None = Field(None, max_length=80)
 
 
-def _import_clip(s: Session, cfg: Settings, cam_id: str, entry: dict, group: str, label: str | None) -> Video:
+def _import_clip(s: Session, cfg: Settings, cam_id: str, entry: dict, group: str, label: str | None,
+                 audio: dict | None = None) -> Video:
     from ml.video.ingest import probe_video
 
     src = Path(entry["clip_path"])
@@ -184,6 +210,11 @@ def _import_clip(s: Session, cfg: Settings, cam_id: str, entry: dict, group: str
                     "gaps": len(entry.get("gaps") or []), "missing_frames": entry.get("missing_frames"),
                     "timing_file": timing_dest.name, "first_host_ns": entry.get("first_host_ns"),
                     "clip_start_utc_ns": (t.get("window") or {}).get("t_start_utc_ns")}
+    if audio and audio.get("status") == "ok":
+        # Audio sample 0 on this clip's time axis: both are offsets from the same export window start.
+        m["capture"]["audio"] = {"file": audio["file"], "offset_ms": round(audio["offset_ms"] - (entry.get("time_offset_ms") or 0.0), 3),
+                                 "sample_rate": audio["sample_rate"], "timestamp_basis": audio.get("timestamp_basis"),
+                                 "uncertainty_ms": round(audio["uncertainty_ms"] + (entry.get("sync_uncertainty_ms") or 0.0), 3)}
     if entry.get("missing_frames"):
         m["warnings"] = [*m.get("warnings", []), f"{entry['missing_frames']} frame(s) missing in capture (dropped)"]
     v = Video(original_filename=name, stored_name=stored, size_bytes=dest.stat().st_size, sha256=h.hexdigest(), meta=m)
@@ -208,12 +239,17 @@ def capture_clip(body: ClipRequest, request: Request, s: Session = Depends(db), 
         exp = mgr.export_last(body.seconds, tmp, body.camera_ids)
     except KeyError as exc:
         raise HTTPException(404, f"camera {exc} not found") from exc
+    audio = exp.get("audio")
+    if audio and audio.get("status") == "ok":
+        dest = cfg.videos_dir / f"{group}.audio.wav"
+        shutil.move(audio["path"], dest)
+        audio = {**audio, "file": dest.name, "timestamp_basis": (mgr.audio.status() if mgr.audio else {}).get("timestamp_basis")}
     videos, failed = [], {}
     for cam_id, entry in exp["cameras"].items():
         if entry.get("status") != "ok" or not entry.get("clip_path"):
             failed[cam_id] = entry.get("status")
             continue
-        videos.append(_import_clip(s, cfg, cam_id, entry, group, body.label))
+        videos.append(_import_clip(s, cfg, cam_id, entry, group, body.label, audio))
     s.flush()
     if review is not None and videos:
         review.video_ids = [*review.video_ids, *[v.id for v in videos]]
@@ -224,7 +260,8 @@ def capture_clip(body: ClipRequest, request: Request, s: Session = Depends(db), 
     if not videos:
         raise HTTPException(422, f"No clip could be exported: {failed}")
     return {"clip_group": group, "videos": [to_dict(v) for v in videos], "failed": failed,
-            "sync": exp.get("sync"), "warnings": exp.get("warnings", [])}
+            "sync": exp.get("sync"), "audio": {k: v for k, v in (audio or {}).items() if k != "path"} or None,
+            "warnings": exp.get("warnings", [])}
 
 
 # ---------------------------------------------------------------- synchronisation

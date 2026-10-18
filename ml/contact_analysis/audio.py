@@ -64,6 +64,7 @@ def analyze_audio_transients(
     merge_ms: float = 15.0,
     frame_times_ms: list[tuple[int, float]] | None = None,
     source_rate: int | None = None,
+    timing_note: str | None = None,
 ) -> AudioContactResult:
     """Transient candidates in mono audio ``x`` whose first sample is at ``audio_start_ms`` (video axis)."""
     res = AudioContactResult(status="INSUFFICIENT_DATA", sample_rate_hz=int(sample_rate), highpass_hz=highpass_hz)
@@ -145,7 +146,7 @@ def analyze_audio_transients(
     if not res.transients:
         res.reasons.append("No transient does not rule out a fine edge (inaudible, masked, or filtered by compression)")
     res.warnings += [
-        "Audio/video mux offset of this file is unknown: audio times may be shifted relative to the frames",
+        timing_note or "Audio/video mux offset of this file is unknown: audio times may be shifted relative to the frames",
         f"Sound travels {SPEED_OF_SOUND_MPS / 1000:.2f} m per ms: a microphone d metres from the bat hears contact d/0.343 ms late",
         "A transient is a candidate sound, not proof of bat-ball contact",
     ]

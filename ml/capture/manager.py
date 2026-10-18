@@ -180,6 +180,7 @@ class CaptureManager:
         self.cfg = cfg or RecorderConfig()
         self.process_per_camera = process_per_camera
         self.recorders: dict[str, CameraRecorder | ProcessCamera] = {}
+        self.audio = None  # optional ml.capture.audio.AudioRecorder on the same host clock
         self._lock = threading.Lock()
         self._ctx = mp.get_context("spawn") if process_per_camera else None
 
@@ -230,9 +231,20 @@ class CaptureManager:
             raise KeyError(camera_id)
         rec.stop()
 
+    def start_audio(self, source, segment_s: float = 10.0) -> None:
+        """Record a microphone (e.g. stump mic) on the shared host clock alongside the cameras."""
+        from ml.capture.audio import AudioRecorder
+
+        if self.audio is not None and self.audio.running:
+            raise ValueError("Audio is already recording")
+        self.audio = AudioRecorder(source, self.root / "_audio", segment_s=segment_s, retention_s=self.cfg.retention_s)
+        self.audio.start()
+
     def stop_all(self) -> None:
         for rec in list(self.recorders.values()):
             rec.stop()
+        if self.audio is not None:
+            self.audio.stop()
 
     def now_ns(self) -> int:
         return clock_ns()
@@ -241,7 +253,8 @@ class CaptureManager:
         return {"clock": "host_perf_counter_ns", "now_host_ns": clock_ns(), "now_utc_ns": host_to_utc_ns(clock_ns()),
                 "sync_method": "software_shared_clock", "hardware_sync": False,
                 "mode": "process_per_camera" if self.process_per_camera else "threads",
-                "cameras": [r.status() for r in self.recorders.values()]}
+                "cameras": [r.status() for r in self.recorders.values()],
+                "audio": self.audio.status() if self.audio is not None else None}
 
     def latest_frame(self, camera_id: str, jpeg_quality: int = 80, max_width: int | None = 960) -> bytes | None:
         """JPEG of the most recent captured frame (preview only; independent of the encoder)."""
@@ -286,6 +299,13 @@ class CaptureManager:
                 result["warnings"].append(f"{cid}: {entry.get('status')}")
             elif entry["missing_frames"]:
                 result["warnings"].append(f"{cid}: {entry['missing_frames']} frame(s) missing in the window")
+        if self.audio is not None:
+            from ml.capture.audio import export_audio
+
+            a = export_audio(self.audio.dir, t_start_ns, t_end_ns, out / "audio.wav", self.audio.source.sample_rate)
+            if a.get("status") == "ok":
+                a["offset_ms"] = (a["start_host_ns"] - t_start_ns) / 1e6  # first sample, ms after the window start
+            result["audio"] = a
         unc = [c["sync_uncertainty_ms"] for c in result["cameras"].values() if c.get("sync_uncertainty_ms") is not None]
         result["sync"] = {"method": "software_shared_clock", "hardware_sync": False,
                           "max_sync_uncertainty_ms": max(unc) if unc else None,

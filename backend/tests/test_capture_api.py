@@ -87,3 +87,22 @@ def test_rehearsal_replays_uploaded_video_as_camera(client, tmp_path):
     clip = client.post("/api/capture/clip", json={"seconds": 1.0, "camera_ids": ["replay"]})
     assert clip.status_code == 201 and clip.json()["videos"][0]["meta"]["capture"]["camera_id"] == "replay"
     client.post("/api/capture/stop")
+
+
+def test_capture_with_microphone_clips_audio_onto_frame_timeline(client):
+    r = client.post("/api/capture/start", json={"cameras": [{"camera_id": "mic_cam", "type": "synthetic", "width": 320, "height": 240, "fps": 50}],
+                                                "audio": {"type": "synthetic"}})
+    assert r.status_code == 200, r.text
+    assert r.json()["audio"]["running"]
+    time.sleep(2.5)
+    clip = client.post("/api/capture/clip", json={"seconds": 1.5, "camera_ids": ["mic_cam"]}).json()
+    client.post("/api/capture/stop")
+    assert clip["audio"]["status"] == "ok"
+    v = clip["videos"][0]
+    cap_audio = v["meta"]["capture"]["audio"]
+    assert cap_audio["file"].endswith(".audio.wav") and cap_audio["uncertainty_ms"] > 0
+    res = client.post("/api/contact/audio", json={"video_id": v["id"]}).json()["result"]
+    assert res["status"] == "TRANSIENTS_FOUND"  # synthetic clicks every 0.5 s
+    assert any("shared host clock" in w for w in res["warnings"])
+    assert all(t["nearest_frame_index"] is None or t["nearest_frame_index"] >= 0 for t in res["transients"])
+    assert client.get("/api/capture/audio-devices").status_code == 200

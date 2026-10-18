@@ -28,6 +28,7 @@ Better: add a side-on camera at the non-striker's end and one camera per boundar
 | Cameras | USB3 or GigE machine-vision cameras, or IP cameras over RTSP. Short exposure (≤ 1/2000 s) matters more than resolution. |
 | PC | Measured on an RTX 3080 Ti, Ryzen 7 7700 and 16 GB RAM: 3 cameras at 1080p100 with NVENC in process mode is near the limit (`EVALUATION.md` §7). |
 | Disk | About 35 MB/s per 1080p100 camera (measured, noisy content). A 300 s rolling buffer takes about 10.5 GB per camera. |
+| Stump microphone | Any USB or line-in mic near the striker's stumps. Select a **WASAPI** device in Live capture: it gives ADC timestamps (about 0.1 ms alignment, measured), whereas MME gives about 2 ms. |
 | Power | A UPS for the PC and the camera switch. |
 
 ## Before play
@@ -39,6 +40,7 @@ Better: add a side-on camera at the non-striker's end and one camera per boundar
    - Check each panel: *FPS measured* should match *declared*, *Dropped frames* should be 0, and *Backlog* should stay near 0.
    - Rate mismatches are flagged; many webcams deliver half their declared rate in low light.
    - For 2+ high-rate cameras set `DRS_CAPTURE_PROCESS_PER_CAMERA=true` before starting the backend.
+   - Choose the stump microphone in the *Microphone* list and check its level moves when you tap the stumps. Every clip then carries clock-aligned audio for edge review.
 3. **Calibrate each fixed camera once.** Clip a few seconds with the stumps visible, run *Auto-detect* or click the landmarks, and compute.
    - Re-calibrate if a camera is bumped.
    - A calibration is only marked validated if you supply checked intrinsics.
