@@ -242,3 +242,43 @@ def test_stumping(setup):
     # same facts as run out -> Stumped takes precedence
     r3 = analyze_runout(line, o, wb(), f.model_copy(update={"ball_touched_fielder_before_break": True}))
     assert any(c.id == "stumped_precedence" and c.status == CheckStatus.FAIL for c in r3.rule_checks)
+
+
+def _panning_clip(tmp_path, n=30, break_at=14, pan_px=4):
+    from ml.video.ingest import write_video
+
+    rng = np.random.default_rng(5)
+    canvas = np.full((400, 700, 3), (40, 110, 40), np.uint8)
+    for _ in range(400):  # crowd/advertising-like structure for feature matching, away from the stumps
+        x, y = int(rng.integers(0, 700)), int(rng.integers(0, 400))
+        if 300 < x < 460 and 60 < y < 280:
+            continue
+        col = tuple(int(c) for c in rng.integers(0, 255, 3))
+        if rng.random() < 0.5:
+            cv2.rectangle(canvas, (x, y), (x + int(rng.integers(4, 25)), y + int(rng.integers(4, 25))), col, -1)
+        else:
+            cv2.circle(canvas, (x, y), int(rng.integers(3, 12)), col, -1)
+    def frame(i):
+        c = canvas.copy()
+        for x in (330, 348, 366):
+            cv2.rectangle(c, (x, 140), (x + 6, 260), (235, 235, 235), -1)
+        cv2.rectangle(c, (329, 134), (353, 138), (60, 200, 230), -1)
+        if i >= break_at:
+            cv2.rectangle(c, (420, 80), (444, 84), (60, 200, 230), -1)
+        else:
+            cv2.rectangle(c, (350, 134), (373, 138), (60, 200, 230), -1)
+        ox = 100 + i * pan_px  # camera pans right: the scene moves left in the image
+        return c[40:360, ox:ox + 480].copy()
+    return write_video((frame(i) for i in range(n)), tmp_path / "pan.mp4", 50)
+
+
+def test_wicket_break_follows_panning_camera(tmp_path):
+    from ml.runout.events import detect_wicket_break_in_video
+
+    path = _panning_clip(tmp_path)
+    roi = (220, 85, 290, 225)  # around the stumps in frame 0 (scene x 320-380 minus offset 100)
+    fixed = detect_wicket_break_in_video(path, roi)
+    assert not (fixed.status == "BREAK_CANDIDATE" and fixed.first_broken_frame == 14)  # pan fools a fixed ROI
+    comp = detect_wicket_break_in_video(path, roi, compensate_motion=True)
+    assert comp.status == "BREAK_CANDIDATE" and comp.first_broken_frame == 14, comp.reasons
+    assert any("compensated" in w for w in comp.warnings)

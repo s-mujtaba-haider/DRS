@@ -7,10 +7,30 @@ export class ApiError extends Error {
   }
 }
 
+const PIN_KEY = "drs.pin";
+export function getPin(): string | null {
+  try {
+    return typeof window === "undefined" ? null : sessionStorage.getItem(PIN_KEY);
+  } catch {
+    return null;
+  }
+}
+export function setPin(pin: string | null) {
+  try {
+    if (pin) sessionStorage.setItem(PIN_KEY, pin);
+    else sessionStorage.removeItem(PIN_KEY);
+  } catch {
+    /* storage unavailable: PIN lasts for this page only */
+  }
+}
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   let res: Response;
+  const pin = getPin();
+  const headers = new Headers(init?.headers);
+  if (pin) headers.set("X-DRS-PIN", pin);
   try {
-    res = await fetch(`${API_BASE}${path}`, { cache: "no-store", ...init });
+    res = await fetch(`${API_BASE}${path}`, { cache: "no-store", ...init, headers });
   } catch {
     throw new ApiError(0, `Backend unreachable at ${API_BASE}`);
   }
@@ -148,7 +168,7 @@ export interface Annotation {
   frame_index: number;
   action: "add" | "move" | "reject" | "mark_absent";
   label: string;
-  data: { x?: number; y?: number; note?: string };
+  data: { x?: number; y?: number; radius_px?: number; note?: string };
   created_at: string;
 }
 export interface CameraModel {
@@ -420,9 +440,29 @@ export interface ClipResult {
   warnings: string[];
 }
 
+export interface CreaseProposal {
+  frame_index: number;
+  timestamp_ms: number;
+  point: [number, number];
+  kind: "ankle_left" | "ankle_right" | "toe_est" | "bat_tip";
+  confidence: number;
+  grounded_hint: boolean | null;
+  hint_basis?: string;
+  note?: string;
+}
+export interface CreaseProposals {
+  model_id: string;
+  licence: string;
+  frames_with_batter: number;
+  warnings: string[];
+  disclaimer: string;
+  frames: { frame_index: number; timestamp_ms: number; batter_found: boolean; proposals: CreaseProposal[] }[];
+}
+
 // ---------------------------------------------------------------- calls
 export const api = {
   health: () => request<{ status: string }>("/api/health"),
+  authStatus: () => request<{ enabled: boolean; role: "open" | "operator" | "umpire" | "viewer" }>("/api/auth/status"),
   system: () => request<SystemStatus>("/api/system/status"),
   stats: () => request<Stats>("/api/stats"),
   datasets: () => request<{ datasets: DatasetEntry[]; notes: string; last_reviewed: string }>("/api/datasets"),
@@ -434,6 +474,8 @@ export const api = {
       // XHR gives upload progress events, which fetch does not.
       const xhr = new XMLHttpRequest();
       xhr.open("POST", `${API_BASE}/api/videos`);
+      const pin = getPin();
+      if (pin) xhr.setRequestHeader("X-DRS-PIN", pin);
       xhr.upload.onprogress = (e) => e.lengthComputable && onProgress?.(e.loaded / e.total);
       xhr.onload = () => {
         let body: { detail?: unknown } = {};
@@ -492,6 +534,17 @@ export const api = {
   captureClip: (body: Record<string, unknown>) => request<ClipResult>("/api/capture/clip", json(body)),
   syncAudio: (body: Record<string, unknown>) => request<Record<string, unknown>>("/api/sync/audio", json(body)),
   syncEvents: (body: Record<string, unknown>) => request<Record<string, unknown>>("/api/sync/events", json(body)),
+  labelPlan: (videoId: string, step: number) =>
+    request<{ frames: number[]; labelled: Record<string, string> }>(`/api/labeling/videos/${videoId}/plan?step=${step}`),
+  labelPrelabel: (videoId: string, frame: number) =>
+    request<{ model_id: string; suggestions: { x: number; y: number; radius_px: number; confidence: number }[] }>(
+      `/api/labeling/videos/${videoId}/prelabel/${frame}`,
+    ),
+  labelExport: (body: Record<string, unknown>) =>
+    request<{ path: string; positives: number; negatives: number; next_step: string }>("/api/labeling/export", json(body)),
+  lbwMultiview: (body: Record<string, unknown>) => request<LbwAnalysis>("/api/lbw/multiview", json(body)),
+  trackClipGroup: (group: string) => request<{ queued: Job[]; skipped: unknown[] }>(`/api/clip-groups/${group}/track`, json({})),
+  creaseProposals: (body: Record<string, unknown>) => request<CreaseProposals>("/api/runout/proposals", json(body)),
   decisionAnalysis: (id: string) => request<DecisionAnalysis>(`/api/decision-analyses/${id}`),
   decisionAnalyses: (videoId?: string) => request<DecisionAnalysis[]>(`/api/decision-analyses${videoId ? `?video_id=${videoId}` : ""}`),
 };
@@ -504,5 +557,6 @@ export const urls = {
   exportJson: (jobId: string) => `${API_BASE}/api/analysis/jobs/${jobId}/export.json`,
   docs: () => `${API_BASE}/docs`,
   capturePreview: (cameraId: string, n: number) => `${API_BASE}/api/capture/preview/${encodeURIComponent(cameraId)}?n=${n}`,
+  reviewReport: (reviewId: string) => `${API_BASE}/api/reviews/${reviewId}/report.pdf`,
   reviewPackage: (reviewId: string) => `${API_BASE}/api/reviews/${reviewId}/package`,
 };

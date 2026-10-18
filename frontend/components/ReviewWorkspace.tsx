@@ -7,6 +7,8 @@ import CreaseWorkspace from "@/components/CreaseWorkspace";
 import BoundaryWorkspace from "@/components/BoundaryWorkspace";
 import CaptureClipButton from "@/components/CaptureClipButton";
 import { DECISION_LABEL, outcomeTone } from "@/components/MatchControl";
+import MultiviewLbwPanel from "@/components/MultiviewLbwPanel";
+import ReplayMonitor from "@/components/ReplayMonitor";
 import { Badge, Button, Empty, ErrorBox, KV, Panel } from "@/components/ui";
 import { api, urls, type DecisionAnalysis, type Job, type LbwAnalysis, type Match, type Review, type Video } from "@/lib/api";
 
@@ -72,6 +74,9 @@ export default function ReviewWorkspace({ id }: { id: string }) {
           <a className="rounded border border-line bg-panel-2 px-3 py-1.5 text-sm hover:bg-line" href={urls.reviewPackage(review.id)} target="_blank" rel="noreferrer">
             Evidence package (JSON)
           </a>
+          <a className="rounded border border-line bg-panel-2 px-3 py-1.5 text-sm hover:bg-line" href={urls.reviewReport(review.id)} target="_blank" rel="noreferrer">
+            PDF report
+          </a>
         </div>
       </div>
       <ErrorBox error={error} />
@@ -101,6 +106,14 @@ export default function ReviewWorkspace({ id }: { id: string }) {
         </div>
       </Panel>
 
+      {review.video_ids.length > 0 && (
+        <Panel title="Synchronised replay" actions={
+          <a className="text-xs text-accent hover:underline" href={`/reviews/${review.id}/monitor`} target="_blank" rel="noreferrer">Open umpire monitor ↗</a>
+        }>
+          <ReplayMonitor videos={review.video_ids.map((v) => byId[v]).filter(Boolean)} />
+        </Panel>
+      )}
+
       {video && (review.decision_type === "run_out" || review.decision_type === "stumping") && (
         <CreaseWorkspace key={video.id} video={video} mode={review.decision_type} readOnly={!isOpen} onAnalysis={(a) => attach("decision", a.id)} />
       )}
@@ -109,6 +122,9 @@ export default function ReviewWorkspace({ id }: { id: string }) {
       )}
       {(review.decision_type === "lbw" || review.decision_type === "caught") && (
         <TrackingEvidence review={review} videos={byId} onAttach={attach} readOnly={!isOpen} />
+      )}
+      {review.decision_type === "lbw" && (
+        <MultiviewLbwPanel review={review} videos={byId} onAttach={(aid) => attach("lbw", aid)} readOnly={!isOpen} />
       )}
 
       <div className="grid gap-5 lg:grid-cols-2">

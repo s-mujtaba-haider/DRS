@@ -172,7 +172,62 @@ def detect_wicket_break(
     return det
 
 
-def detect_wicket_break_in_video(path, roi, start_frame: int = 0, end_frame: int | None = None, **kw) -> WicketBreakDetection:
+MAX_MOTION_FRAMES = 400
+
+
+def motion_compensated_roi(path, roi, start_frame: int, end_frame: int, max_width: int = 640) -> tuple[list, list[str]]:
+    """ROI patches of each frame warped into the first frame's pixel coordinates (pan/tilt/zoom camera).
+
+    Homographies are estimated on frames downscaled to ``max_width`` (memory stays bounded) and
+    rescaled to full resolution; each full-resolution frame is then warped only over the ROI.
+    Frames whose motion chain breaks are left out, with a warning.
+    """
+    from ml.video.ingest import iter_frames
+    from ml.video.ptz import estimate_shot_motion
+
+    end_frame = min(end_frame, start_frame + MAX_MOTION_FRAMES)
+    small: dict[int, np.ndarray] = {}
+    scale = 1.0
+    for rec in iter_frames(path, start_frame=start_frame, end_frame=end_frame):
+        h, w = rec.image.shape[:2]
+        scale = min(1.0, max_width / w)
+        small[rec.index] = cv2.resize(rec.image, (round(w * scale), round(h * scale)), interpolation=cv2.INTER_AREA) if scale < 1 else rec.image
+    if not small:
+        return [], ["No frames decoded"]
+    ref = min(small)
+    motion = estimate_shot_motion(small, ref)
+    S, Si = np.diag([scale, scale, 1.0]), np.diag([1 / scale, 1 / scale, 1.0])
+    x1, y1, x2, y2 = (int(round(v)) for v in roi)
+    T = np.array([[1, 0, -x1], [0, 1, -y1], [0, 0, 1]], float)
+    out = []
+    for rec in iter_frames(path, start_frame=start_frame, end_frame=end_frame):
+        H = motion.to_ref.get(rec.index)
+        if H is None:
+            continue
+        M = T @ (Si @ H @ S)  # full-res frame px -> reference px -> ROI-local px
+        patch = cv2.warpPerspective(rec.image, M, (x2 - x1, y2 - y1), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REPLICATE)
+        out.append((rec.index, rec.timestamp_ms, patch))
+    warnings = list(motion.warnings)
+    missing = len(small) - len(out)
+    if missing:
+        warnings.append(f"{missing} frame(s) could not be registered to the first frame and were skipped")
+    return out, warnings
+
+
+def detect_wicket_break_in_video(path, roi, start_frame: int = 0, end_frame: int | None = None,
+                                 compensate_motion: bool = False, **kw) -> WicketBreakDetection:
+    """Wicket-break candidate in a video file. ``compensate_motion`` follows a panning/zooming camera
+    (the ROI is drawn on ``start_frame``); otherwise the ROI is fixed in the image."""
     from ml.video.ingest import iter_frames
 
-    return detect_wicket_break(iter_frames(path, start_frame=start_frame, end_frame=end_frame), roi, **kw)
+    if not compensate_motion:
+        return detect_wicket_break(iter_frames(path, start_frame=start_frame, end_frame=end_frame), roi, **kw)
+    end = end_frame if end_frame is not None else start_frame + MAX_MOTION_FRAMES
+    patches, warns = motion_compensated_roi(path, roi, start_frame, end)
+    x1, y1, x2, y2 = (int(round(v)) for v in roi)
+    det = detect_wicket_break(patches, (0, 0, x2 - x1, y2 - y1), **kw)
+    det.roi = (x1, y1, x2, y2)
+    det.warnings += warns + ["Camera motion compensated: the ROI follows the first frame's view of the wicket"]
+    if end - start_frame > MAX_MOTION_FRAMES or (end_frame is None):
+        det.warnings.append(f"Motion-compensated scan is limited to {MAX_MOTION_FRAMES} frames from start_frame")
+    return det

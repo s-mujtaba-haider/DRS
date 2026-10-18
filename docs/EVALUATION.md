@@ -4,7 +4,7 @@ Every number here was measured in this repository on 2026-10-12. The raw outputs
 
 ## 1. Automated tests
 
-- `pytest`: 163 tests, all passing (2026-10-18). Besides the areas below, they cover the match/review API, protocol engine, run-out/stumping/boundary engines and endpoints, live capture through the API, and synchronisation. The earlier set covers:
+- `pytest`: 186 tests, all passing (2026-10-18). Besides the areas below, they cover the match/review API, PIN roles, protocol engine, run-out/stumping/boundary engines and endpoints, wicket-break motion compensation, foot proposals, multi-view LBW, live capture and rehearsal replay through the API, synchronisation, labelling export and PDF review reports. The earlier set covers:
   - video metadata, frame extraction, and empty or invalid files;
   - the detection schema, NMS, tiling, the motion detector and missing-weights errors;
   - Kalman initialisation, missing frames, outlier rejection, static clutter and camera cuts;
@@ -365,6 +365,58 @@ An ignored 1%/frame zoom triples the error and halves the coverage of the uncert
 - No labelled real footage was available, so **real-world accuracy is unknown**.
 - The engines' value is exact geometry and timing given correct marks. Their failure mode is wrong marks.
 
+## 9. Crease mark proposals (pose model, unlabelled broadcast clips)
+
+**Model and method.** `yolo11s-pose.pt` (COCO keypoints, AGPL-3.0, not cricket-trained) at 1280 px.
+- The batter is the person nearest the crease line or inside the operator's region; there is a continuity term between frames.
+- The proposals are the ankles, plus a sole estimate on the shin line.
+- Each ankle also gets a heuristic grounded hint: the lower foot with less than 0.012 body heights of vertical motion per frame counts as grounded. The hint needs both neighbouring frames, otherwise it is `null`.
+- No bat-tip proposals: there is no bat model.
+
+**Data.** Script: `scripts/evaluate_crease_proposals.py`; report: `outputs/reports/crease_proposals_eval.json`.
+- `hf-cricket-delivery-videos`, every 5th clip (52 clips), first 75 frames. Broadcast, 1920×1080 at 25 fps, behind-the-bowler views.
+- The region was seeded around the striker's stumps by the stumps detector, in place of the operator. 40 clips had a stumps box in the first 10 frames; 12 were skipped.
+- There are **no labels**, so none of these numbers is accuracy.
+
+| Measure | Value |
+|---|---|
+| Frames with a batter selected (40 clips × 75 frames) | 39.6% |
+| Visual check of the selected person at frame 25 (40 clips) | Batter 17, wrong person 6 (wicket-keeper 5, umpire 1), nobody 17 |
+| Ankle keypoint confidence (n = 2,327) | p10 0.94, median 0.98, p90 0.99 |
+| Grounded hints | Grounded 962, not grounded 203, no hint 1,162 |
+| Inference speed, RTX 3080 Ti, FP16, batch 16 | Median 115 fps (one clip at 16 fps, including CUDA warm-up) |
+| Inference speed, CPU | 5.5 fps |
+
+**Findings.**
+- **"Nobody selected"** has three causes: the broadcast cuts to close-ups and wide shots, the stumps detector placed the region wrongly (for example on the umpire's pocket), or the batter left the region after the shot. In an operator workflow the region or crease is drawn on the replay itself.
+- **Wicket-keeper confusion.** When only a region is given, the keeper standing up to the stumps is chosen instead of the batter in 5 of 22 clips where someone was selected. Giving the crease line resolves most of these cases, because the keeper's feet are about 1.2 m or more behind it. The response warns about this.
+- **No-region fallback removed.** An earlier version picked the largest person when neither a crease nor a region was given. On 16 clips without stumps it chose the umpire, non-striker, bowler or a TV-graphic face in at least 7, so the fallback was removed. The API now requires a crease or a region.
+- **Keypoint confidence is not accuracy.** High ankle confidence says nothing about pixel accuracy under pads and motion blur. With no labels, localisation error is **not measured**.
+- **Camera motion.** The grounded hint assumes a static camera, which broadcast pans violate. It is a prompt for the operator, never an observation.
+
+## 10. Multi-view LBW (synthetic)
+
+- **Code:** `ml/lbw/multiview.py` (`POST /api/lbw/multiview`), script `scripts/evaluate_multiview_lbw.py`, output `outputs/reports/multiview_lbw_synth.json`.
+- **Setup:**
+  - Two exactly calibrated 1920×1080 cameras: end-on at 50 fps (4200 px focal) and side-on at 100 fps (2600 px focal) with a 3 ms phase offset, so exposures never coincide and the side-on view is interpolated to the end-on instants.
+  - 60 random deliveries: pitching 3–7 m from the stumps, line ±0.25 m, stump-plane x ±0.35 m, 30–40 m/s. The truth model includes aerodynamic drag.
+  - 1 px image noise; impact at 1.2 m in front of the stumps.
+  - Camera B really exposes `error` ms later than its timestamps claim.
+
+| Scenario | Actual / declared sync error | Definite (correct) | Confident errors | Inconclusive | Hits called hit | Stump-plane error median / p90 |
+|---|---|---|---|---|---|---|
+| hardware sync | 0 / 0 ms | 54 (54) | 0 | 10% | 18 / 22 | 1.1 / 2.4 cm |
+| software sync | 2 / 2 ms | 0 | 0 | 100% | 0 / 22 | 2.2 / 3.7 cm |
+| software sync | 20 / 20 ms | 0 | 0 | 100% | 0 / 22 | 61 / 198 cm |
+| hardware claimed, error undeclared | 2 / 0 ms | 54 (54) | 0 | 10% | 18 / 22 | 2.2 / 3.7 cm |
+
+**Reading the table:**
+- **With synchronised cameras, two views remove the monocular depth problem.** 54 of 60 deliveries got a definite verdict, all correct, and 18 of 22 hits were called as hits. That compares with about 1 in 20 hits for the single-camera engine (§2).
+- **Software sync (any declared uncertainty) never gives a definite verdict.** At about 26–35 m/s near the pad, 2 ms is already 5–7 cm, more than the 3 cm tolerance (`configs/lbw.yaml` › `multiview.max_sync_position_error_m`). The sync error is also propagated into the projection's covariance by re-fitting with each camera's offset shifted by its uncertainty.
+- **20 ms of sync error (a typical USB-webcam rig) wrecks the geometry.** The median stump-plane error is 61 cm, much worse than the 15 cm of the matched-frame study in §7, because interpolating the side-on track at the wrong instants also corrupts the association. Such rigs can only support replay review, not ball tracking.
+- **An undeclared 2 ms error is not detected.** Verdicts stayed correct in this set because a 2 cm stump-plane shift rarely crosses the decision boundary, but nothing in the reconstruction (including reprojection error) reveals the error. The declared sync uncertainty must come from the hardware, not be assumed.
+- **Synthetic only:** exact calibration, a known detector-free track, and no motion blur or occlusion. Real-world accuracy is unknown.
+
 ## 6. Not measured (no ground truth available)
 
 - Detection metrics on real cricket footage.
@@ -373,3 +425,4 @@ An ignored 1%/frame zoom triples the error and halves the coverage of the uncert
 - LBW accuracy against reference decisions.
 - Real multi-camera synchronisation sensitivity.
 - Contact detection.
+- Ankle / ground-contact localisation error of the crease mark proposals (§9).

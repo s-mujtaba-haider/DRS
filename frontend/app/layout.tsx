@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
 
 import BackendStatus from "@/components/BackendStatus";
+import RoleBox from "@/components/RoleBox";
 
 import "./globals.css";
 
@@ -20,6 +21,7 @@ const NAV = [
   { href: "/capture", label: "Live capture" },
   { href: "/upload", label: "New analysis" },
   { href: "/sessions", label: "Sessions" },
+  { href: "/label", label: "Label frames" },
   { href: "/datasets", label: "Datasets" },
   { href: "/system", label: "System" },
 ];
@@ -43,6 +45,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </nav>
             <div className="hidden px-4 py-4 md:block">
               <BackendStatus />
+              <RoleBox />
             </div>
           </aside>
           <main className="min-w-0 flex-1 px-4 py-5 md:px-6">{children}</main>

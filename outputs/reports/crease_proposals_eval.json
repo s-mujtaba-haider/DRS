@@ -1,0 +1,658 @@
+{
+  "date": "2026-10-18",
+  "model": "yolo-pose:yolo11s-pose.pt@1280",
+  "licence": "AGPL-3.0",
+  "data": "hf-cricket-delivery-videos, every 5th clip, first 75 frames, 1920x1080 25 fps broadcast",
+  "ground_truth": "none: no labelled run-out/stumping footage; numbers below are not accuracy",
+  "clips": 52,
+  "clips_with_striker_stumps": 40,
+  "selection": "person nearest a region around the striker's stumps (stumps detector); clips without stumps skipped",
+  "no_region_fallback_finding": "An earlier run without a region selected the largest person: on 16 clips without stumps it picked the umpire, non-striker, bowler or a TV-graphic face in at least 7 (visual check), so the fallback was removed and a crease or region is now required",
+  "batter_found_frame_rate_with_roi": 0.396,
+  "ankle_confidence": {
+    "n": 2327,
+    "p10": 0.9422,
+    "median": 0.9766,
+    "p90": 0.9897,
+    "frac_ge_0.5": 0.9969918349806618
+  },
+  "grounded_hints": {
+    "true": 962,
+    "false": 203,
+    "none": 1162
+  },
+  "gpu_inference_fps_median": 115.025,
+  "cpu_inference_fps": 5.48,
+  "wall_s": 47.3,
+  "per_clip": [
+    {
+      "clip": "video001.mp4",
+      "stumps_found": true,
+      "roi": [
+        859.36572265625,
+        176.93362426757812,
+        1015.439697265625,
+        470.1213684082031
+      ],
+      "frames": 75,
+      "frames_with_batter": 16,
+      "mean_people_per_frame": 2.4266666666666667,
+      "inference_fps": 14.64
+    },
+    {
+      "clip": "video006.mp4",
+      "stumps_found": true,
+      "roi": [
+        864.20947265625,
+        177.35906982421875,
+        994.2557373046875,
+        464.1863098144531
+      ],
+      "frames": 75,
+      "frames_with_batter": 9,
+      "mean_people_per_frame": 1.0666666666666667,
+      "inference_fps": 107.06
+    },
+    {
+      "clip": "video011.mp4",
+      "stumps_found": true,
+      "roi": [
+        779.8529663085938,
+        117.01072692871094,
+        1082.986572265625,
+        450.4774169921875
+      ],
+      "frames": 75,
+      "frames_with_batter": 17,
+      "mean_people_per_frame": 1.6133333333333333,
+      "inference_fps": 122.51
+    },
+    {
+      "clip": "video016.mp4",
+      "stumps_found": true,
+      "roi": [
+        854.4223022460938,
+        133.1298065185547,
+        1010.9346313476562,
+        422.8459777832031
+      ],
+      "frames": 75,
+      "frames_with_batter": 27,
+      "mean_people_per_frame": 2.5866666666666664,
+      "inference_fps": 114.88
+    },
+    {
+      "clip": "video021.mp4",
+      "stumps_found": true,
+      "roi": [
+        828.9230346679688,
+        256.6028747558594,
+        1023.5491333007812,
+        494.6758728027344
+      ],
+      "frames": 75,
+      "frames_with_batter": 18,
+      "mean_people_per_frame": 1.8133333333333332,
+      "inference_fps": 128.13
+    },
+    {
+      "clip": "video026.mp4",
+      "stumps_found": true,
+      "roi": [
+        879.8353271484375,
+        103.21057891845703,
+        1033.9361572265625,
+        413.839111328125
+      ],
+      "frames": 75,
+      "frames_with_batter": 25,
+      "mean_people_per_frame": 2.36,
+      "inference_fps": 123.25
+    },
+    {
+      "clip": "video031.mp4",
+      "stumps_found": true,
+      "roi": [
+        856.4454345703125,
+        133.7925262451172,
+        1050.5947265625,
+        445.26153564453125
+      ],
+      "frames": 75,
+      "frames_with_batter": 51,
+      "mean_people_per_frame": 3.7066666666666666,
+      "inference_fps": 120.28
+    },
+    {
+      "clip": "video036.mp4",
+      "stumps_found": true,
+      "roi": [
+        871.885986328125,
+        207.4450225830078,
+        1020.8507080078125,
+        499.14306640625
+      ],
+      "frames": 75,
+      "frames_with_batter": 72,
+      "mean_people_per_frame": 7.386666666666667,
+      "inference_fps": 117.2
+    },
+    {
+      "clip": "video041.mp4",
+      "stumps_found": true,
+      "roi": [
+        889.3529663085938,
+        506.1579284667969,
+        1026.561279296875,
+        1001.0607299804688
+      ],
+      "frames": 75,
+      "frames_with_batter": 63,
+      "mean_people_per_frame": 6.906666666666666,
+      "inference_fps": 122.71
+    },
+    {
+      "clip": "video046.mp4",
+      "stumps_found": true,
+      "roi": [
+        889.7255859375,
+        347.8909606933594,
+        1023.031494140625,
+        557.5667724609375
+      ],
+      "frames": 75,
+      "frames_with_batter": 36,
+      "mean_people_per_frame": 7.786666666666667,
+      "inference_fps": 117.18
+    },
+    {
+      "clip": "video051.mp4",
+      "stumps_found": false
+    },
+    {
+      "clip": "video056.mp4",
+      "stumps_found": false
+    },
+    {
+      "clip": "video061.mp4",
+      "stumps_found": true,
+      "roi": [
+        819.1124267578125,
+        177.57737731933594,
+        1076.747314453125,
+        519.72314453125
+      ],
+      "frames": 75,
+      "frames_with_batter": 75,
+      "mean_people_per_frame": 8.0,
+      "inference_fps": 114.82
+    },
+    {
+      "clip": "video066.mp4",
+      "stumps_found": false
+    },
+    {
+      "clip": "video071.mp4",
+      "stumps_found": true,
+      "roi": [
+        894.71337890625,
+        290.5631103515625,
+        1084.2769775390625,
+        575.3745727539062
+      ],
+      "frames": 75,
+      "frames_with_batter": 53,
+      "mean_people_per_frame": 4.04,
+      "inference_fps": 114.51
+    },
+    {
+      "clip": "video076.mp4",
+      "stumps_found": true,
+      "roi": [
+        911.4204711914062,
+        677.9546508789062,
+        991.9359741210938,
+        807.3521118164062
+      ],
+      "frames": 75,
+      "frames_with_batter": 4,
+      "mean_people_per_frame": 3.7733333333333334,
+      "inference_fps": 114.88
+    },
+    {
+      "clip": "video081.mp4",
+      "stumps_found": true,
+      "roi": [
+        946.77978515625,
+        722.4142456054688,
+        1032.2720947265625,
+        813.1708374023438
+      ],
+      "frames": 75,
+      "frames_with_batter": 4,
+      "mean_people_per_frame": 4.84,
+      "inference_fps": 114.18
+    },
+    {
+      "clip": "video086.mp4",
+      "stumps_found": true,
+      "roi": [
+        839.0057983398438,
+        419.21221923828125,
+        1190.01513671875,
+        1039.9888916015625
+      ],
+      "frames": 75,
+      "frames_with_batter": 9,
+      "mean_people_per_frame": 0.37333333333333335,
+      "inference_fps": 124.52
+    },
+    {
+      "clip": "video091.mp4",
+      "stumps_found": true,
+      "roi": [
+        1077.54736328125,
+        503.2647399902344,
+        1435.1083984375,
+        970.77294921875
+      ],
+      "frames": 75,
+      "frames_with_batter": 35,
+      "mean_people_per_frame": 3.48,
+      "inference_fps": 114.55
+    },
+    {
+      "clip": "video096.mp4",
+      "stumps_found": true,
+      "roi": [
+        943.091064453125,
+        655.3759765625,
+        1011.4974365234375,
+        774.0921630859375
+      ],
+      "frames": 75,
+      "frames_with_batter": 5,
+      "mean_people_per_frame": 4.306666666666667,
+      "inference_fps": 111.52
+    },
+    {
+      "clip": "video101.mp4",
+      "stumps_found": true,
+      "roi": [
+        562.3951416015625,
+        114.97999572753906,
+        711.656494140625,
+        294.6059265136719
+      ],
+      "frames": 75,
+      "frames_with_batter": 28,
+      "mean_people_per_frame": 6.04,
+      "inference_fps": 158.76
+    },
+    {
+      "clip": "video106.mp4",
+      "stumps_found": false
+    },
+    {
+      "clip": "video111.mp4",
+      "stumps_found": false
+    },
+    {
+      "clip": "video116.mp4",
+      "stumps_found": true,
+      "roi": [
+        810.1378784179688,
+        224.18194580078125,
+        1077.774658203125,
+        564.9703979492188
+      ],
+      "frames": 75,
+      "frames_with_batter": 28,
+      "mean_people_per_frame": 3.453333333333333,
+      "inference_fps": 112.03
+    },
+    {
+      "clip": "video121.mp4",
+      "stumps_found": true,
+      "roi": [
+        948.0957641601562,
+        280.9139099121094,
+        1082.456298828125,
+        595.5234375
+      ],
+      "frames": 75,
+      "frames_with_batter": 30,
+      "mean_people_per_frame": 2.6133333333333333,
+      "inference_fps": 115.52
+    },
+    {
+      "clip": "video126.mp4",
+      "stumps_found": true,
+      "roi": [
+        916.41357421875,
+        109.50682067871094,
+        1147.76806640625,
+        580.7488403320312
+      ],
+      "frames": 75,
+      "frames_with_batter": 53,
+      "mean_people_per_frame": 5.24,
+      "inference_fps": 109.65
+    },
+    {
+      "clip": "video131.mp4",
+      "stumps_found": true,
+      "roi": [
+        810.6441650390625,
+        107.07296752929688,
+        1077.81298828125,
+        541.777587890625
+      ],
+      "frames": 75,
+      "frames_with_batter": 38,
+      "mean_people_per_frame": 3.973333333333333,
+      "inference_fps": 107.17
+    },
+    {
+      "clip": "video136.mp4",
+      "stumps_found": true,
+      "roi": [
+        846.23876953125,
+        136.023193359375,
+        1038.3006591796875,
+        586.502685546875
+      ],
+      "frames": 75,
+      "frames_with_batter": 28,
+      "mean_people_per_frame": 4.04,
+      "inference_fps": 100.44
+    },
+    {
+      "clip": "video141.mp4",
+      "stumps_found": true,
+      "roi": [
+        862.926025390625,
+        150.9727020263672,
+        1027.9912109375,
+        594.2122192382812
+      ],
+      "frames": 75,
+      "frames_with_batter": 34,
+      "mean_people_per_frame": 6.066666666666666,
+      "inference_fps": 107.77
+    },
+    {
+      "clip": "video146.mp4",
+      "stumps_found": true,
+      "roi": [
+        853.420166015625,
+        77.77523803710938,
+        1054.197509765625,
+        521.6268920898438
+      ],
+      "frames": 75,
+      "frames_with_batter": 30,
+      "mean_people_per_frame": 3.8533333333333335,
+      "inference_fps": 112.22
+    },
+    {
+      "clip": "video151.mp4",
+      "stumps_found": true,
+      "roi": [
+        784.3150634765625,
+        0.0,
+        1096.65087890625,
+        594.753662109375
+      ],
+      "frames": 75,
+      "frames_with_batter": 31,
+      "mean_people_per_frame": 3.0,
+      "inference_fps": 116.52
+    },
+    {
+      "clip": "video156.mp4",
+      "stumps_found": true,
+      "roi": [
+        855.24755859375,
+        126.04791259765625,
+        1062.548583984375,
+        557.254638671875
+      ],
+      "frames": 75,
+      "frames_with_batter": 20,
+      "mean_people_per_frame": 2.6933333333333334,
+      "inference_fps": 115.17
+    },
+    {
+      "clip": "video161.mp4",
+      "stumps_found": true,
+      "roi": [
+        877.623046875,
+        232.69822692871094,
+        1054.1085205078125,
+        519.3884887695312
+      ],
+      "frames": 75,
+      "frames_with_batter": 29,
+      "mean_people_per_frame": 4.28,
+      "inference_fps": 105.7
+    },
+    {
+      "clip": "video166.mp4",
+      "stumps_found": true,
+      "roi": [
+        905.9379272460938,
+        283.6058349609375,
+        1089.891845703125,
+        532.0950317382812
+      ],
+      "frames": 75,
+      "frames_with_batter": 35,
+      "mean_people_per_frame": 4.16,
+      "inference_fps": 112.68
+    },
+    {
+      "clip": "video171.mp4",
+      "stumps_found": true,
+      "roi": [
+        870.2905883789062,
+        262.93023681640625,
+        1033.595703125,
+        494.8334655761719
+      ],
+      "frames": 75,
+      "frames_with_batter": 31,
+      "mean_people_per_frame": 4.8533333333333335,
+      "inference_fps": 112.35
+    },
+    {
+      "clip": "video176.mp4",
+      "stumps_found": true,
+      "roi": [
+        845.3497924804688,
+        154.27976989746094,
+        1070.108642578125,
+        552.591552734375
+      ],
+      "frames": 75,
+      "frames_with_batter": 55,
+      "mean_people_per_frame": 4.786666666666667,
+      "inference_fps": 114.13
+    },
+    {
+      "clip": "video181.mp4",
+      "stumps_found": true,
+      "roi": [
+        804.649658203125,
+        113.33685302734375,
+        1118.968017578125,
+        527.7572021484375
+      ],
+      "frames": 75,
+      "frames_with_batter": 44,
+      "mean_people_per_frame": 4.8533333333333335,
+      "inference_fps": 113.85
+    },
+    {
+      "clip": "video186.mp4",
+      "stumps_found": false
+    },
+    {
+      "clip": "video191.mp4",
+      "stumps_found": true,
+      "roi": [
+        773.9928588867188,
+        124.76339721679688,
+        1140.4736328125,
+        584.2840576171875
+      ],
+      "frames": 75,
+      "frames_with_batter": 27,
+      "mean_people_per_frame": 3.1333333333333333,
+      "inference_fps": 119.31
+    },
+    {
+      "clip": "video196.mp4",
+      "stumps_found": false
+    },
+    {
+      "clip": "video201.mp4",
+      "stumps_found": false
+    },
+    {
+      "clip": "video206.mp4",
+      "stumps_found": false
+    },
+    {
+      "clip": "video211.mp4",
+      "stumps_found": false
+    },
+    {
+      "clip": "video216.mp4",
+      "stumps_found": true,
+      "roi": [
+        616.5045166015625,
+        516.578857421875,
+        659.1666259765625,
+        602.8676147460938
+      ],
+      "frames": 75,
+      "frames_with_batter": 6,
+      "mean_people_per_frame": 6.386666666666667,
+      "inference_fps": 160.7
+    },
+    {
+      "clip": "video221.mp4",
+      "stumps_found": false
+    },
+    {
+      "clip": "video226.mp4",
+      "stumps_found": true,
+      "roi": [
+        816.261474609375,
+        39.72554016113281,
+        1082.5931396484375,
+        411.2428283691406
+      ],
+      "frames": 75,
+      "frames_with_batter": 12,
+      "mean_people_per_frame": 3.066666666666667,
+      "inference_fps": 116.06
+    },
+    {
+      "clip": "video231.mp4",
+      "stumps_found": true,
+      "roi": [
+        836.7156372070312,
+        64.28166198730469,
+        1065.305908203125,
+        387.12591552734375
+      ],
+      "frames": 75,
+      "frames_with_batter": 19,
+      "mean_people_per_frame": 3.1466666666666665,
+      "inference_fps": 117.14
+    },
+    {
+      "clip": "video236.mp4",
+      "stumps_found": true,
+      "roi": [
+        855.4326782226562,
+        138.85670471191406,
+        1040.345703125,
+        398.7876892089844
+      ],
+      "frames": 75,
+      "frames_with_batter": 32,
+      "mean_people_per_frame": 2.533333333333333,
+      "inference_fps": 119.68
+    },
+    {
+      "clip": "video241.mp4",
+      "stumps_found": true,
+      "roi": [
+        820.713134765625,
+        122.59902954101562,
+        1059.204345703125,
+        428.146240234375
+      ],
+      "frames": 75,
+      "frames_with_batter": 24,
+      "mean_people_per_frame": 2.0933333333333333,
+      "inference_fps": 121.47
+    },
+    {
+      "clip": "video246.mp4",
+      "stumps_found": false
+    },
+    {
+      "clip": "video251.mp4",
+      "stumps_found": true,
+      "roi": [
+        799.89404296875,
+        151.7570343017578,
+        1078.935791015625,
+        500.6802062988281
+      ],
+      "frames": 75,
+      "frames_with_batter": 19,
+      "mean_people_per_frame": 1.0,
+      "inference_fps": 127.33
+    },
+    {
+      "clip": "video256.mp4",
+      "stumps_found": true,
+      "roi": [
+        875.2584228515625,
+        192.7566375732422,
+        982.2548217773438,
+        471.88836669921875
+      ],
+      "frames": 75,
+      "frames_with_batter": 16,
+      "mean_people_per_frame": 2.6666666666666665,
+      "inference_fps": 119.39
+    }
+  ],
+  "visual_check_frame25": {
+    "method": "one overlay per clip (frame 25), selected person inspected by eye; not a labelled benchmark",
+    "clips": 40,
+    "batter_selected": 17,
+    "wrong_person": 6,
+    "nobody_selected": 17,
+    "wrong_person_detail": {
+      "wicket_keeper": [
+        "video116",
+        "video121",
+        "video176",
+        "video181",
+        "video191"
+      ],
+      "umpire_region_misplaced": [
+        "video041"
+      ]
+    },
+    "nobody_reasons": "close-up or wide replay shots, region seeded from a stumps-detector false positive (e.g. umpire pocket in video081), batter outside the seeded region",
+    "ankle_placement": "on selected batters the ankle points sat on the feet/pads in the inspected overlays; sub-pixel accuracy not measurable without labels"
+  }
+}

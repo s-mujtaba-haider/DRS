@@ -8,7 +8,7 @@ import shutil
 import subprocess
 from functools import lru_cache
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
@@ -126,3 +126,9 @@ def evaluation_reports():
             continue
         out.append({"file": p.name, "summary": data.get("summary", data) if isinstance(data, dict) else None})
     return out
+
+
+@router.get("/auth/status")
+def auth_status(request: Request):
+    """Whether match-day PINs are enabled and which role the supplied X-DRS-PIN maps to."""
+    return {"enabled": request.state.auth_enabled, "role": request.state.role or "viewer"}

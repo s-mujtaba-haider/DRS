@@ -4,9 +4,9 @@ import { useCallback, useEffect, useState } from "react";
 
 import CaptureClipButton from "@/components/CaptureClipButton";
 import { Badge, Button, Empty, ErrorBox, Panel, fmt } from "@/components/ui";
-import { api, urls, type CaptureStatus } from "@/lib/api";
+import { api, urls, type CaptureStatus, type Video } from "@/lib/api";
 
-interface Row { camera_id: string; type: "opencv" | "synthetic"; uri: string; width: string; height: string; fps: string }
+interface Row { camera_id: string; type: "opencv" | "synthetic" | "video"; uri: string; width: string; height: string; fps: string; video_id?: string }
 const input = "w-full rounded border border-line bg-panel-2 px-2 py-1 text-sm";
 const STORE = "drs.capture.cameras";
 
@@ -27,6 +27,10 @@ export default function CapturePage() {
   const [busy, setBusy] = useState(false);
   const [tick, setTick] = useState(0);
   const [retention, setRetention] = useState("300");
+  const [videos, setVideos] = useState<Video[]>([]);
+  useEffect(() => {
+    api.videos().then(setVideos).catch(() => undefined);
+  }, []);
 
   // localStorage is only readable after hydration, so the saved rows load in an effect.
   // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -56,14 +60,18 @@ export default function CapturePage() {
     setBusy(true);
     setError(null);
     try {
-      const cams = rows.map((r) => ({
-        camera_id: r.camera_id,
-        type: r.type,
-        uri: r.type === "opencv" ? r.uri : undefined,
-        width: r.width ? Number(r.width) : undefined,
-        height: r.height ? Number(r.height) : undefined,
-        fps: r.fps ? Number(r.fps) : undefined,
-      }));
+      const cams = rows.map((r) =>
+        r.type === "video"
+          ? { camera_id: r.camera_id, type: "video", video_id: r.video_id, loop: true }
+          : {
+              camera_id: r.camera_id,
+              type: r.type,
+              uri: r.type === "opencv" ? r.uri : undefined,
+              width: r.width ? Number(r.width) : undefined,
+              height: r.height ? Number(r.height) : undefined,
+              fps: r.fps ? Number(r.fps) : undefined,
+            },
+      );
       setStatus(await api.captureStart({ cameras: cams, retention_s: Number(retention) || undefined }));
     } catch (e) {
       setError(e);
@@ -105,10 +113,21 @@ export default function CapturePage() {
                   <td className="py-1.5 pr-2"><input className={input} value={r.camera_id} onChange={(e) => set(i, "camera_id", e.target.value)} /></td>
                   <td className="pr-2">
                     <select className={input} value={r.type} onChange={(e) => set(i, "type", e.target.value)}>
-                      <option value="opencv">USB / stream</option><option value="synthetic">Synthetic test</option>
+                      <option value="opencv">USB / stream</option>
+                      <option value="video">Rehearsal: replay a video</option>
+                      <option value="synthetic">Synthetic test</option>
                     </select>
                   </td>
-                  <td className="pr-2"><input className={input} disabled={r.type !== "opencv"} placeholder="0 or rtsp://..." value={r.uri} onChange={(e) => set(i, "uri", e.target.value)} /></td>
+                  <td className="pr-2">
+                    {r.type === "video" ? (
+                      <select className={input} value={r.video_id ?? ""} onChange={(e) => set(i, "video_id", e.target.value)}>
+                        <option value="" disabled>Choose uploaded video...</option>
+                        {videos.map((v) => <option key={v.id} value={v.id}>{v.original_filename}</option>)}
+                      </select>
+                    ) : (
+                      <input className={input} disabled={r.type !== "opencv"} placeholder="0 or rtsp://..." value={r.uri} onChange={(e) => set(i, "uri", e.target.value)} />
+                    )}
+                  </td>
                   <td className="pr-2"><input className={input} value={r.width} onChange={(e) => set(i, "width", e.target.value)} /></td>
                   <td className="pr-2"><input className={input} value={r.height} onChange={(e) => set(i, "height", e.target.value)} /></td>
                   <td className="pr-2"><input className={input} value={r.fps} onChange={(e) => set(i, "fps", e.target.value)} /></td>

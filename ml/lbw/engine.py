@@ -147,7 +147,9 @@ def analyze_lbw(
     calibration_validated: bool = False,
     wicket: WicketSpec = WicketSpec(),
     ball: BallSpec = BallSpec(),
+    extra_downgrades: list[str] | None = None,
 ) -> LbwResult:
+    """``extra_downgrades``: caller-side reasons (e.g. camera synchronisation) that forbid a definite verdict."""
     cfg = config or LbwConfig()
     cfg.rules.decision_confidence = cfg.decision_confidence
     reasons: list[str] = []
@@ -252,7 +254,7 @@ def analyze_lbw(
         else:
             verdict = LbwVerdict.INCONCLUSIVE
             reasons.append(f"P(hit) = {p_hit:.3f}: uncertainty overlaps the wicket boundary")
-        downgrade = []
+        downgrade = list(extra_downgrades or [])
         if fit.status != "ok":
             downgrade.append(f"trajectory fit status is '{fit.status}'")
         if cfg.require_validated_calibration_for_definite and not calibration_validated:

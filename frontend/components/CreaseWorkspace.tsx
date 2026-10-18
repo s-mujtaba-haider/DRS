@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import FrameViewer, { type FrameInfo } from "@/components/FrameViewer";
 import { Badge, Button, ErrorBox, Panel, type Tone } from "@/components/ui";
-import { api, type Calibration, type DecisionAnalysis, type Video } from "@/lib/api";
+import { api, type Calibration, type CreaseProposal, type CreaseProposals, type DecisionAnalysis, type Video } from "@/lib/api";
 
 type Pt = [number, number];
 type Tool = "crease" | "behind" | "grounded" | "airborne" | "roi" | "none";
@@ -63,6 +63,7 @@ export default function CreaseWorkspace({ video, mode, readOnly, onAnalysis }: {
   const [broken, setBroken] = useState<Mark | null>(null);
   const [breakSource, setBreakSource] = useState<"manual" | "auto">("manual");
   const [confirmed, setConfirmed] = useState(false);
+  const [followCam, setFollowCam] = useState(false);
   const [cals, setCals] = useState<Calibration[]>([]);
   const [calId, setCalId] = useState<string>("");
   const [end, setEnd] = useState<"striker" | "bowler">("striker");
@@ -70,6 +71,8 @@ export default function CreaseWorkspace({ video, mode, readOnly, onAnalysis }: {
     ball_touched_fielder_before_break: null, attempting_run: null, broken_by_wicket_keeper_without_intervention: null,
     running_or_diving_into_ground: null, left_ground_to_avoid_injury: null });
   const [result, setResult] = useState<DecisionAnalysis | null>(null);
+  const [props, setProps] = useState<Map<number, CreaseProposal[]>>(new Map());
+  const [propInfo, setPropInfo] = useState<CreaseProposals | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
   const [err, setErr] = useState<unknown>(null);
 
@@ -82,9 +85,13 @@ export default function CreaseWorkspace({ video, mode, readOnly, onAnalysis }: {
     if (tool === "crease") setCrease((c) => (c.length >= 2 ? [p] : [...c, p]));
     else if (tool === "behind") setBehind(p);
     else if (tool === "roi") setRoi((r) => (r.length >= 2 ? [p] : [...r, p]));
-    else if ((tool === "grounded" || tool === "airborne") && ts !== null)
-      setObs((o) => [...o.filter((q) => q.frame_index !== frame), { frame_index: frame, timestamp_ms: ts, point: p, grounded: tool === "grounded", source: "manual" as const }]
+    else if ((tool === "grounded" || tool === "airborne") && ts !== null) {
+      // Snap to a model proposal when the click lands on one; the operator still decides grounded / in air.
+      const near = (props.get(frame) ?? []).map((q) => ({ q, d: Math.hypot(q.point[0] - x, q.point[1] - y) })).sort((a, b) => a.d - b.d)[0];
+      const pt: Pt = near && near.d < Math.max(12, W / 120) ? near.q.point : p;
+      setObs((o) => [...o.filter((q) => q.frame_index !== frame), { frame_index: frame, timestamp_ms: ts, point: pt, grounded: tool === "grounded", source: "manual" as const }]
         .sort((a, b) => a.frame_index - b.frame_index));
+    }
   };
 
   const assessments = useMemo(() => {
@@ -100,6 +107,12 @@ export default function CreaseWorkspace({ video, mode, readOnly, onAnalysis }: {
 
   const overlay = (
     <>
+      {(props.get(frame) ?? []).map((q, i) => (
+        <g key={`p${i}`}>
+          <rect x={q.point[0] - r} y={q.point[1] - r} width={2 * r} height={2 * r} transform={`rotate(45 ${q.point[0]} ${q.point[1]})`}
+            fill="none" stroke="#e879f9" strokeWidth={r / 4} strokeDasharray={q.grounded_hint ? undefined : `${r / 2} ${r / 3}`} />
+        </g>
+      ))}
       {creaseLine && (() => { const [a, b] = extend(creaseLine[0], creaseLine[1], W, H); return <line x1={a[0]} y1={a[1]} x2={b[0]} y2={b[1]} stroke="#38bdf8" strokeWidth={r / 2} />; })()}
       {crease.map((p, i) => <circle key={i} cx={p[0]} cy={p[1]} r={r} fill="none" stroke="#38bdf8" strokeWidth={r / 3} />)}
       {behind && <g><circle cx={behind[0]} cy={behind[1]} r={r} fill="#4ade80" /><text x={behind[0] + r * 1.5} y={behind[1]} fill="#4ade80" fontSize={r * 3}>behind</text></g>}
@@ -118,7 +131,9 @@ export default function CreaseWorkspace({ video, mode, readOnly, onAnalysis }: {
     setBusy("detect");
     setErr(null);
     try {
-      const a = await api.detectWicketBreak({ video_id: video.id, roi: roiBox, start_frame: Math.max(0, frame - 50), end_frame: frame + 250 });
+      // With camera-motion compensation the box is drawn on the scan's first frame, so scan from the current frame.
+      const start = followCam ? frame : Math.max(0, frame - 50);
+      const a = await api.detectWicketBreak({ video_id: video.id, roi: roiBox, start_frame: start, end_frame: start + 300, compensate_motion: followCam });
       const d = a.result as { status: string; last_intact_frame?: number; last_intact_ms?: number; first_broken_frame?: number; first_broken_ms?: number; reasons?: string[] };
       if (d.status === "BREAK_CANDIDATE" && d.first_broken_frame != null && d.last_intact_frame != null) {
         setIntact({ frame: d.last_intact_frame, ts: d.last_intact_ms! });
@@ -127,6 +142,23 @@ export default function CreaseWorkspace({ video, mode, readOnly, onAnalysis }: {
         setConfirmed(false);
         setFrame(d.first_broken_frame);
       } else setErr(`Wicket break: ${d.status}. ${(d.reasons ?? []).join(" ")}`);
+    } catch (e) {
+      setErr(e);
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  const propose = async () => {
+    setBusy("propose");
+    setErr(null);
+    try {
+      const body: Record<string, unknown> = { video_id: video.id, start_frame: Math.max(0, frame - 25), end_frame: frame + 25 };
+      if (crease.length === 2) body.crease = { p1: crease[0], p2: crease[1] };
+      if (roiBox) body.roi = roiBox;
+      const d = await api.creaseProposals(body);
+      setPropInfo(d);
+      setProps(new Map(d.frames.map((f) => [f.frame_index, f.proposals])));
     } catch (e) {
       setErr(e);
     } finally {
@@ -181,12 +213,24 @@ export default function CreaseWorkspace({ video, mode, readOnly, onAnalysis }: {
             <Button disabled={readOnly || ts === null} onClick={() => { setIntact({ frame, ts: ts! }); setBreakSource("manual"); }}>Last intact = this frame</Button>
             <Button disabled={readOnly || ts === null} onClick={() => { setBroken({ frame, ts: ts! }); setBreakSource("manual"); }}>First broken = this frame</Button>
             <Button disabled={readOnly || !roiBox || busy !== null} onClick={detect}>{busy === "detect" ? "Detecting..." : "Auto-detect break"}</Button>
+            <label className="flex items-center gap-1 text-xs" title="Camera pans or zooms: draw the stumps box on the current frame (intact wicket) and the scan starts here">
+              <input type="checkbox" checked={followCam} onChange={(e) => setFollowCam(e.target.checked)} /> camera moves
+            </label>
+            <Button disabled={readOnly || (crease.length < 2 && !roiBox) || busy !== null} onClick={propose} title="Pose model proposes ankle/foot points for ±25 frames; click a proposal to use it">
+              {busy === "propose" ? "Proposing..." : "Propose feet (model)"}
+            </Button>
             {intact && broken && (
               <span className="tabular text-xs">
                 break between f{intact.frame} and f{broken.frame} ({(broken.ts - intact.ts).toFixed(1)} ms window, {breakSource})
               </span>
             )}
           </div>
+          {propInfo && (
+            <div className="text-xs text-muted">
+              Model proposals ({propInfo.model_id}, {propInfo.frames_with_batter} frames with a batter): magenta diamonds, solid = likely grounded, dashed = unsure or moving.
+              They are suggestions; select the grounded / in-air tool and click one to use it. {propInfo.warnings.slice(0, 2).join(" ")}
+            </div>
+          )}
           <label className="flex items-center gap-2 text-sm">
             <input type="checkbox" disabled={readOnly} checked={confirmed} onChange={(e) => setConfirmed(e.target.checked)} />
             I confirm a bail was completely removed / a stump struck out in the first-broken frame (Law 29.1)

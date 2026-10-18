@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_prefix="DRS_", env_file=ROOT / ".env", extra="ignore")
 
     storage_dir: Path = ROOT / "storage"
+    annotations_dir: Path = ROOT / "data" / "annotations"  # where labelled sets are exported
     database_url: str | None = None  # default: sqlite file in storage_dir
     max_upload_mb: int = 1024
     allowed_extensions: tuple[str, ...] = (".mp4", ".mov", ".avi", ".mkv", ".m4v", ".webm")
@@ -23,6 +24,10 @@ class Settings(BaseSettings):
     default_device: str = "auto"
     max_frames_per_job: int = 3000
     log_level: str = "INFO"
+    # Match-day roles. When either PIN is set, every state-changing request needs a valid PIN
+    # (header X-DRS-PIN); recording or withdrawing a review decision needs the umpire PIN.
+    operator_pin: str | None = None
+    umpire_pin: str | None = None
     capture_retention_s: float = 300.0
     capture_max_disk_mb: int = 20000
     capture_encoder: str = "auto"  # auto = h264_nvenc if it opens, else libx264, else mpeg4

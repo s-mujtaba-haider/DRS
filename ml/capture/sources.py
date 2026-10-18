@@ -59,11 +59,12 @@ class OpenCVSource(FrameSource):
     """Device index, video file, or RTSP/HTTP URL via cv2.VideoCapture."""
 
     def __init__(self, camera_id: str, uri: int | str, width: int | None = None, height: int | None = None,
-                 fps: float | None = None, backend: int | None = None, realtime_file: bool = True):
+                 fps: float | None = None, backend: int | None = None, realtime_file: bool = True, loop: bool = False):
         self.camera_id, self.uri = camera_id, uri
         self.req_width, self.req_height, self.req_fps, self.backend = width, height, fps, backend
         self.is_file = isinstance(uri, str) and not uri.lower().startswith(("rtsp://", "http://", "https://", "udp://"))
         self.realtime_file = realtime_file
+        self.loop = loop and self.is_file  # rehearsal: replay a recorded file as an endless live feed
         self.cap = None
         self.description = f"opencv:{uri}"
         self._t0: int | None = None
@@ -100,10 +101,16 @@ class OpenCVSource(FrameSource):
                 self._t0 = clock_ns()
             _sleep_until(self._t0 + int(self._n * 1e9 / self.nominal_fps))
         ok, img = self.cap.read()
+        if (not ok or img is None) and self.loop and self._n > 0:
+            self.cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+            ok, img = self.cap.read()
         host = clock_ns()
         if not ok or img is None:
             return None
         self._n += 1
+        if self.loop:
+            # Container position restarts each loop; a monotonic count keeps drop accounting valid.
+            return RawFrame(img, host, time.time_ns(), backend_ts_ms=None, backend_frame=self._n)
         pos_ms = self.cap.get(cv2.CAP_PROP_POS_MSEC)
         pos_fr = self.cap.get(cv2.CAP_PROP_POS_FRAMES)
         return RawFrame(img, host, time.time_ns(),

@@ -54,6 +54,7 @@ class FlightModel:
     drag_c: float = 0.0  # 1/m, quadratic-drag coefficient (linearised per segment)
     lift: bool = False
     swing: bool = False
+    _tb_cache: tuple | None = field(default=None, init=False, repr=False, compare=False)
 
     @property
     def _n_base(self) -> int:
@@ -84,6 +85,16 @@ class FlightModel:
     def bounce_time(self) -> float | None:
         if not self.bounce:
             return None
+        # Cached per parameter vector: position() needs it on every call and the root search dominates
+        # Monte Carlo cost. The key covers every input, so in-place edits to theta cannot return stale values.
+        key = (self.theta.tobytes(), self.t0, self.ball_radius, self.drag_k, self.drag_c)
+        if self._tb_cache is not None and self._tb_cache[0] == key:
+            return self._tb_cache[1]
+        tb = self._solve_bounce_time()
+        self._tb_cache = (key, tb)
+        return tb
+
+    def _solve_bounce_time(self) -> float | None:
         p0, v0 = self.theta[:3], self.theta[3:6]
         # Solve z(tau) = r numerically (handles drag); bracket scan then bisection.
         taus = np.linspace(1e-4, 3.0, 3001)
@@ -189,36 +200,51 @@ def _bic(cost: float, n: int, k: int) -> float:
 
 
 def fit_to_points(t: np.ndarray, X: np.ndarray, sigma_m: np.ndarray | None = None, ball_radius: float = 0.0364,
-                  drag_k: float = 0.0, allow_bounce: bool = True, min_points: int = 6, max_rms_m: float = 0.05) -> FlightFit:
+                  drag_k: float = 0.0, allow_bounce: bool = True, min_points: int = 6, max_rms_m: float = 0.05,
+                  drag_c: float = 0.0, force_bounce: bool | None = None, t0: float | None = None) -> FlightFit:
+    """Fit the flight model to 3D points (multi-view reconstruction).
+
+    ``sigma_m`` (per point) whitens the residuals; the parameter covariance is then scaled by the reduced
+    chi-square but never below the stated sigmas, and the reported RMS is converted back to metres.
+    ``force_bounce`` fits only the bounce (True) or no-bounce (False) model instead of choosing by BIC.
+    ``t0`` fixes the parameter time origin (default: first point), so fits of perturbed data are comparable.
+    """
     t, X = np.asarray(t, float), np.asarray(X, float)
     n = len(t)
     if n < min_points:
         raise InsufficientObservations(f"{n} 3D points; at least {min_points} required")
     w = np.ones(n) if sigma_m is None else 1.0 / np.asarray(sigma_m, float)
-    t0 = float(t.min())
+    t0 = float(t.min()) if t0 is None else float(t0)
     # Initial guess from a quadratic fit to the first half.
     half = max(3, n // 2)
     A = np.vstack([np.ones(half), t[:half] - t0]).T
     sol, *_ = np.linalg.lstsq(A, X[:half], rcond=None)
     p0, v0 = sol[0], sol[1]
     fits = {}
-    for bounce in ([False, True] if allow_bounce else [False]):
+    options = [force_bounce] if force_bounce is not None else ([False, True] if allow_bounce else [False])
+    for bounce in options:
         theta0 = np.concatenate([p0, v0] + ([v0 * np.array([1, 1, -0.6])] if bounce else []))
 
         def resid(th, bounce=bounce):
-            m = FlightModel(th, t0, bounce, ball_radius, drag_k)
+            m = FlightModel(th, t0, bounce, ball_radius, drag_k, drag_c)
             if bounce and m.bounce_time() is None:
                 return np.full(3 * n, 1e3)
             return ((m.position(t) - X) * w[:, None]).ravel()
 
         res = least_squares(resid, theta0, method="lm", x_scale="jac", max_nfev=4000)
-        model = FlightModel(res.x, t0, bounce, ball_radius, drag_k)
+        model = FlightModel(res.x, t0, bounce, ball_radius, drag_k, drag_c)
         if bounce and model.bounce_time() is None:
             continue
         fits["bounce" if bounce else "no_bounce"] = (res, model)
+    if not fits:
+        raise InsufficientObservations("No physically plausible flight model fits the 3D points")
     best_name = min(fits, key=lambda k: _bic(fits[k][0].cost, 3 * n, len(fits[k][1].theta)))
     res, model = fits[best_name]
-    out = _finish(res, model, 3 * n, "multiview_3d", "m", n, t, max_rms_m, 1e-4)
+    if sigma_m is None:
+        out = _finish(res, model, 3 * n, "multiview_3d", "m", n, t, max_rms_m, 1e-4)
+    else:  # whitened residuals: floor the reduced chi-square at 1 and report RMS in metres
+        out = _finish(res, model, 3 * n, "multiview_3d", "m", n, t, max_rms_m, 1.0,
+                      resid_scale=float(np.sqrt(np.mean(np.asarray(sigma_m, float) ** 2))))
     out.alternatives = {k: _bic(r.cost, 3 * n, len(m.theta)) for k, (r, m) in fits.items()}
     out.reasons.insert(0, f"Selected {best_name} model by BIC")
     return out

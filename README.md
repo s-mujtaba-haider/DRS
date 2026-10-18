@@ -24,6 +24,11 @@ An independent, locally-run research system for cricket ball tracking and **expe
 | Match-day console (matches, reviews, evidence, advisory recommendation, human decision, audit log, evidence package) | Implemented and tested, and checked in the browser end to end. See `docs/MATCH_DAY.md`. |
 | Live multi-camera capture (rolling disk buffer, NVENC, preview, instant clip export with per-frame capture timing) | Implemented. Measured: 3 × 1080p100 on this PC with NVENC in process mode (`docs/EVALUATION.md` §7). **Software sync only.** |
 | Multi-camera time sync (audio GCC-PHAT, visual-event interval matching) | Implemented. Tested on synthetic signals. Not validated on real multi-camera footage. |
+| Multi-camera LBW (per-camera tracking → time alignment → triangulation → 3D flight fit, sync uncertainty propagated) | Implemented. Synthetic: with hardware sync 54/60 definite verdicts, all correct, and 18/22 true hits confirmed (one camera: 1/20). Software sync always `INCONCLUSIVE` by design (`docs/EVALUATION.md` §10). |
+| Match-day operation extras: synchronised multi-camera replay, second-screen umpire monitor, rehearsal (replay a video as a live camera), PDF review report with annotated evidence frames, operator/umpire PINs | Implemented and tested. |
+| Batter foot proposals for run-outs (YOLO11s-pose, AGPL-3.0, not cricket-trained) | Experimental. On 40 broadcast clips the batter was selected in 17; localisation accuracy unmeasured (`docs/EVALUATION.md` §9). |
+| Wicket-break detection on a panning/zooming camera (homography compensation) | Implemented. Tested on a synthetic panning clip. |
+| Ball-labelling page (detector suggestions, keyboard workflow, YOLO export split by video) | Implemented. This is the route to better broadcast detection. |
 | Web console (dashboard, upload/jobs, frame-accurate review, corrections, calibration, LBW, 3D, reports) | Implemented. Type-checked, linted and production-built. |
 | Backend API (FastAPI, background jobs, SQLite, PDF/JSON/CSV exports) | Implemented and tested |
 

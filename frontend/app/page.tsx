@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { Badge, Empty, ErrorBox, KV, Panel, Stat, fmt, statusTone } from "@/components/ui";
-import { api, type Job, type Stats, type SystemStatus, type Video } from "@/lib/api";
+import { api, type CaptureStatus, type Job, type Match, type Stats, type SystemStatus, type Video } from "@/lib/api";
 
 interface BenchSummary {
   dataset: string;
@@ -24,6 +24,8 @@ export default function Dashboard() {
   const [videos, setVideos] = useState<Record<string, Video>>({});
   const [sys, setSys] = useState<SystemStatus | null>(null);
   const [error, setError] = useState<unknown>(null);
+  const [matches, setMatches] = useState<Match[]>([]);
+  const [capture, setCapture] = useState<CaptureStatus | null>(null);
 
   useEffect(() => {
     Promise.all([api.stats(), api.jobs(), api.videos(), api.system()])
@@ -34,6 +36,8 @@ export default function Dashboard() {
         setSys(sy);
       })
       .catch(setError);
+    api.matches().then((m) => setMatches(m.filter((x) => x.status === "live"))).catch(() => undefined);
+    api.captureStatus().then(setCapture).catch(() => undefined);
   }, []);
 
   const bench = stats?.trajectory_benchmark?.summary as BenchSummary | undefined;
@@ -51,6 +55,28 @@ export default function Dashboard() {
         </Link>
       </div>
       <ErrorBox error={error} />
+
+      {(matches.length > 0 || (capture?.cameras.some((c) => c.running) ?? false)) && (
+        <Panel title="Match day">
+          <div className="flex flex-wrap items-center gap-4 text-sm">
+            {matches.map((m) => (
+              <Link key={m.id} href={`/matches/${m.id}`} className="rounded border border-line bg-panel-2 px-3 py-2 hover:bg-line">
+                <div className="font-medium">{m.name}</div>
+                <div className="text-xs text-muted">
+                  innings {m.current_innings} · {Object.entries(m.reviews.teams).map(([t, c]) => `${t} ${c.remaining ?? "∞"}`).join(" · ")} reviews left
+                </div>
+              </Link>
+            ))}
+            {capture && (
+              <Link href="/capture" className="text-muted hover:text-ink">
+                <Badge tone={capture.cameras.some((c) => c.running) ? "good" : "neutral"}>
+                  {capture.cameras.filter((c) => c.running).length} camera(s) recording
+                </Badge>
+              </Link>
+            )}
+          </div>
+        </Panel>
+      )}
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <Stat label="Videos" value={stats?.videos ?? "-"} />

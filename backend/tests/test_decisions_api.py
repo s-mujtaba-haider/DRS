@@ -96,6 +96,8 @@ def test_runout_in_and_out_of_ground_and_review(client, video, match):
     assert client.post(f"/api/reviews/{rv['id']}/evidence", json={"type": "decision", "id": out["id"]}).status_code == 200
     rec = client.post(f"/api/reviews/{rv['id']}/recommend").json()["recommendation"]
     assert rec["final_decision"] == "OUT" and rec["evidence_id"] == out["id"] and rec["advisory"]
+    pdf = client.get(f"/api/reviews/{rv['id']}/report.pdf")
+    assert pdf.status_code == 200 and pdf.content[:4] == b"%PDF" and len(pdf.content) > 20_000  # includes evidence frames
 
     # Validation: crease needs both points; points must be in frame.
     bad = client.post("/api/runout/analyze", json={"video_id": video["id"], "dismissal": "run_out",
@@ -141,6 +143,8 @@ def test_boundary_six_and_review(client, video, match):
     assert rec["final_decision"] == "SIX" and rec["boundary_status"] == "BOUNDARY_SIX"
     d = client.post(f"/api/reviews/{rv['id']}/decide", json={"boundary_result": "SIX", "outcome": "UPHELD", "decided_by": "TV"})
     assert d.status_code == 200 and d.json()["final_decision"] == "SIX"
+    pdf = client.get(f"/api/reviews/{rv['id']}/report.pdf")
+    assert pdf.status_code == 200 and pdf.content[:4] == b"%PDF"
 
     bad = client.post("/api/boundary/analyze", json={"rope": rope, "events": [{"kind": "teleport", "timestamp_ms": 1}]})
     assert bad.status_code == 422

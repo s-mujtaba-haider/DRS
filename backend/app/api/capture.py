@@ -45,8 +45,10 @@ def _manager(request: Request, create: bool = False):
 
 class CameraSpec(BaseModel):
     camera_id: str
-    type: Literal["opencv", "synthetic"] = "opencv"
+    type: Literal["opencv", "synthetic", "video"] = "opencv"
     uri: int | str | None = Field(None, description="USB device index or rtsp/http(s) stream URL (no local file paths)")
+    video_id: str | None = Field(None, description="type=video: replay an uploaded video as a live camera (rehearsal)")
+    loop: bool = True
     width: int | None = Field(None, ge=64, le=7680)
     height: int | None = Field(None, ge=64, le=4320)
     fps: float | None = Field(None, gt=0, le=1000)
@@ -74,27 +76,41 @@ class CaptureStart(BaseModel):
     retention_s: float | None = Field(None, ge=10, le=3600)
 
 
+def _spec(c: CameraSpec, s: Session, cfg: Settings) -> dict:
+    if c.type == "opencv":
+        if c.uri is None:
+            raise HTTPException(422, f"{c.camera_id}: opencv cameras need a uri")
+        return c.model_dump(exclude_none=True, exclude={"video_id", "loop"})
+    if c.type == "video":
+        if not c.video_id:
+            raise HTTPException(422, f"{c.camera_id}: video cameras need a video_id")
+        v = get_or_404(s, Video, c.video_id)
+        path = (cfg.videos_dir / v.stored_name).resolve()
+        if path.parent != cfg.videos_dir.resolve() or not path.is_file():
+            raise HTTPException(404, "Video file missing")
+        # Server-resolved path of an uploaded video only; clients never supply file paths.
+        return {"camera_id": c.camera_id, "type": "opencv", "uri": str(path), "loop": c.loop, "realtime_file": True}
+    return c.model_dump(exclude_none=True, exclude={"video_id", "loop", "uri"})
+
+
 @router.post("/capture/start")
-def capture_start(body: CaptureStart, request: Request):
+def capture_start(body: CaptureStart, request: Request, s: Session = Depends(db), cfg: Settings = Depends(settings)):
     if len({c.camera_id for c in body.cameras}) != len(body.cameras):
         raise HTTPException(422, "camera_id values must be unique")
-    for c in body.cameras:
-        if c.type == "opencv" and c.uri is None:
-            raise HTTPException(422, f"{c.camera_id}: opencv cameras need a uri")
+    specs = [_spec(c, s, cfg) for c in body.cameras]
     with _LOCK:
         mgr = _manager(request, create=True)
         running = {cid for cid, r in mgr.recorders.items() if r.is_alive()}
         clash = running & {c.camera_id for c in body.cameras}
         if clash:
             raise HTTPException(409, f"Already recording: {', '.join(sorted(clash))}")
-        cfg = None
+        rec_cfg = None
         if body.retention_s:
             from dataclasses import replace
 
-            cfg = replace(mgr.cfg, retention_s=body.retention_s)
-        specs = [c.model_dump(exclude_none=True) for c in body.cameras]
+            rec_cfg = replace(mgr.cfg, retention_s=body.retention_s)
         try:
-            mgr.start_cameras(specs, cfg)
+            mgr.start_cameras(specs, rec_cfg)
         except Exception as exc:  # device open / encoder failures are user-facing
             raise HTTPException(422, f"Could not start capture: {type(exc).__name__}: {exc}") from exc
     return mgr.status()

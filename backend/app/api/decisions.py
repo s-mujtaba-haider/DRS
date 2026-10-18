@@ -60,6 +60,7 @@ class WicketBreakRequest(BaseModel):
     start_frame: int = Field(0, ge=0)
     end_frame: int | None = Field(None, ge=1)
     persist_frames: int = Field(3, ge=1, le=20)
+    compensate_motion: bool = Field(False, description="follow a panning/zooming camera (roi drawn on start_frame)")
 
     @model_validator(mode="after")
     def _check(self):
@@ -86,7 +87,8 @@ def wicket_break(body: WicketBreakRequest, s: Session = Depends(db), cfg: Settin
         raise HTTPException(422, "roi outside the frame")
     end = min(body.end_frame or body.start_frame + MAX_BREAK_SCAN_FRAMES, body.start_frame + MAX_BREAK_SCAN_FRAMES)
     det = detect_wicket_break_in_video(cfg.videos_dir / v.stored_name, body.roi, start_frame=body.start_frame,
-                                       end_frame=end, persist_frames=body.persist_frames)
+                                       end_frame=end, persist_frames=body.persist_frames,
+                                       compensate_motion=body.compensate_motion)
     return _store(s, "wicket_break", v.id, None, body.model_dump(mode="json"), det.model_dump(mode="json"))
 
 

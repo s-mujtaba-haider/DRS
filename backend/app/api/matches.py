@@ -14,10 +14,12 @@ from pathlib import Path
 from typing import Literal
 
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import Response
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
-from backend.app.api.deps import db, get_or_404, to_dict
+from backend.app.api.deps import db, get_or_404, require_umpire, settings, to_dict
+from backend.app.core.config import Settings
 from backend.app.database.models import DecisionAnalysis, LbwAnalysis, Match, Review, ReviewEvent, Video
 
 router = APIRouter(prefix="/api", tags=["matches"])
@@ -321,7 +323,7 @@ class DecisionIn(BaseModel):
     notes: str | None = Field(None, max_length=2000)
 
 
-@router.post("/reviews/{review_id}/decide")
+@router.post("/reviews/{review_id}/decide", dependencies=[Depends(require_umpire)])
 def decide(review_id: str, body: DecisionIn, s: Session = Depends(db)):
     r = _open(s, review_id)
     if r.decision_type == "boundary":
@@ -354,7 +356,7 @@ class Withdraw(BaseModel):
     actor: str = "operator"
 
 
-@router.post("/reviews/{review_id}/withdraw")
+@router.post("/reviews/{review_id}/withdraw", dependencies=[Depends(require_umpire)])
 def withdraw(review_id: str, body: Withdraw, s: Session = Depends(db)):
     r = _open(s, review_id)
     r.status = "withdrawn"
@@ -363,16 +365,19 @@ def withdraw(review_id: str, body: Withdraw, s: Session = Depends(db)):
     return to_dict(r)
 
 
-@router.get("/reviews/{review_id}/package")
-def evidence_package(review_id: str, s: Session = Depends(db)):
-    """Self-contained evidence package: review, protocol, analyses, video provenance and audit log."""
-    r = get_or_404(s, Review, review_id)
+def _package(s: Session, r: Review) -> dict:
     m = s.get(Match, r.match_id)
     analyses = []
     for e in r.evidence:
         obj = s.get(EVIDENCE_TYPES[e["type"]], e["id"])
         if obj is not None:
-            analyses.append({**e, "request": obj.request, "result": obj.result})
+            vid = getattr(obj, "video_id", None)
+            if vid is None and e["type"] == "lbw":
+                from backend.app.database.models import Job
+
+                job = s.get(Job, obj.job_id)
+                vid = job.video_id if job else None
+            analyses.append({**e, "video_id": vid, "request": obj.request, "result": obj.result})
     videos = [{"id": v.id, "original_filename": v.original_filename, "sha256": v.sha256, "meta": v.meta}
               for v in (s.get(Video, vid) for vid in r.video_ids) if v is not None]
     return {"package_version": 1, "generated_at": datetime.now(UTC).isoformat(), "software_version": _software_version(),
@@ -382,3 +387,23 @@ def evidence_package(review_id: str, s: Session = Depends(db)):
             "review": to_dict(r), "videos": videos, "analyses": analyses,
             "events": [to_dict(e) for e in s.query(ReviewEvent).filter(ReviewEvent.review_id == r.id)
                        .order_by(ReviewEvent.created_at).all()]}
+
+
+@router.get("/reviews/{review_id}/package")
+def evidence_package(review_id: str, s: Session = Depends(db)):
+    """Self-contained evidence package: review, protocol, analyses, video provenance and audit log."""
+    return _package(s, get_or_404(s, Review, review_id))
+
+
+@router.get("/reviews/{review_id}/report.pdf")
+def review_report(review_id: str, s: Session = Depends(db), cfg: Settings = Depends(settings)):
+    """PDF review report with annotated evidence frames (built from the stored package only)."""
+    from backend.app.services.review_report import build_review_report
+
+    r = get_or_404(s, Review, review_id)
+    pkg = _package(s, r)
+    ids = {a["video_id"] for a in pkg["analyses"] if a.get("video_id")}
+    paths = {v.id: cfg.videos_dir / v.stored_name for v in (s.get(Video, i) for i in ids) if v is not None}
+    pdf = build_review_report(pkg, paths)
+    return Response(pdf, media_type="application/pdf",
+                    headers={"Content-Disposition": f'attachment; filename="review_{r.seq}_{r.id}.pdf"'})

@@ -68,3 +68,22 @@ def test_capture_clip_into_review_and_sync(client):
 
     st = client.post("/api/capture/stop").json()
     assert all(not cam["running"] for cam in st["cameras"])
+
+
+def test_rehearsal_replays_uploaded_video_as_camera(client, tmp_path):
+    from ml.evaluation.synthetic import make_delivery, write_synthetic_video
+
+    p = tmp_path / "rehearsal.mp4"
+    write_synthetic_video(str(p), make_delivery(fps=50), fps=50, lead_frames=2, tail_frames=2)
+    with open(p, "rb") as fh:
+        v = client.post("/api/videos", files={"file": ("rehearsal.mp4", fh, "video/mp4")}).json()
+    assert client.post("/api/capture/start", json={"cameras": [{"camera_id": "replay", "type": "video"}]}).status_code == 422
+    r = client.post("/api/capture/start", json={"cameras": [{"camera_id": "replay", "type": "video", "video_id": v["id"]}]})
+    assert r.status_code == 200, r.text
+    time.sleep(2.0)  # longer than the clip: playback must loop
+    st = next(c for c in client.get("/api/capture/status").json()["cameras"] if c["camera_id"] == "replay")
+    assert st["running"] and st["frames_captured"] > v["meta"]["frame_count_declared"]
+    assert st["source_dropped_est"] == 0
+    clip = client.post("/api/capture/clip", json={"seconds": 1.0, "camera_ids": ["replay"]})
+    assert clip.status_code == 201 and clip.json()["videos"][0]["meta"]["capture"]["camera_id"] == "replay"
+    client.post("/api/capture/stop")

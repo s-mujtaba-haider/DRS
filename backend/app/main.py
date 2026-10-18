@@ -13,11 +13,12 @@ import time
 import uuid
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, Request
+from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from backend.app.api import analysis, capture, decisions, jobs, matches, system, videos
+from backend.app.api import analysis, capture, decisions, jobs, labeling, matches, multiview, proposals, system, videos
+from backend.app.api.deps import auth_role
 from backend.app.core.config import get_settings
 from backend.app.database.models import init_db
 from backend.app.workers.jobs import JobManager
@@ -86,5 +87,5 @@ async def request_id_mw(request: Request, call_next):
     return response
 
 
-for r in (system.router, videos.router, jobs.router, analysis.router, matches.router, decisions.router, capture.router):
-    app.include_router(r)
+for r in (system.router, videos.router, jobs.router, analysis.router, matches.router, decisions.router, capture.router, labeling.router, proposals.router, multiview.router):
+    app.include_router(r, dependencies=[Depends(auth_role)])

@@ -11,3 +11,12 @@ alternative_drag_scale: 1.5
 covariance_inflation: 2.0          # calibrated for ~90% interval coverage on cricket-synth (docs/EVALUATION.md)
 rules:
   in_line_any_part_of_ball: true
+# Multi-camera LBW (ml.lbw.multiview.MultiViewConfig).
+multiview:
+  max_sync_position_error_m: 0.03  # software sync: definite verdicts only if ball speed x sync uncertainty <= this
+  max_interp_gap_factor: 2.5       # interpolate other cameras only between frames at most this many intervals apart
+  max_reprojection_px: 6.0
+  min_points: 6
+  point_sigma_floor_m: 0.005
+  outlier_sigma: 4.0
+  use_drag: true

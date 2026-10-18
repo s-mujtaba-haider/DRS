@@ -22,7 +22,7 @@
 | Evaluation | `ml/evaluation/` | Synthetic generator, cricket-synth benchmark, detection metrics |
 | Datasets | `ml/datasets/yolo_tools.py` | Validation, dHash duplicate detection, sequence-level splits, provenance, cricket-synth conversion |
 | Pipeline | `ml/pipeline.py` | Streaming end-to-end run with progress and cancellation hooks |
-| Backend | `backend/app/` | FastAPI routers (`system`, `videos`, `jobs`, `analysis`, `matches`, `decisions`, `capture`), SQLAlchemy models (incl. `Match`, `Review`, append-only `ReviewEvent`, `DecisionAnalysis`), `JobManager` thread pool, services (LBW glue, PDF) |
+| Backend | `backend/app/` | FastAPI routers (`system`, `videos`, `jobs`, `analysis`, `matches`, `decisions`, `capture`, `labeling`, `proposals`, `multiview`; all behind the `auth_role` PIN dependency), SQLAlchemy models (incl. `Match`, `Review`, append-only `ReviewEvent`, `DecisionAnalysis`), `JobManager` thread pool, services (LBW glue, PDF) |
 | Frontend | `frontend/` | Next.js app router pages plus components (`TrackingWorkspace`, `LbwWorkspace`, `Trajectory3D`, `MatchControl`, `ReviewWorkspace`, `CreaseWorkspace`, `BoundaryWorkspace`, `FrameViewer`) and the live capture page |
 
 The frontend only talks to the REST API (`frontend/lib/api.ts`). It never touches ML internals.

@@ -32,6 +32,8 @@ Better: add a side-on camera at the non-striker's end and one camera per boundar
 ## Before play
 
 1. **Start the services** (`INSTALLATION.md`), then open http://localhost:3100.
+   - **Roles.** Set `DRS_OPERATOR_PIN` and `DRS_UMPIRE_PIN` (in `.env` or the environment) before starting the backend. Every change then needs a PIN, entered in the sidebar. Only the umpire PIN can record or withdraw a decision. Viewing stays open.
+   - **A second screen or PC for the third umpire.** Start the backend with `--host 0.0.0.0` and add the console's address to `DRS_CORS_ORIGINS` (for example `["http://192.168.1.20:3100"]`). Build the frontend with `NEXT_PUBLIC_API_BASE=http://<backend-ip>:8100`. Use a wired, isolated network: the API has no TLS.
 2. **Live capture → add cameras.** Use a device index (`0`, `1`, …) or an `rtsp://` URL, and set the resolution and fps the camera actually supports. Start recording.
    - Check each panel: *FPS measured* should match *declared*, *Dropped frames* should be 0, and *Backlog* should stay near 0.
    - Rate mismatches are flagged; many webcams deliver half their declared rate in low light.
@@ -40,7 +42,10 @@ Better: add a side-on camera at the non-striker's end and one camera per boundar
    - Re-calibrate if a camera is bumped.
    - A calibration is only marked validated if you supply checked intrinsics.
 4. **Match day → New match.** Enter the teams, the DRS protocol (ICC Test/ODI/T20I 2025, or the club protocol without umpire's call), the venue and the third umpire's name.
-5. **Rehearse.** Clip, open a review, mark it and record it, then withdraw it. Check the timings on your hardware.
+5. **Rehearse.**
+   - In *Live capture*, choose **Rehearsal: replay a video** to feed a recorded match clip in as a looping live camera.
+   - Clip it into a review, mark it, record a decision, then withdraw the review.
+   - Check the timings on your hardware.
 
 ## During play: a review in about a minute
 
@@ -50,12 +55,18 @@ Better: add a side-on camera at the non-striker's end and one camera per boundar
 2. **Clip the replay.** In the review, *Clip N camera(s)* exports the last N seconds from every recording camera (default 8 s) and attaches them.
    - Each clip keeps per-frame capture times and reports its sync uncertainty.
    - Clip again to get more context.
+   - **Synchronised replay** plays every camera on the shared capture clock: space to play or pause, `,`/`.` to step one frame, speeds from 0.05× to 1×.
+   - *Open umpire monitor* opens the same view full screen for a second screen. It picks up new clips automatically.
 3. **Mark and analyse:**
    - **Run out / stumping:**
      1. Draw the crease: two clicks on the **back edge** of the popping-crease marking, plus one point on the stump side (or pick a calibration).
      2. Draw the stumps box and run *Auto-detect break*, or step frames with `←`/`→` and mark *last intact* and *first broken*.
+        - If the camera pans or zooms, tick *camera moves* and draw the box on a frame where the wicket is intact. The scan starts there and follows the camera.
      3. Tick the Law 29.1 confirmation only after seeing a bail completely removed.
      4. Mark the bat tip or foot in the frames around the break as grounded or in air.
+        - *Propose feet (model)* runs a pose model over ±25 frames and draws magenta diamonds on the batter's ankles and feet: solid means likely grounded, dashed means unsure.
+        - Clicking near a diamond snaps to it, but you still decide grounded or in air.
+        - It never proposes the bat tip.
      5. Set the known facts and run *Analyse and attach*.
    - **Boundary:** trace the rope's inner edge and click a field-side point. Step through the frames and add events in order, ending with *ball dead* or *catch completed*. Set the facts and analyse.
    - **LBW:** run ball tracking on the end-on clip, open the session, check the track, mark the impact frame, run LBW, then attach the analysis.
@@ -66,6 +77,10 @@ Better: add a side-on camera at the non-striker's end and one camera per boundar
 
 ## After play
 
+- Each review's **PDF report** contains:
+  - the review, the protocol, the advisory recommendation and the official's decision;
+  - video provenance, rule checks and timelines;
+  - **annotated evidence frames**: the frames around the break with the crease line and marked points, or the boundary frames with the rope.
 - Each review's **Evidence package (JSON)** contains:
   - the match, the protocol version, every analysis request and result, and video provenance (SHA-256 plus capture timing);
   - the append-only audit log (who did what, when).
