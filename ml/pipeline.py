@@ -46,6 +46,9 @@ class PipelineConfig:
     batch_size: int = 8
     device: str = "auto"
     half: bool = True
+    # Use a validated TensorRT engine next to the weights (scripts/export_tensorrt.py); falls back to the .pt.
+    # Off by default: ~1.3x detector throughput but ~5 GB of VRAM (docs/EVALUATION.md section 11).
+    use_tensorrt: bool = False
     frame_step: int = 1
     start_frame: int = 0
     end_frame: int | None = None
@@ -62,7 +65,7 @@ def build_detector(cfg: PipelineConfig) -> tuple[object, list[str]]:
 
     def yolo(path: Path):
         return YoloBallDetector(path, conf=cfg.conf, imgsz=cfg.imgsz, device=cfg.device, half=cfg.half,
-                                batch_size=cfg.batch_size, tile_size=cfg.tile_size)
+                                batch_size=cfg.batch_size, tile_size=cfg.tile_size, prefer_engine=cfg.use_tensorrt)
 
     choice = cfg.detector
     if choice == "motion":
@@ -76,6 +79,8 @@ def build_detector(cfg: PipelineConfig) -> tuple[object, list[str]]:
                 det = yolo(w)
                 if det.is_cricket_specific:
                     notes.append(f"Cricket-specific detector {w.name}")
+                    if cfg.use_tensorrt and det.engine_note:
+                        notes.append(det.engine_note)
                     return det, notes
                 notes.append(f"{w.name} is not cricket-specific")
             except ModelUnavailableError as exc:

@@ -95,6 +95,19 @@ The image is based on `pytorch/pytorch:2.7.1-cuda12.8-cudnn9-runtime`.
 
 The code is cross-platform. Inside a WSL2 Ubuntu you can follow the same steps with `python3 -m venv` and the CUDA 12.8 wheels. A WSL distribution is not required.
 
+## 6. TensorRT engine (optional, faster detection)
+
+```powershell
+# TensorRT for CUDA 12 (about 2 GB download) and the ONNX exporter dependencies
+.\.venv\Scripts\python -m pip install -r requirements\tensorrt.txt   # versions verified on the development PC
+# build + validate (about 3 min); writes models/checkpoints/cricket_ball_best.engine and .engine.json
+.\.venv\Scripts\python scripts\export_tensorrt.py
+```
+
+Enable the engine per job (`"use_tensorrt": true` in `POST /api/analysis/jobs`), for all jobs with `DRS_USE_TENSORRT=true`, or with `PipelineConfig(use_tensorrt=True)`. The detector checks the sidecar every time it loads, and falls back to the `.pt` with a logged reason if any of these change: the weights, the TensorRT version, or the GPU. Rebuild the engine after any of them changes.
+
+Install the ONNX packages yourself as above. Ultralytics tries to auto-install missing export dependencies, and during development that replaced numpy and left its package metadata broken. The export script sets `YOLO_AUTOINSTALL=false`.
+
 ## Troubleshooting
 
 | Symptom | Fix |

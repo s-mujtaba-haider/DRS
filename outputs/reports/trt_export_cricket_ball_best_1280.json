@@ -1,0 +1,72 @@
+{
+  "schema": "drs.trt_engine/1",
+  "created_at": "2026-10-18T08:36:29.685220+00:00",
+  "source_weights": "cricket_ball_best.pt",
+  "source_sha256": "cd274e0733951e45a52a89b19cb690a6d5e8dba6a50a680aafb46a03f30a0379",
+  "engine": "cricket_ball_best.engine",
+  "engine_sha256": "d2f8370252884b984e4872b85ff7b61111cfb101c8d744f7f59a36025cf5254b",
+  "tensorrt": "10.16.1.11",
+  "torch": "2.11.0+cu128",
+  "gpu": "NVIDIA GeForce RTX 3080 Ti",
+  "precision": "fp16",
+  "dynamic": true,
+  "imgsz": 1280,
+  "max_hw": [
+    736,
+    1280
+  ],
+  "max_batch": 8,
+  "build_seconds": 205.7,
+  "validation": {
+    "data": "data\\processed\\broadcast_seg_test",
+    "split": "test",
+    "images": 298,
+    "pytorch_vs_labels": {
+      "num_gt": 213,
+      "precision": 0.6337209302325582,
+      "recall": 0.5117370892018779,
+      "f1": 0.5662337662337662,
+      "ap_centre_match": 0.5316474518606508,
+      "true_positives": 109,
+      "false_positives": 63,
+      "false_negatives": 104
+    },
+    "engine_vs_labels": {
+      "num_gt": 213,
+      "precision": 0.6337209302325582,
+      "recall": 0.5117370892018779,
+      "f1": 0.5662337662337662,
+      "ap_centre_match": 0.531293288190242,
+      "true_positives": 109,
+      "false_positives": 63,
+      "false_negatives": 104
+    },
+    "agreement": {
+      "score_threshold": 0.25,
+      "reference_detections": 172,
+      "engine_detections": 172,
+      "matched": 171,
+      "agreement": 0.9941860465116279,
+      "engine_extra_rate": 0.005813953488372093,
+      "centre_err_px_median": 0.0,
+      "centre_err_px_p95": 0.05859375,
+      "iou_median": 0.9807841963483986,
+      "score_abs_diff_median": 0.0009765625,
+      "score_abs_diff_max": 0.009521484375
+    },
+    "ap_drop": 0.00035416367040874697,
+    "criteria": {
+      "min_agreement": 0.97,
+      "max_extra_rate": 0.03,
+      "max_median_centre_px": 1.0,
+      "max_ap_drop": 0.01
+    },
+    "checks": {
+      "agreement": true,
+      "extra": true,
+      "centre": true,
+      "ap": true
+    },
+    "passed": true
+  }
+}

@@ -41,6 +41,7 @@ class JobCreate(BaseModel):
     end_frame: int | None = Field(None, ge=1)
     max_frames: int | None = Field(None, ge=1)
     render_video: bool = True
+    use_tensorrt: bool | None = Field(None, description="use the validated TensorRT engine if present (default: DRS_USE_TENSORRT)")
 
 
 @router.post("", status_code=201)
@@ -49,6 +50,8 @@ def create_job(body: JobCreate, s: Session = Depends(db), mgr: JobManager = Depe
     if body.end_frame is not None and body.end_frame <= body.start_frame:
         raise HTTPException(422, "end_frame must be greater than start_frame")
     conf = body.model_dump(exclude={"video_id"})
+    if conf["use_tensorrt"] is None:
+        conf["use_tensorrt"] = cfg.use_tensorrt
     conf["max_frames"] = min(conf["max_frames"] or cfg.max_frames_per_job, cfg.max_frames_per_job)
     j = Job(video_id=body.video_id, config=conf)
     s.add(j)

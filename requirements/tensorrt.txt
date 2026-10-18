@@ -1,0 +1,6 @@
+# Optional: TensorRT FP16 engine for the cricket-ball detector (scripts/export_tensorrt.py).
+# Versions used on the development PC (RTX 3080 Ti, CUDA 12.8 PyTorch build).
+tensorrt-cu12==10.16.1.11
+onnx==1.23.2
+onnxslim==0.1.98
+ml_dtypes==0.6.0

@@ -428,6 +428,68 @@ An ignored 1%/frame zoom triples the error and halves the coverage of the uncert
 - **An undeclared 2 ms error is not detected.** Verdicts stayed correct in this set because a 2 cm stump-plane shift rarely crosses the decision boundary, but nothing in the reconstruction (including reprojection error) reveals the error. The declared sync uncertainty must come from the hardware, not be assumed.
 - **Synthetic only:** exact calibration, a known detector-free track, and no motion blur or occlusion. Real-world accuracy is unknown.
 
+## 11. TensorRT and pipeline throughput
+
+Measured on 2026-10-18 on an RTX 3080 Ti with TensorRT 10.16.1, torch 2.11 + CUDA 12.8 and Ultralytics 8.4.175, on native Windows. Raw outputs are in `outputs/reports/trt_export_cricket_ball_best_1280.json` and `inference_benchmark_trt_e2e.json`.
+
+**Engine.**
+- Source: `cricket_ball_best.pt` (v3), exported to an FP16 dynamic engine.
+- Input profile: up to batch 8, letterboxed inputs up to 736×1280, which covers 16:9 frames at imgsz 1280 (`scripts/export_tensorrt.py`).
+- Build: about 2 minutes with a 4 GB builder workspace.
+- Build attempts that did not ship:
+  - A square 1280×1280 profile at max batch 8 failed to build with a 4 GB workspace (no tactic for the attention block).
+  - With an 8 GB workspace that profile built, but needed a 6.7 GB execution context.
+  - The 16:9 profile's context is 4.3 GB.
+- Engine builds are not bit-reproducible: two builds of the same profile differed by one low-score detection.
+
+**Agreement with PyTorch FP16** on the 298 independent broadcast test frames (`broadcast_seg_test`, 213 labelled balls, imgsz 1280, score ≥ 0.25):
+
+| | Precision | Recall | AP (centre match) |
+|---|---|---|---|
+| PyTorch FP16 | 0.634 | 0.512 | 0.532 |
+| TensorRT FP16 | 0.634 | 0.512 | 0.531 |
+
+- **Detection matching:** 171 of 172 PyTorch detections are reproduced (IoU ≥ 0.5), with one engine-only detection.
+- **Median centre difference:** 0.0 px; the earlier square profile gave 0.26 px.
+- **Validation gate:** the export script writes a sidecar recording these numbers. The detector uses the engine only if all of the following hold:
+  - the sidecar says validation passed (agreement ≥ 0.97, extra detections ≤ 3%, median centre difference ≤ 1 px, AP drop ≤ 0.01);
+  - the `.pt` and engine hashes, the TensorRT version and the GPU still match.
+
+**Detector throughput** (1080p broadcast clip, 400 pre-decoded frames, imgsz 1280; median of batch latencies):
+
+| Runtime | Batch | fps | Batch latency median / p95 (ms) | Device memory (MB) |
+|---|---|---|---|---|
+| PyTorch FP16 | 1 | 87 | 10.0 / 16.0 | 201 |
+| TensorRT FP16 | 1 | 158 | 6.2 / 7.7 | 4943 |
+| PyTorch FP16 | 8 | 146 | 53.8 / 69.8 | 774 |
+| TensorRT FP16 | 8 | 191 | 40.6 / 51.3 | 5046 |
+| PyTorch FP16 | 16 | 152 | 104 / 140 | 1489 |
+
+- Device memory is the device-level increase while the model is loaded and running; TensorRT allocates outside PyTorch's allocator.
+- PyTorch results were noisy across runs: an earlier run on the same clip gave about 92 fps at every batch size, with one 1.4 s stall. The TensorRT rate was stable at 188–191 fps.
+- Requests above batch 8 are clamped to the engine's build limit.
+
+**End to end.**
+- *Decode + detect, 1000 frames of the 1080p clip, batch 8* (decode alone runs at 650–820 fps):
+  - PyTorch: 123–129 fps; TensorRT: 131–154 fps.
+  - Preprocessing (letterbox on the CPU) and postprocessing, not the network, bound this.
+- *Full pipeline* (detection, tracking, trajectory fit, no rendering; 526-frame 1080p clip):
+  - Run time: 11.1 s with PyTorch, 6.8 s with TensorRT. This includes model loading.
+  - The primary ball track is identical: the same 83 observed frames, maximum centre difference 0.75 px, reliable in both.
+
+**Decode/inference overlap.** A decoder thread feeding a bounded queue (4 batches) was compared with serial decoding, alternating runs:
+
+| Runtime | Serial (fps) | Overlapped (fps) |
+|---|---|---|
+| PyTorch | 122.6–125.1 | 124.0–131.3 |
+| TensorRT | 137.5–149.4 | 130.6–154.0 |
+
+The effect ranges from −5% to +7%, within run-to-run noise. Decoding is already about 5 times faster than detection, so there is little to hide. **The production pipeline was not changed.**
+
+**Decision.** The engine is opt-in: `PipelineConfig.use_tensorrt=True`. It gives about 1.3× detector throughput and 1.6× lower batch-1 latency, with the same detections, at a cost of about 4.3 GB more VRAM. On a 12 GB card that is acceptable for offline analysis, but it competes with NVENC capture and a second model during a match.
+
+Frames whose letterboxed shape is larger than the engine profile (4:3, portrait) are sent to the `.pt` model, never silently resized. A test covers this.
+
 ## 12. Audio edge transients (real broadcast audio, unlabelled)
 
 `scripts/evaluate_audio_transients.py` runs the transient detector on 60 `hf-cricket-delivery-videos` clips (44.1 kHz AAC, about 6 s each). Settings: high-pass 2 kHz; at least 15 dB above the noise floor; rise time ≤ 4 ms. Raw output: `audio_transients_broadcast.json`.

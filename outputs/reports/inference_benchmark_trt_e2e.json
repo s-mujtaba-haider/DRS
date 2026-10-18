@@ -1,0 +1,178 @@
+{
+  "video": "example-03.mp4",
+  "resolution": [
+    1920,
+    1080
+  ],
+  "frames": 400,
+  "decode_fps": 818.3044894613354,
+  "host": "Mujtaba",
+  "platform": "Windows-11-10.0.26300-SP0",
+  "torch": "2.11.0+cu128",
+  "cuda": true,
+  "gpu": "NVIDIA GeForce RTX 3080 Ti",
+  "weights": "cricket_ball_best.pt",
+  "runs": [
+    {
+      "runtime": "pytorch",
+      "imgsz": 1280,
+      "batch": 1,
+      "half": true,
+      "device": "0",
+      "fps": 87.1896631073838,
+      "batch_latency_ms_median": 9.985899996536318,
+      "batch_latency_ms_p95": 15.964899997925386,
+      "gpu_peak_mb": 103.85152,
+      "device_mem_delta_mb": 201.3265919999999,
+      "effective_batch": 1
+    },
+    {
+      "runtime": "tensorrt",
+      "imgsz": 1280,
+      "batch": 1,
+      "half": true,
+      "device": "0",
+      "fps": 157.68313644688033,
+      "batch_latency_ms_median": 6.171599998197053,
+      "batch_latency_ms_p95": 7.745700000668876,
+      "gpu_peak_mb": 71.574016,
+      "device_mem_delta_mb": 4942.987264,
+      "effective_batch": 1
+    },
+    {
+      "runtime": "pytorch",
+      "imgsz": 1280,
+      "batch": 8,
+      "half": true,
+      "device": "0",
+      "fps": 146.19699760362204,
+      "batch_latency_ms_median": 53.84700000286102,
+      "batch_latency_ms_p95": 69.80769999790937,
+      "gpu_peak_mb": 462.030336,
+      "device_mem_delta_mb": 773.8490880000002,
+      "effective_batch": 8
+    },
+    {
+      "runtime": "tensorrt",
+      "imgsz": 1280,
+      "batch": 8,
+      "half": true,
+      "device": "0",
+      "fps": 190.75857675567815,
+      "batch_latency_ms_median": 40.648999995028134,
+      "batch_latency_ms_p95": 51.27830000128597,
+      "gpu_peak_mb": 268.690432,
+      "device_mem_delta_mb": 5045.747712,
+      "effective_batch": 8
+    },
+    {
+      "runtime": "pytorch",
+      "imgsz": 1280,
+      "batch": 16,
+      "half": true,
+      "device": "0",
+      "fps": 152.33852972752607,
+      "batch_latency_ms_median": 104.1414999999688,
+      "batch_latency_ms_p95": 140.01750000170432,
+      "gpu_peak_mb": 879.851008,
+      "device_mem_delta_mb": 1488.9779200000003,
+      "effective_batch": 16
+    },
+    {
+      "runtime": "tensorrt",
+      "imgsz": 1280,
+      "batch": 16,
+      "half": true,
+      "device": "0",
+      "fps": 181.26632473189284,
+      "batch_latency_ms_median": 89.70779999799561,
+      "batch_latency_ms_p95": 100.61179999320302,
+      "gpu_peak_mb": 279.959552,
+      "device_mem_delta_mb": 5045.747712,
+      "effective_batch": 8
+    }
+  ],
+  "e2e": [
+    {
+      "runtime": "pytorch",
+      "imgsz": 1280,
+      "batch": 8,
+      "mode": "serial",
+      "frames": 1000,
+      "fps": 123.47890504295106,
+      "consumer_wait_s": null,
+      "queue_batches": null
+    },
+    {
+      "runtime": "pytorch",
+      "imgsz": 1280,
+      "batch": 8,
+      "mode": "overlapped",
+      "frames": 1000,
+      "fps": 124.02598210378125,
+      "consumer_wait_s": 0.098,
+      "queue_batches": 4
+    },
+    {
+      "runtime": "pytorch",
+      "imgsz": 1280,
+      "batch": 8,
+      "mode": "serial",
+      "frames": 1000,
+      "fps": 122.55102157490144,
+      "consumer_wait_s": null,
+      "queue_batches": null
+    },
+    {
+      "runtime": "pytorch",
+      "imgsz": 1280,
+      "batch": 8,
+      "mode": "overlapped",
+      "frames": 1000,
+      "fps": 129.18007006771398,
+      "consumer_wait_s": 0.095,
+      "queue_batches": 4
+    },
+    {
+      "runtime": "tensorrt",
+      "imgsz": 1280,
+      "batch": 8,
+      "mode": "serial",
+      "frames": 1000,
+      "fps": 149.42753787246264,
+      "consumer_wait_s": null,
+      "queue_batches": null
+    },
+    {
+      "runtime": "tensorrt",
+      "imgsz": 1280,
+      "batch": 8,
+      "mode": "overlapped",
+      "frames": 1000,
+      "fps": 154.0161236707683,
+      "consumer_wait_s": 0.094,
+      "queue_batches": 4
+    },
+    {
+      "runtime": "tensorrt",
+      "imgsz": 1280,
+      "batch": 8,
+      "mode": "serial",
+      "frames": 1000,
+      "fps": 137.48805744363128,
+      "consumer_wait_s": null,
+      "queue_batches": null
+    },
+    {
+      "runtime": "tensorrt",
+      "imgsz": 1280,
+      "batch": 8,
+      "mode": "overlapped",
+      "frames": 1000,
+      "fps": 130.55590102098358,
+      "consumer_wait_s": 0.101,
+      "queue_batches": 4
+    }
+  ],
+  "tensorrt": "10.16.1.11"
+}
